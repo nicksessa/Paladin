@@ -35,6 +35,7 @@ Present a modal with the character creation fields.
 11. Quests Completed
 12. Turns Completed
 13. Retainers
+14. Healing Potions
 
 Keep a log of all quests per turn.
 
@@ -65,8 +66,8 @@ Successfully completed side quests modify this roll as follows;
 Roll | Result
 ---|---
 1 | Your paladin is turned away, roll on the Journey Table (1) again.
-2 | Save vs 6 (no modifiers) otherwise, if you have a retainer, one at random is killed in an ambush by ruffians. Deduct -1 from the Rumor Roll. No new retainers are available.
-3 | Save vs 4 (no modifiers) otherwise, if you have coins, 3d6gp is stolen by a pickpocket. Deduct -1 from the Find Retainer roll.
+2 | Roll 2d6. If the result is 7 or less one of your retainers (if any) is killed in an ambush by ruffians. (randomly choose which one) Deduct -1 from the Rumor Roll. No new retainers are available.
+3 | Roll 2d6.  If the result is 5 or less, if you have coins, 3d6gp is stolen by a pickpocket. Deduct -1 from the Find Retainer roll.
 4 | Greedy traders, all items cost double, and you sell treasures at half their value. Ignore this if you have a merchant retainer.
 5 | Talkative innkeeper. Add +1 to the Rumor Roll.
 6 | Add +1 to the Find Retainer roll if the roll is 5 or less.
@@ -79,9 +80,9 @@ You can spend exactly three rumors, after the roll is made, to modify the result
 
 Roll | Result
 ---|---
-2 | Morgana. She uses trickery so that you forget. Make 3 saves vs level 4. For each fail, lose 1 rumor. If there are more fails than rumors, lose the ones you have and roll on the Challenge Table (7) . If all rolls pass, leave this encounter safely.
+2 | Morgana. She uses trickery so that you forget. Roll 2d6 three times.  Each result of 5 or less results in the loss of 1 rumor. If there are more fails than rumors, lose the ones you have and roll on the Challenge Table (7) . If all rolls pass, leave this encounter safely.
 3 | Castle Perilous. Roll on the Castle Perilous Table (12).
-4 | Village of Plague and Death. You can bypass it or help. If you help, make two saves vs level 3. If both fail, your paladin dies of the plague. If any pass, roll for a piety point.
+4 | Village of Plague and Death. You can bypass it or help. If you help, make roll 2d6 two times if both results are 4 or less, your paladin dies of the plague. If any pass, roll for a piety point.
 5 | Grail Castle. If you have no piety points, treat as encounter 7. Otherwise, you see the castle, shrouded in heavenly lights, and hear angelic music! The old and maimed Fisher King asks you two questions, each one needing a Piety Test to answer. If you pass both rolls, the holy grail appears in your hands! Roll on the Return to Camelot Table (11) If you have a broken Sword of the Fisher King, it is mended, even if you fail the Piety Tests.
 6 | Minions! Roll a d6, on a 1-4 roll on the Day Minions Table (6), on a 5-6 roll on the Night Minions Table (8).
 7 | A knight issues a challenge! Roll on the Challenge Table (7) or visit a shrine, in which case you roll on the Pilgrimage Table (5).
