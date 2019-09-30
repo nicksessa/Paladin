@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Paladin</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+  <!-- Font Awesome JS -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+    integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+    crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+    integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+    crossorigin="anonymous"></script>
+
+
+  <!-- Import Custom Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IM Fell English SC">
+
+  <style>
+    body {
+      background: #f4511e;
+      background: -webkit-linear-gradient(to right, #0099cc , #203042);
+      background: linear-gradient(to right, #0099cc , #203042);
+      min-height: 100vh;
+      font-family: 'IM Fell English SC', serif;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="px-4 px-lg-0">
+    <!-- For demo purpose -->
+    <div class="container text-white py-5 text-center">
+      <h1 class="display-4 mb-0">Paladin</h1>
+    </div>
+    <!-- End -->
+
+    <div class="pb-5">
+      <div class="container">
+      <div class="row">
+        <div id="storyDiv" class="col-lg-12 p-5 bg-white rounded shadow-sm mb-5">
+          Blurb goes here.  Welcome bla bla bla.  Hit Start to begin the game!
+          
+          <!-- <a href="#" class="btn btn-dark rounded-pill py-2 btn-block">Begin your Adventure!</a> -->
+          
+          <div class="col text-center">
+            <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill" ><i
+              class="mt-2 mr-2"></i>Begin Your Adventure!</button>        
+          </div>
+        </div>
+
+      </div>
+
+      
+        <div class="row">
+          <div class="col-lg-12 p-5 bg-white rounded shadow-sm mb-5">
+            Adventure Log
+            <!-- roll and results table -->
+            <div class="table-responsive">
+              <table class="table" id="adventureLogTable">
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="p-2 px-3 text-uppercase">Turn</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="p-2 px-3 text-uppercase">Roll</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase">Result</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="adventureLogTableBody">
+                  <!-- Javascript fills in the table here -->
+                </tbody>
+              </table>
+            </div>
+            <!-- End -->
+          </div>
+        </div>
+
+        <!-- Second Row goes here if cart is not empty -->
+ 
+      </div>
+    </div>
+  </div>
+<script>
+
+  // New Game Variables:
+  var rebellionLevel = 0
+  var retainers = 0
+  var merchant = 0
+  var turnCounter = 0
+  var adventureLog = []
+  var journeyRoll
+  var rumors = 0
+
+  // Tables
+  var journeyTable = [
+    "Crossroads. Roll on the Inn Table (2) or the Encounter Table (3). You choose which table to use.",
+    "Roll on the Inn Table (2) or bypass and roll on the Journey Table (1) again. You choose which table to use.",
+    "You are lost. If you have a Merchant retainer, he knows of a shortcut, treat as a result of 1 on this table instead. If you don not have a merchant, roll on this table again with a +1.",
+    "Roll on the Encounter Table (3).",
+    "If the Rebellion Level is 4, roll on the Challenge Table (7). Otherwise, roll on the Encounter Table (3).",
+    "If the Rebellion Level is 4, roll on the Challenge Table (7). Otherwise, roll on the Traitors Attack Table (4)."
+  ]
+  
+  var innTable = [
+    "Your paladin is turned away, roll on the Journey Table (1) again.",
+    "Roll 2d6. If the result is 7 or less one of your retainers (if any) is killed in an ambush by ruffians. (randomly choose which one) Deduct -1 from the Rumor Roll. No new retainers are available.",
+    "Roll 2d6. If the result is 5 or less, if you have coins, 3d6gp is stolen by a pickpocket. Deduct -1 from the Find Retainer roll.",
+    "Greedy traders, all items cost double, and you sell treasures at half their value. Ignore this if you have a merchant retainer.",
+    "Talkative innkeeper. Add +1 to the Rumor Roll.",
+    "Add +1 to the Find Retainer roll if the roll is 5 or less.",
+    "You get free food and lodging. Add +1 to the Find Retainer roll if the roll is 5 or less. New retainers are hired for 5gp.",
+    "A wealthy noble donates 3d6 x 5gp to your worthy cause."
+  ]
+  
+  var encounterTable = [
+    "Morgana. She uses trickery so that you forget. Roll 2d6 three times. Each result of 5 or less results in the loss of 1 rumor. If there are more fails than rumors, lose the ones you have and roll on the Challenge Table (7) . If all rolls pass, leave this encounter safely.",
+"Castle Perilous. Roll on the Castle Perilous Table (12).",
+"Village of Plague and Death. You can bypass it or help. If you help, make roll 2d6 two times if both results are 4 or less, your paladin dies of the plague. If any pass, roll for a piety point.",
+"Grail Castle. If you have no piety points, treat as encounter 7. Otherwise, you see the castle, shrouded in heavenly lights, and hear angelic music! The old and maimed Fisher King asks you two questions, each one needing a Piety Test to answer. If you pass both rolls, the holy grail appears in your hands! Roll on the Return to Camelot Table (11) If you have a broken Sword of the Fisher King, it is mended, even if you fail the Piety Tests.",
+"Minions! Roll a d6, on a 1-4 roll on the Day Minions Table (6), on a 5-6 roll on the Night Minions Table (8).",
+"A knight issues a challenge! Roll on the Challenge Table (7) or visit a shrine, in which case you roll on the Pilgrimage Table (5).",
+"Minions! Roll a d6, on a 1-4 roll on the Day Minions Table (6), on a 5-6 roll on the Night Minions Table (8).",
+"A Heroic Quest. Roll on the Side Quest Table (9) or visit a shrine, in which case you roll on the Pilgrimage Table (5).",
+"Village of Poverty and Famine. You can bypass it or help. If you help, donate at least 50gp in value; roll for a piety point.",
+"Test of Piety. If you have no piety points, treat as encounter 4. Otherwise, roll on the Test of Piety Table (10).",
+"Merlin. He heals you and your retainers back to full strength. He also gives wise counsel, and you gain d6+1 rumors."
+  ]
+  
+  // Start Game: Roll on the Journey Table
+$(document).ready(function(){
+  $("#beginAdventure").click(function(){   
+    rollJourneyTable()
+  })
+})
+
+function rollJourneyTable() {
+  
+  turnCounter++
+  var d6Roll = Math.floor(Math.random() * 6) + 1;
+  journeyRoll = d6Roll
+  
+  journeyRoll = 1
+  d6Roll = 1
+  
+  //alert("The begin adventure button was clicked. You rolled: " + d6Roll);
+
+  // Save turn data in the log (we'll push this to MySql at some point)
+  adventureLog.push({'turn':turnCounter, 'roll': d6Roll, 'result':journeyTable[d6Roll-1]});
+  
+  logTurn()
+
+  switch(journeyRoll) {
+      // crossroads
+      case 1:
+        crossroads()
+      break;
+      
+      // Inn table or roll again
+      case 2:
+        rollInnTable()
+      break;
+      
+      // lost
+      case 3:
+        youAreLost()
+      break;
+      
+      // Encounter
+      case 4:
+        rollEncounterTable()
+      break;
+      
+      // Encounter or Challenge
+      case 5:
+        if (rebellionLevel > 3) {
+          rollChallengeTable()
+        } else {
+          rollEncounterTable()
+        }
+      break;
+      
+      // Traitors or Challenge
+      case 6:
+        if (rebellionLevel > 3) {
+          rollChallengeTable()
+        } else {
+          rollTraitorsTable()
+        }
+      break;
+    }
+};
+
+function logTurn() {
+  $("#adventureLogTableBody").empty()
+  $("#storyDiv").empty()
+  
+  var rowString = ""
+
+  adventureLog.forEach(function(arrayItem) {
+    tc = arrayItem.turn
+    dieRoll = arrayItem.roll
+    result = arrayItem.result
+
+    console.log("turn: " + tc)
+    console.log("die roll: " + dieRoll)
+    console.log("result: " + result)
+    
+    rowString += '<tr>'
+    rowString += '<th scope="row" class="border-0">'
+    rowString += '<div>'
+    rowString += '<div class="ml-3 d-inline-block align-center">'
+    rowString += '<span class="font-weight-normal d-block">' + tc + '</span>'
+    rowString += '</div></th>'
+    rowString += '<td class="border-0 align-center" d-block>' + dieRoll + '</td>'
+    rowString += '<td class="border-0 align-center">' + result + '</td></div>'
+    rowString += '</tr>'
+  });
+  $("#adventureLogTable").append(rowString)
+  $("#storyDiv").append(journeyTable[journeyRoll-1])
+}
+
+function crossroads() {
+  //$("#storyDiv").empty()
+  //$("#adventureLogTableBody").empty()
+  // Inn or Encounter
+
+  rowString = `<div class="d-flex mt-2 justify-content-around">
+  <a href="#" id="innBtn" class="innBtn btn btn-dark px-4 rounded-pill">Inn Table</a>
+  <a href="#" id= "encounterBtn"class="encounterBtn btn btn-dark px-4 rounded-pill">Encounter Table</a>
+</div>`
+  $("#storyDiv").append(rowString)
+  $(document).on('click', '#innBtn', function(){
+    rollInnTable()
+    //console.log(this.value);
+  });
+    $(document).on('click', '#encounterBtn', function(){
+    rollEncounterTable()
+    //console.log(this.value);
+  });
+}
+
+function journeyOrInn() {
+  //$("#storyDiv").empty()
+  //$("#adventureLogTableBody").empty()
+
+
+  rowString = `<div class="d-flex mt-2 justify-content-around">
+  <a href="#" id="journeyBtn" class="journeyBtn btn btn-dark px-4 rounded-pill">Continue Journey</a>
+  <a href="#" id= "innBtn"class="innBtn btn btn-dark px-4 rounded-pill">Stay at the Inn</a>
+</div>`
+  $("#storyDiv").append(rowString)
+  $(document).on('click', '#journeyBtn', function(){
+    rollJourneyTable()
+    //console.log(this.value);
+  });
+  $(document).on('click', '#innBtn', function(){
+    rollInnTable()
+    //console.log(this.value);
+  });
+}
+
+function rollInnTable() {
+  var rowString = ""
+  // clear the story div
+  $("#storyDiv").empty()
+  
+  console.log("roll on the inn table")
+  
+  var roll_1d6 = Math.floor(Math.random() * 6) + 1;
+  
+  roll_1d6 = 1
+  $("#storyDiv").append(innTable[roll_1d6-1])
+  
+  switch(roll_1d6) {
+    case 1: 
+      console.log("option 1 on the inn table")
+    break;
+    
+    case 2:
+      rumors--
+      rowString = "Grumpy patrons (rumors -1)"
+      if (retainers > 0) {
+        var first_d6Roll = Math.floor(Math.random() * 6) + 1;
+        var second_d6Roll = Math.floor(Math.random() * 6) + 1;
+        var twoD6 = first_d6Roll + second_d6Roll
+        if (twoD6 < 8) {
+          // random retainer has been killed
+          rowString += "One of your retainers has been killed in an ambush!"
+        }
+      }
+      $("#storyDiv").append(rowString)
+    break;
+    
+    case 3:
+      var first_d6Roll = Math.floor(Math.random() * 6) + 1;
+      var second_d6Roll = Math.floor(Math.random() * 6) + 1;
+      var twoD6 = first_d6Roll + second_d6Roll
+      if (twoD6 < 6) {
+        var first_d6Roll = Math.floor(Math.random() * 6) + 1;
+        var second_d6Roll = Math.floor(Math.random() * 6) + 1;
+        var third_d6Roll = Math.floor(Math.random() * 6) + 1;
+        var threeD6 = first_d6Roll + second_d6Roll + third_d6Roll
+        rowString = "Robbed!"
+        rowString += "You lose " + threeD6 + " silver pieces."
+        $("#storyDiv").append(rowString)
+      }
+    break;
+    case 4:
+      if (merchant < 1) {
+        // items cost double. items sold for half
+      }
+    break;
+    case 5:
+      rumors++
+    break;
+  }
+  
+   rowString = `<div class="d-flex mt-2 justify-content-around">
+  <a href="#" id="journeyBtn" class="journeyBtn btn btn-dark px-4 rounded-pill">Continue Journey</a>
+</div>`
+    $("#storyDiv").append(rowString)
+    $(document).on('click', '#journeyBtn', function(){
+      rollJourneyTable()
+      //console.log(this.value);
+    });
+}
+
+function rollEncounterTable() {
+  console.log("roll on the encounter table")
+  //turnCounter++
+  var first_d6Roll = Math.floor(Math.random() * 6) + 1;
+  var second_d6Roll = Math.floor(Math.random() * 6) + 1;
+  var twoD6 = first_d6Roll + second_d6Roll
+  
+  //journeyRoll = d6Roll
+  //alert("The begin adventure button was clicked. You rolled: " + d6Roll);
+
+  // Save turn data in the log (we'll push this to MySql at some point)
+  //adventureLog.push({'turn':turnCounter, 'roll': d6Roll, 'result':journeyTable[d6Roll-1]});
+  
+  $("#storyDiv").append(encounterTable[twoD6-1])
+  
+  //logTurn() 
+}
+
+
+function youAreLost() {
+  //$("#storyDiv").empty()
+  //$("#adventureLogTableBody").empty()
+  var rowString = ""
+  
+  if (merchant == 0) {
+    // roll again but with +1 to the roll
+    rowString += `<div class="d-flex mt-2 justify-content-around">
+    <a href="#" id="journeyBtn" class="journeyBtn btn btn-dark px-4 rounded-pill">Continue Journey</a>
+  </div>`
+    $("#storyDiv").append(rowString)
+    $(document).on('click', '#journeyBtn', function(){
+      rollInnTable()
+      //console.log(this.value);
+    });
+  } else {
+    // go to the crossroads
+    rowString += `<div class="d-flex mt-2 justify-content-around">
+    <a href="#" id="crossroadsBtn" class="crossroadsBtn btn btn-dark px-4 rounded-pill">Go to Crossroads</a>
+  </div>`
+    $("#storyDiv").append(rowString)
+    $(document).on('click', '#crossroadsBtn', function(){
+      rollEncounterTable()
+      //console.log(this.value);
+    });
+  }
+}
+
+</script>
+</body>
+</html>
