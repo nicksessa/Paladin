@@ -44,18 +44,12 @@ Roll on the Journey Table
 
 Roll | Result
 ---|---
-1 | Crossroads. Roll on the Inn Table (2) or the Encounter Table (3).
-You choose which table to use.
-2 | Roll on the Inn Table (2) or bypass and roll on the Journey Table
-(1) again. You choose which table to use.
-3 | You are lost. If you have a Merchant retainer, he knows of a
-shortcut, treat as a result of 1 on this table instead. If you don’t
-have a merchant, roll on this table again with a +1.
+1 | Crossroads. Roll on the Inn Table (2) or the Encounter Table (3). You choose which table to use.
+2 | Roll on the Inn Table (2) or bypass and roll on the Journey Table (1) again. You choose which table to use.
+3 | You are lost. If you have a Merchant retainer, he knows of a shortcut, treat as a result of 1 on this table instead. If you don’t have a merchant, roll on this table again with a +1.
 4 | Roll on the Encounter Table (3).
-5 | If the Rebellion Level is 4, roll on the Challenge Table (7).
-Otherwise, roll on the Encounter Table (3).
-6 or more | If the Rebellion Level is 4, roll on the Challenge Table (7).
-Otherwise, roll on the Traitors Attack Table (4).
+5 | If the Rebellion Level is 4, roll on the Challenge Table (7). Otherwise, roll on the Encounter Table (3).
+6 or more | If the Rebellion Level is 4, roll on the Challenge Table (7). Otherwise, roll on the Traitors Attack Table (4).
 
 
 
