@@ -52,8 +52,8 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 px-4 pt-2 bg-white rounded shadow-sm mb-5">
-            <h4 class="display-5 mb-1">Sir Roland</h1>
-          <div class="table-responsive">
+            <h4 class="display-5 mb-1">Sir Roland</h4>
+            <div class="table-responsive">
             <table class="table" id="characterSheetTable">
               <thead>
                 <tr>
@@ -151,16 +151,14 @@
     ]
     
     var npc_Name = ""
+    var npc_id = 0
+    var combatLog = []
     
     
-    // Start Game: Roll on the Journey Table
+    // Start Game
     $(document).ready(function () {
       // Populate the PC stats
-      var rowString = '<td class="border-0 align-center text-center">' + playerCharacter.max_hp + '</td>'
-      rowString += '<td class="border-0 align-center text-center">' + playerCharacter.cur_hp + '</td>'
-      rowString += '<td class="border-0 align-center text-center">' + playerCharacter.exp + '</td>'
-      rowString += "</tr>"
-      $("#characterSheetTableBody").append(rowString)
+      updatePC()
       $("#beginAdventure").click(function () {
         $("#storyDiv").empty()
         //$("#storyDiv").append("<p>Your Opponent is: </p>")
@@ -168,18 +166,29 @@
       })
     })
     
+    function updatePC() {
+      $("#characterSheetTableBody").empty()
+      var rowString = '<td class="border-0 align-center text-center">' + playerCharacter.max_hp + '</td>'
+      rowString += '<td class="border-0 align-center text-center">' + playerCharacter.cur_hp + '</td>'
+      rowString += '<td class="border-0 align-center text-center">' + playerCharacter.exp + '</td>'
+      rowString += "</tr>"
+      $("#characterSheetTableBody").append(rowString)
+    }
+    
     function rollNPCTable() {
       var roll_1d6 = Math.floor(Math.random() * 6) + 1;
       //var npc_name = ""
       if (roll_1d6 < 4) {
         npc_name = npc[0].name
+        npc_id = 0
         //npc.forEach(function(arrayItem) { })
       } else {
         npc_name = npc[1].name
+        npc_id = 1
       }
       $("#storyDiv").append("<p>Your Opponent is: <strong>" + npc_name + "!!!</strong></p>")
       rowString = `<div class="d-flex mt-2 justify-content-between">
-  <a href="#" id="journeyBtn" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</a>
+  <a href="#" id="attackBtn" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</a>
   <a href="#" id= "fleeBtn"class="innBtn btn btn-dark px-4 rounded-pill">Flee!</a>
 <a href="#" id= "parlayBtn"class="innBtn btn btn-dark px-4 rounded-pill">Parlay!</a>
 </div>`
@@ -198,9 +207,137 @@
       });
     }
     
-    function attack() {
-    
+    function combat() {
+      $("#storyDiv").empty()
+      var round = 1
+      var initiative = "pc"
+      var fight = true
+      
+      var roll_1d6 = Math.floor(Math.random() * 6) + 1;
+
+      if (roll_1d6 < 4) {
+        initiative = "npc"
+      }
+      
+      // add buttons to the top of the div
+      // they will stay until combat is over
+      var rowString = ""
+      rowString = `<div class="d-flex mt-2 justify-content-between">
+  <a href="#" id="attackBtn" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</a>
+  <a href="#" id= "fleeBtn"class="innBtn btn btn-dark px-4 rounded-pill">Flee!</a>
+<a href="#" id= "parlayBtn"class="innBtn btn btn-dark px-4 rounded-pill">Parlay!</a>
+</div>`
+      $("#storyDiv").append(rowString)
+      
+      // Add a table to log combat
+      
+      var rowString = 
+      `<div class="table-responsive">
+            <table class="table" id="combatTable">
+              <thead>
+                <tr>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="p-1 px-3 text-uppercase">Round</div>
+                  </th>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="p-1 px-3 text-uppercase">Result</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="combatTableBody">
+                <!-- Javascript fills in the table here -->
+              </tbody>
+            </table>
+          </div> <!-- End Table container -->`      
+      
+       
+      $("#storyDiv").append(rowString)
+      
+      if (round == 1 && initiative == "npc") {
+        // npc attacks first
+      }
+     // attach onClick events
+      
+      $(document).on('click', '#attackBtn', function () {
+        console.log("attack button clicked")
+        if (round > 1 && initiative == "npc") {
+          var rowString = ""
+          // npc attacks first
+          // if the PC is not dead the the PC can act
+          var first_d6Roll = Math.floor(Math.random() * 6) + 1;
+          var second_d6Roll = Math.floor(Math.random() * 6) + 1;
+          var twoD6 = first_d6Roll + second_d6Roll
+          if (twoD6 > 6) {
+            // a hit!  now calc dmg
+            var dmg = twoD6 - 6
+            dmg += npc[npc_id].dmg_bonus
+            if (dmg <= pc.armor) {
+              // saved by armor!
+              $("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>') 
+              $("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " hits you for 0 damage!</td></tr>")
+            } else {
+              // pc takes damage
+              dmg = dmg - pc.armor
+              pc.cur_hp = pc.cur_hp - dmg
+              $("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
+              $("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " hits you for " + dmg + " points of damage!</td></tr>")
+              updatePC()
+            }
+          }
+          $("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
+          $("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " attacked but missed!</td></tr>")
+            
+          if (pc.cur_hp < 6 && pc.cur_hp > 0) {
+            // PC is knocked out
+          }
+        }
+        if (pc.cur_hp > 0) {
+          // pc is alive!
+        }
+        // roll to hit
+        var first_d6Roll = Math.floor(Math.random() * 6) + 1;
+        var second_d6Roll = Math.floor(Math.random() * 6) + 1;
+        var twoD6 = first_d6Roll + second_d6Roll
+        if (twoD6 > 6) {
+          // a hit!  now calc dmg
+          var dmg = twoD6 - 6
+          dmg += pc.dmg_bonus
+          if (dmg <= npc[npc_id].armor) {
+            // saved by armor!
+            $("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>') 
+            $("#combatTableBody").append('<td class="border-0 text-center"> You hit ' + npc_name + " 0 damage!</td></tr>")
+          } else {
+            // pc takes damage
+            dmg = dmg - npc[npc_id].armor
+            npc[npc_id].cur_hp = npc[npc_id].cur_hp - dmg
+            $("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
+            $("#combatTableBody").append('<td class="border-0 text-center">You hit ' + npc_name + " for " + dmg + " points of damage!</td></tr>")
+
+          }
+        }
+        $("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
+        $("#combatTableBody").append('<td class="border-0 text-center">You attacked ' + npc_name + " but missed!</td></tr>")
+        // if hit calculate damage
+        // adjust hit points
+        // check to see if dead
+        //console.log(this.value);
+      });
+      $(document).on('click', '#fleeBtn', function () {
+        flee()
+        //console.log(this.value);
+      });
+      $(document).on('click', '#parlayBtn', function () {
+        parlay()
+        //console.log(this.value);
+      });
+      
+      // stay in the loop till combat is over
+      while(fight) {
+        // roll to see who goes first
+
+      } 
     }
+    
     function flee() {
     
       $("#storyDiv").empty()
@@ -227,7 +364,13 @@
         peace = false
         $("#storyDiv").empty()
         $("#storyDiv").append("<p>" + npc_name + " is not interested in conversation.  He attacks!</p>")
-        //npc.forEach(function(arrayItem) { })
+        rowString = `<div class="d-flex mt-2 justify-content-between">
+  <a href="#" id="journeyBtn" class="attackBtn btn btn-dark px-4 rounded-pill">Go To Combat!</a></div>`
+        $("#storyDiv").append(rowString)
+        $(document).on('click', '#attackBtn', function () {
+        combat()
+        //console.log(this.value);
+      });
       } else {
         peace = true
         $("#storyDiv").empty()
