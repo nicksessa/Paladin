@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Paladin</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+  <!-- Font Awesome JS -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+    integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+    crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+    integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+    crossorigin="anonymous"></script>
+
+
+  <!-- Import Custom Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IM Fell English SC">
+
+  <style>
+    body {
+      background: #f4511e;
+      background: -webkit-linear-gradient(to right, #0099cc, #203042);
+      background: linear-gradient(to right, #0099cc, #203042);
+      min-height: 100vh;
+      font-family: 'IM Fell English SC', serif;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="px-4 px-lg-0">
+    <!-- page header -->
+    <div class="container text-white py-5 text-center">
+      <h1 class="display-4 mb-0">Paladin</h1>
+    </div>
+    <!-- End page header -->
+
+    <div class="pb-5">
+      <div class="container">
+        
+      </div>
+    </div>
+
+    <div class="pb-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 px-4 pt-2 bg-white rounded shadow-sm mb-5">
+            <h4 class="display-5 mb-1">Sir Roland</h1>
+          <div class="table-responsive">
+            <table class="table" id="characterSheetTable">
+              <thead>
+                <tr>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="p-1 px-3 text-uppercase">Max HP</div>
+                  </th>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="p-1 px-3 text-uppercase">Current HP</div>
+                  </th>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="py-1 text-uppercase">Exp</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="characterSheetTableBody">
+                <!-- Javascript fills in the table here -->
+              </tbody>
+            </table>
+          </div> <!-- End Table container -->
+        </div>
+        </div>
+        <div class="row">
+          <div id="storyDiv" class="col-lg-12 p-4 bg-white rounded shadow-sm mb-5">
+            <p>Click the button below to generate an opponent to fight!</p>
+
+            <!-- <a href="#" class="btn btn-dark rounded-pill py-2 btn-block">Begin your Adventure!</a> -->
+
+            <div class="col text-center">
+              <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i
+                  class="mt-2 mr-2"></i>Summon Opponent!</button>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="row">
+          <div class="col-lg-12 p-4 bg-white rounded shadow-sm mb-5">
+            Adventure Log
+            <!-- roll and results table -->
+            <div class="table-responsive">
+              <table class="table" id="adventureLogTable">
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="p-2 px-3 text-uppercase">Turn</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="p-2 px-3 text-uppercase">Roll</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase">Result</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="adventureLogTableBody">
+                  <!-- Javascript fills in the table here -->
+                </tbody>
+              </table>
+            </div> <!-- End Table container -->
+          </div> <!-- END column 1-->
+        </div> <!-- End row -->
+
+        <!-- third Row can go here -->
+
+      </div> <!-- bootstrap container -->
+    </div> <!-- another div setting padding bottom to 5-->
+  </div> <!-- outer div setting padding x (left and right) to 4 and set large things to have padding 0 -->
+  <script type="text/javascript">
+    playerCharacter = {
+      max_hp: 40,
+      cur_hp: 40,
+      armor: 2,
+      dmg_bonus: 2,
+      exp: 0
+    }
+    
+    npc = [
+      {
+        name: "Guy of Gisborne",
+        cur_hp: 25,
+        armor: 1,
+        dmg_bonus: 1,
+        species: "human",
+        sex: "male"
+      },
+      {
+        name: "The Green Knight",
+        cur_hp: 30,
+        armor: 2,
+        dmg_bonus: 2,
+        species: "human",
+        sex: "male"
+      }
+    ]
+    
+    var npc_Name = ""
+    
+    
+    // Start Game: Roll on the Journey Table
+    $(document).ready(function () {
+      // Populate the PC stats
+      var rowString = '<td class="border-0 align-center text-center">' + playerCharacter.max_hp + '</td>'
+      rowString += '<td class="border-0 align-center text-center">' + playerCharacter.cur_hp + '</td>'
+      rowString += '<td class="border-0 align-center text-center">' + playerCharacter.exp + '</td>'
+      rowString += "</tr>"
+      $("#characterSheetTableBody").append(rowString)
+      $("#beginAdventure").click(function () {
+        $("#storyDiv").empty()
+        //$("#storyDiv").append("<p>Your Opponent is: </p>")
+        rollNPCTable()
+      })
+    })
+    
+    function rollNPCTable() {
+      var roll_1d6 = Math.floor(Math.random() * 6) + 1;
+      //var npc_name = ""
+      if (roll_1d6 < 4) {
+        npc_name = npc[0].name
+        //npc.forEach(function(arrayItem) { })
+      } else {
+        npc_name = npc[1].name
+      }
+      $("#storyDiv").append("<p>Your Opponent is: <strong>" + npc_name + "!!!</strong></p>")
+      rowString = `<div class="d-flex mt-2 justify-content-between">
+  <a href="#" id="journeyBtn" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</a>
+  <a href="#" id= "fleeBtn"class="innBtn btn btn-dark px-4 rounded-pill">Flee!</a>
+<a href="#" id= "parlayBtn"class="innBtn btn btn-dark px-4 rounded-pill">Parlay!</a>
+</div>`
+      $("#storyDiv").append(rowString)
+      $(document).on('click', '#attackBtn', function () {
+        combat()
+        //console.log(this.value);
+      });
+      $(document).on('click', '#fleeBtn', function () {
+        flee()
+        //console.log(this.value);
+      });
+      $(document).on('click', '#parlayBtn', function () {
+        parlay()
+        //console.log(this.value);
+      });
+    }
+    
+    function attack() {
+    
+    }
+    function flee() {
+    
+      $("#storyDiv").empty()
+      $("#storyDiv").append("<p>" + npc_name + " laughs at you as you flee like a coward!</p>")
+      $("#storyDiv").append("<p>If you're not too chicken to fight, click the button below to summon another opponent</p>")
+      
+      var rowString = `<div class="col text-center">
+              <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i
+                  class="mt-2 mr-2"></i>Summon Opponent!</button>
+            </div>`
+      $("#storyDiv").append(rowString)
+      $("#beginAdventure").click(function () {
+        $("#storyDiv").empty()
+        //$("#storyDiv").append("<p>Your Opponent is: </p>")
+        rollNPCTable()
+      })
+      
+    }
+    
+    function parlay() {
+      var roll_1d6 = Math.floor(Math.random() * 6) + 1;
+      var peace = false
+      if (roll_1d6 < 4) {
+        peace = false
+        $("#storyDiv").empty()
+        $("#storyDiv").append("<p>" + npc_name + " is not interested in conversation.  He attacks!</p>")
+        //npc.forEach(function(arrayItem) { })
+      } else {
+        peace = true
+        $("#storyDiv").empty()
+        $("#storyDiv").append("<p>" + npc_name + " agrees to live and let live... for now.</p>")
+        var rowString = `<div class="col text-center">
+              <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i
+                  class="mt-2 mr-2"></i>Summon Opponent!</button>
+            </div>`
+      $("#storyDiv").append(rowString)
+      $("#beginAdventure").click(function () {
+        $("#storyDiv").empty()
+        //$("#storyDiv").append("<p>Your Opponent is: </p>")
+        rollNPCTable()
+      })
+    }
+  }
+    
+    
+  </script>
+
+</body>
+</html>
