@@ -59,20 +59,53 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 px-4 pt-2 bg-white rounded shadow-sm mb-5">
-            <h4 class="display-5 mb-1">Sir Roland</h4>
+            <h4 id="PC_Name" class="display-5 mb-1">Sir Roland</h4>
             <div class="table-responsive">
               <table class="table" id="characterSheetTable">
                 <thead>
                   <tr>
                     <th scope="col" class="border-0 bg-light">
-                      <div class="p-1 px-3 text-uppercase">Max HP</div>
+                      <div class="p-1 px-3 text-uppercase text-center">Max HP</div>
                     </th>
                     <th scope="col" class="border-0 bg-light">
-                      <div class="p-1 px-3 text-uppercase">Current HP</div>
+                      <div class="p-1 px-3 text-uppercase text-center">Current HP</div>
                     </th>
                     <th scope="col" class="border-0 bg-light">
-                      <div class="py-1 text-uppercase">Exp</div>
+                      <div class="py-1 text-uppercase text-center">Exp</div>
                     </th>
+                  </tr>
+                  <tr>
+                    <td scope="col" class="border-0">
+                      <div id="sheet_PC_max_HP" class="p-1 px-3 text-center">0</div>
+                    </td>
+                    <td scope="col" class="border-0">
+                      <div id="sheet_PC_cur_HP" class="p-1 px-3 text-center">0</div>
+                    </td>
+                    <td scope="col" class="border-0">
+                      <div id="sheet_PC_Exp" class="py-1 text-center">0</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="p-1 px-3 text-uppercase text-center">Att</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="p-1 px-3 text-uppercase text-center">DMG</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-1 text-uppercase text-center">Armor</div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <td scope="col" class="border-0">
+                      <div id="sheet_PC_Att" class="p-1 px-3 text-center">0</div>
+                    </td>
+                    <td scope="col" class="border-0">
+                      <div id="sheet_PC_Dmg" class="p-1 px-3 text-center">0</div>
+                    </td>
+                    <td scope="col" class="border-0">
+                      <div id="sheet_PC_Armor" class="py-1 text-center">0</div>
+                    </td>
                   </tr>
                 </thead>
                 <tbody id="characterSheetTableBody">
@@ -132,11 +165,17 @@
   <script type="text/javascript">
   
     playerCharacter = {
+      name: "Sir Roland",
       max_hp: 40,
       cur_hp: 40,
       armor: 2,
+      attack: 0,
       dmg_bonus: 2,
-      exp: 0
+      exp: 0,
+      money: 20,
+      species: "human",
+      sex: "male",
+      healing_potions: 2
     }
     npc = [
       {
@@ -188,10 +227,10 @@
       $("#storyDiv").empty()
       $("#combatTableBody").empty()
       let rowString = `<p>Click the button below to generate an opponent to fight!</p>
-            <div class="col text-center">
-              <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i
-                  class="mt-2 mr-2"></i>Summon Opponent!</button>
-            </div>`
+          <div class="col text-center">
+          <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i
+            class="mt-2 mr-2"></i>Summon Opponent!</button>
+          </div>`
       $("#storyDiv").append(rowString)
       $("#beginAdventure").off("click")
       $("#beginAdventure").on('click', function () {
@@ -202,18 +241,32 @@
       })
     }
     function updatePC() {
-      $("#characterSheetTableBody").empty()
+      /*$("#characterSheetTableBody").empty()
       let rowString = '<td class="border-0 align-center text-center">' + playerCharacter.max_hp + '</td>'
       rowString += '<td class="border-0 align-center text-center">' + playerCharacter.cur_hp + '</td>'
       rowString += '<td class="border-0 align-center text-center">' + playerCharacter.exp + '</td>'
       rowString += "</tr>"
-      $("#characterSheetTableBody").append(rowString)
+      rowString += '<td class="border-0 align-center text-center">' + playerCharacter.attack + '</td>'
+      rowString += '<td class="border-0 align-center text-center">' + playerCharacter.dmg_bonus + '</td>'
+      rowString += '<td class="border-0 align-center text-center">' + playerCharacter.armor + '</td>'
+      rowString += "</tr>"
+      $("#characterSheetTableBody").append(rowString)*/
+      
+      $("#sheet_PC_max_HP").html(playerCharacter.max_hp)
+      $("#sheet_PC_cur_HP").html(playerCharacter.cur_hp)
+      $("#sheet_PC_Exp").html(playerCharacter.exp)
+      $("#sheet_PC_Att").html(playerCharacter.attack)
+      $("#sheet_PC_Dmg").html(playerCharacter.dmg_bonus)
+      $("#sheet_PC_Armor").html(playerCharacter.armor)
+      
     }
     function rollNPCTable() {
       round = 1
       let roll_1d4 = Math.floor(Math.random() * 4);
       console.log("NPC ID: " + roll_1d4)
       npc_name = npc[roll_1d4].name
+      npc_id = [roll_1d4]
+      
       $("#storyDiv").append("<p id='npcParagraph'>Your Opponent is: <strong>" + npc_name + "!!!</strong></p>")
       let rowString = `<div class="d-flex mt-2 justify-content-between">
       <button id="attackBtn" class="attackBtn btn btn-dark px-4 rounded-pill">Fight!</button>
@@ -250,12 +303,13 @@
         let roll_1d6 = Math.floor(Math.random() * 6) + 1;
         if (roll_1d6 < 4) {
           initiative = "npc"
-          $("#storyDiv").append("<p>" + npc_name + " won initiative and has attacked first!</p>")
+          $("#storyDiv").append("<p id='storyDivHead'>" + npc_name + " won initiative and has attacked first!</p>")
         } else {
           initiative = "pc"
-          $("#storyDiv").append("<p>You have won initiative.  Attack, flee... or talk.</p>")
+          $("#storyDiv").append("<p id='storyDivHead'>You have won initiative.  Attack, flee... or talk.</p>")
         }
       }
+
       //console.log("made it here")
       // add buttons to the top of the div
       // they will stay until combat is over
@@ -297,7 +351,16 @@
       $(document).off("click")
       $(document).on('click', '#attackBtn2', function () {
       //$("attackBtn").on('click', function() {
-        $(document.body).scrollTop($('#storyAnchor').offset().top);
+        //$(document.body).scrollTop($('#storyAnchor').offset().top);
+        
+      if (round > 1) {
+      	if (initiative == "npc") {
+          $("#storyDivHead").html('<p>' + npc_name + ' still has the initiative</p>')
+        } else {
+          $("#storyDivHead").html('<p>' + playerCharacter.name + ' has the initiative</p>')
+        }
+      }
+        
         console.log("attack button2 clicked")
         console.log("round: " + round)
         console.log("initiative: " + initiative)
@@ -439,12 +502,22 @@
       var roll_1d6 = Math.floor(Math.random() * 6) + 1;
       var peace = false
       if (roll_1d6 < 4) {
-        peace = false
+        let pronoun = (npc[npc_id].sex == "male") ? "He" : "She"
+        
+        console.log(npc[npc_id].name + " is: " + npc[npc_id].sex)
+        
         $("#storyDiv").empty()
-        $("#storyDiv").append("<p>" + npc_name + " is not interested in conversation.  He attacks!</p>")
-        let rowString = `<div class="d-flex mt-2 justify-content-between">
-  <a href="#" id="attackBtn3" class="attackBtn btn btn-dark px-4 rounded-pill">Go To Combat!</a></div>`
+        $("#storyDiv").append("<p>" + npc_name + " is not interested in conversation. "+ pronoun + " attacks!</p>")
+        /*let rowString = `<div class="d-flex mt-2 justify-content-between">
+  <a href="#" id="attackBtn3" class="attackBtn btn btn-dark px-4 rounded-pill">Go To Combat!</a></div>`*/
+  
+        var rowString = `<div class="col text-center">
+            <button id="attackBtn3" type="button" class="btn btn-dark px-4 rounded-pill"><i
+            class="mt-2 mr-2"></i>Go To Combat!</button>
+            </div>`
+            
         $("#storyDiv").append(rowString)
+        $(document).off('click')
         $(document).on('click', '#attackBtn3', function () {
           combat()
           //console.log(this.value);
@@ -458,6 +531,7 @@
                   class="mt-2 mr-2"></i>Summon Opponent!</button>
             </div>`
         $("#storyDiv").append(rowString)
+        $("#beginAdventure").off('click')
         $("#beginAdventure").click(function () {
           $("#storyDiv").empty()
           //$("#storyDiv").append("<p>Your Opponent is: </p>")
