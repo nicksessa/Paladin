@@ -161,7 +161,7 @@
       "Sir Turquine (boss). Level 8, Life 10, Morale -2. Treasure 8x2d6gp. Turquine has 2 attacks per turn. If you slay Turquine, you gain an additional 4d6 x 20gp as reward for rescuing the nobles he has imprisoned.",
       "Sir Mordred (boss). Level 8, Life 11, Morale +2. Treasure 8x2d6gp. He wears the Golden Armor. The armor fits only Mordred, and may not be used by anyone else. You can take it for reselling if you slay Mordred."
     ]
-    let nightMinionTable [
+    let nightMinionTable = [
       "d6+4 Wolves. Level 3, no treasure, morale +0. Wolves have a 3 in 6 chance of gaining surprise, but it is 1 in 6 if you have a Hunter. Reactions: 1 flee, 2-6 fight",
       "d6+3 Hooded cultists. Level 3, treasure 1 roll, morale +0. These are followers of Morgana, and have a 3 in 6 chance of gaining surprise, but it is 1 in 6 if you have a Hunter. Reactions: 1 flee, 2-4 fight, 5-6 fight to the death ",
       "d6 Wild boars. Level 4, no treasure, morale +0. Reactions: 1-5 fight, 6 fight to the death",
@@ -196,6 +196,190 @@
       "The Black Knight or the Red Knight? Opening a door you see two scenes. First: A questing paladin is about to be killed by a black† knight . Second: A maiden is about to be attacked by a red† knight . Choose who to save. If you save the maiden, roll for a piety point, but the Rebellion Level increases by 1 as the questing paladin dies. If you save the questing paladin, do not increase the Rebellion Level. You only fight one of the knights; they are both level 7 with 8 life points. You get an XP roll if you win. No quarter is asked or given. There is no treasure. ",
       "The Hermit. You meet an old hermit who can sell you up to 3 rumors for 50gp each (or at least that value in treasure).",
       "The Dwarf. At the castle gate, a dwarf with a cart offers you a lift. If you pay him 50 gold pieces (or at least that value in treasure), you, along with retainers, can be taken to any quest of your choice from the Side Quest Table (9). You can also ride for free, roll a d6; on a 1-3 go to event 7, and on a 4-6 go to event 9 on the Encounter Table (3)."
+    ]
+    let treasureTable = [
+      "Coins. 1d6 gp in value.",
+      "Coins. 2d6 gp in value.",
+      "Coins. 4d6 gp in value.",
+      "Silver Cutlery and Goblets. 3d6 x 2 gp in value.",
+      "Gold Jewelry. 2d6 x 5 gp in value.",
+      "Rare Item. Roll on the Rare Items Table (14)."
+    ]
+    
+    let rareItemsTable = [
+      "Containers with apothecary drugs/materials. 3d6 x 5 gp in value. Some can be ingested (reduce resale value by 1d6 gp). Roll; 1: lose 1 life point, 2-4: no effect, 5-6: heal 2 life points.",
+      "Rolls of Silk and Velvet. 2d6 x 10 gp in value.",
+      "Jars of Saffron spice. 3d6 x 10 gp in value.",
+      "Bone or Tooth of Saint (relic†). 4d6 x 10 gp in value.",
+      "Fragment of the True Cross (relic†). 5d6 x 10 gp in value.",
+      "Spear of Longinus (relic†). This can be a fake as well. If used in combat against a foe with magic defenses, make a roll to see if it is genuine on the first attack. If a spear is determined to be a real relic, any other spears you find are automatically fakes, as only one can be real. Their resale value is not affected."
+    ]
+    let itemCostsTable = [
+      {name: "Bandage †", cost: 5},
+      {name: "Bow", cost: 15},
+      {name: "Hand Weapon", cost: 6},
+      {name: "Heavy Armor", cost: 10},
+      {name: "Light Hand Weapon", cost: 5},
+      {name: "Shield", cost: 5},
+      {name: "Two Handed Weapon", cost: 15},
+      {name: "Stay at inn", cost: 10},
+      {name: "Hire new Retainer", cost: 10},
+      {name: "Re-employ existing retainer", cost: 5} 
+    ]
+    let innNameFirst_A = [
+      "The Black",
+      "The Red",
+      "The White",
+      "The Blue",
+      "The Green",
+      "The Gray",
+      "The Brown",
+      "The Hound and",
+      "The Hungry",
+      "The Happy",
+      "The Golden",
+      "The Rusty"
+    ]
+    
+    let innNameSecond_A = [
+      "Bear",
+      "Dragon",
+      "Griffin",
+      "Lion",
+      "Swan",
+      "Unicorn",
+      "Hare",
+      "Hart",
+      "Hobgoblin",
+      "Horse",
+      "Hog",
+      "Huntsman"
+    ]
+    
+    let innNameFirst_B = [
+      "The Three",
+      "The Golden",
+      "The Silver",
+      "The Broken"
+    ]
+    let innNameSecond_B = [
+      "Arrows",
+      "Castles",
+      "Goblets",
+      "Kings",
+      "Horseshoes",
+      "Oaks"
+    ]
+    let innNameFirst_C = [
+      "The Friars",
+      "The Pilgrims"
+    ]
+    let innNameSecond_C = [
+      "Anchor",
+      "Brew",
+      "Cellar",
+      "Habit",
+      "Rest",
+      "Tabard"
+    ]
+    
+    let retainerNameFirst_A = [
+      "Bard",
+      "Cadm",
+      "Guel",
+      "Har",
+      "Mael",
+      "Rayg"
+    ]
+    
+    let retainerNameSecond_A = [
+      "an",
+      "ar",
+      "oc"
+    ]
+    
+    let retainerNameFirst_B = [
+      "Adal",
+      "Childe",
+      "Ed",
+      "Leof",
+      "Theud",
+      "Wulf"
+    ]
+    let retainerNameSecond_B = [
+      "berg",
+      "mund",
+      "ric"
+    ]
+    
+    let retainerNameFirst_C = [
+      "Berw",
+      "Cadw",
+      "Gwrh",
+      "Llyw",
+      "Ow",
+      "Tyw"
+    ]
+    let retainerNameSecond_C = [
+      "en",
+      "yr",
+      "yn"
+    ]
+    
+    let retainerNameFirst_D = [
+      "Aligr",
+      "Bedin",
+      "Dion",
+      "Gaheri",
+      "Guivr",
+      "Mordr"
+    ]
+    let retainerNameSecond_D = [
+      "auz",
+      "es",
+      "et"
+    ]
+    
+    let questingKnightNames = [
+      "Sir Baudwin",
+      "Sir Bedwyr",
+      "Sir Bors",
+      "Sir Breunor",
+      "Sir Caradoc",
+      "Sir Dagonet",
+      "Sir Hector",
+      "Sir Galahad",
+      "Sir Griflet",
+      "Sir Kay",
+      "Sir Lionel",
+      "Sir Pelleas",
+      "Sir Percivale",
+      "Sir Safere",
+      "Sir Sagramore",
+      "Sir Segwarides",
+      "Sir Ulfius",
+      "Sir Ywain"
+    ]
+    
+    let challengeKnightNames = [
+      "Sir Aglovale",
+      "Sir Andred",
+      "Sir Brastias",
+      "Sir Colgrevance",
+      "Sir Damas",
+      "Sir Edward",
+      "Sir Elyan",
+      "Sir Galehaut",
+      "Sir Gingalain",
+      "Sir Gringamore",
+      "Sir Helios",
+      "Sir Hue",
+      "Sir Manassen",
+      "Sir Meleagrance",
+      "Sir Morien",
+      "Sir Phelot",
+      "Sir Pinell",
+      "Sir Tor"
     ]
     
     // Start Game: Roll on the Journey Table
