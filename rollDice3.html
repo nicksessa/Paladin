@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>test page</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<style>
+body {
+  background-color: black;
+  text-align: center;
+  color: white;
+        background: -webkit-linear-gradient(to right, #0099cc, #203042);
+      background: linear-gradient(to right, #0099cc, #203042);
+      min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+}
+img2 {
+  height: 100px;
+  width: 100%;
+  /*object-fit: cover;*/
+}
+.responsive {
+  max-width: 100%;
+  height: auto;
+}
+p {
+  color: black;
+}
+
+</style>
+</head>
+<body>
+  <div class="px-4 px-lg-0">
+    <div class="container text-white py-5 text-center">
+      <h1 class="display-4 mb-0">test page</h1>
+    </div>
+    <!-- End -->
+    <div class="pb-5">
+      <div class="container">
+        <div class="row">
+          <div id="mainDiv" class="col-lg-12 p-5 bg-white rounded shadow-sm mb-5">
+            <div class="col text-center">
+              <button onclick="myFun()" id="clickMe" type="button" class="btn btn-dark px-4 rounded-pill">
+                <i class="mt-2 mr-2"></i>Roll a d6</button>
+            </div>
+            <p id="output"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  const d6 = 6
+  
+  function rollDie (dieType) {
+  	let result = Math.floor(Math.random() * dieType + 1);
+    return result
+  }
+  
+  function myFun() {
+    let theString = ""
+    let num1 = rollDie(d6)
+    let num2 = rollDie(d6)
+    console.log("Num1: " + num1)
+    console.log("Num2: " + num2)
+    let sum = num1 + num2
+    console.log("Result: " + sum)
+
+    //return theString = `<p>(${num1} + ${num2}) = ${sum}</p>`
+    //return theString = `<p>test</p>`
+
+     document.getElementById("output").innerHTML = `<p>(${num1} + ${num2}) = ${sum}</p>`;
+  }
+  
+  </script>
+</body>
+</html>
