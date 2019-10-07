@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  background-color: black;
+  text-align: center;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+</style>
+</head>
+<body>
+
+<h1>The onclick Event</h1>
+
+<p>The onclick event is used to trigger a function when an element is clicked on.</p>
+
+<p>Click the button to trigger a function that will output "Hello World" in a p element with id="demo".</p>
+
+<button onclick="myFunction()">Roll!</button>
+
+<p id="demo"></p>
+
+<script>
+const d6 = 6
+const d20 = 20
+
+const rollDie = (dieType) => Math.floor(Math.random() * dieType + 1);
+
+function myFunction() {
+  let theString = ""
+  let num1 = rollDie(d6)
+  let num2 = rollDie(d6)
+  console.log("Num1: " + num1)
+  console.log("Num2: " + num2)
+  let sum = num1 + num2
+  console.log("Result: " + sum)
+  
+  //return theString = `<p>(${num1} + ${num2}) = ${sum}</p>`
+  //return theString = `<p>test</p>`
+  
+   document.getElementById("demo").innerHTML = `<p>(${num1} + ${num2}) = ${sum}</p>`;
+  
+}
+</script>
+
+</body>
+</html>
