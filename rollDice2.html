@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<style>
+body {
+  background-color: black;
+  text-align: center;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+</style>
+</head>
+<body>
+<section>
+  <button>Roll!</button>
+  <div id="dice"></div>
+</section>
+<script>
+
+const roll = document.querySelector('button');
+const dice = document.querySelector('#dice');
+
+const d6 = 6
+const d20 = 20
+
+const rollDie = (dieType) => Math.floor(Math.random() * dieType + 1);
+
+const rollDice = () => `<p>${rollDie(d6)}</p>
+                        <p>${rollDie(d20)}</p>`;
+
+roll.onclick = () => dice.innerHTML = rollDice();
+
+
+</script>
+</body>
+</html>
