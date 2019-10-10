@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<style>
+body{ 
+  color: white;
+  /* Location of the image */
+  background-image: url("https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763");
+  
+  /* Background image is centered vertically and horizontally at all times */
+  background-position: center center;
+  
+  /* Background image doesn't tile */
+  background-repeat: no-repeat;
+  
+  /* Background image is fixed in the viewport so that it doesn't move when 
+     the content's height is greater than the image's height */
+  background-attachment: fixed;
+  
+  /* This is what makes the background image rescale based
+     on the container's size */
+  background-size: cover;
+  
+  /* Set a background color that will be displayed
+     while the background image is loading */
+  background-color: #464646;
+}
+</style>
+</head>
+<body>
+
+<div>
+
+<p>This example creates a full page background image. Try to resize the browser window to see how it always will cover the full screen (when scrolled to top), and that it scales nicely on all screen sizes.</p>
+
+<button id="backgroundURL1_btn">Set Background to URL 1</button>
+<button id="backgroundURL2_btn">Set Background to URL 2</button>
+
+</div>
+
+<script>
+let backgroundImageURL1 = "https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763"
+
+let backgroundImageURL2 = "https://cdnb.artstation.com/p/assets/images/images/020/284/017/large/andreas-rocha-cursedforesthr.jpg?1567153102"
+
+$(document).ready(function(){
+  $("#backgroundURL1_btn").click(function(){
+    //alert("Background color = " + $("p").css("background-color"));
+    //alert("Background url = " + $("body").css("background-image"));
+
+    $('body').css('background-image', 'url(' + backgroundImageURL1 + ')');
+
+  });
+  
+  $("#backgroundURL2_btn").click(function(){
+    //alert("Background color = " + $("p").css("background-color"));
+    //alert("Background url = " + $("body").css("background-image"));
+
+    $('body').css('background-image', 'url(' + backgroundImageURL2 + ')');
+
+  });
+});
+</script>
+
+</body>
+</html>
