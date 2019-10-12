@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Bootstrap Example</title>
   <meta charset="utf-8">
@@ -9,234 +10,252 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-<!-- Import Custom Font -->
+  <!-- Import Custom Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IM Fell English SC">
-  
-<style>
-  body{
-    font-family: 'IM Fell English SC', serif;
-    color: blanchedalmond;
-    /* Location of the image */
-    background-image: url("https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763");
 
-    /* Background image is centered vertically and horizontally at all times */
-    background-position: center center;
+  <style>
+    body {
+      font-family: 'IM Fell English SC', serif;
+      color: blanchedalmond;
+      /* Location of the image */
+      background-image: url("https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763");
 
-    /* Background image doesn't tile */
-    background-repeat: no-repeat;
+      /* Background image is centered vertically and horizontally at all times */
+      background-position: center center;
 
-    /* Background image is fixed in the viewport so that it doesn't move when 
+      /* Background image doesn't tile */
+      background-repeat: no-repeat;
+
+      /* Background image is fixed in the viewport so that it doesn't move when 
        the content's height is greater than the image's height */
-    background-attachment: fixed;
+      background-attachment: fixed;
 
-    /* This is what makes the background image rescale based
+      /* This is what makes the background image rescale based
        on the container's size */
-    background-size: cover;
+      background-size: cover;
 
-    /* Set a background color that will be displayed
+      /* Set a background color that will be displayed
        while the background image is loading */
-    background-color: #464646;
-  }
+      background-color: #464646;
+    }
 
-  .topBar {
-    /*order-radius: 30px;*/
-    border-bottom-right-radius:30px;
-    border-top-right-radius:30px;
-    opacity: 0.9;
-    border: 2px solid blanchedalmond;
-  }
+    .topBar {
+      /*order-radius: 30px;*/
+      border-bottom-right-radius: 30px;
+      border-top-right-radius: 30px;
+      opacity: 0.9;
+      border: 2px solid blanchedalmond;
+    }
 
-  /* change the background color */
-  .navbar-custom {
-      /*background-color: #ff5500;*/
-  }
-  /* change the brand and text color */
-  .navbar-custom .navbar-brand,
-  .navbar-custom .navbar-text {
-    color: blanchedalmond;
-  }
-  /* change the link color */
-  .navbar-custom .navbar-nav .nav-link {
-    color: blanchedalmond;
-  }
+    /* change the background color */
+    .navbar-custom {
+      background-color: #ff5500;
+    }
+
+    /* change the brand and text color */
+    .navbar-custom .navbar-brand,
+    .navbar-custom .navbar-text {
+      color: blanchedalmond;
+    }
+
+    /* change the link color */
+    .navbar-custom .navbar-nav .nav-link {
+      color: blanchedalmond;
+    }
+
     /* change the color of active or hovered links */
     .navbar-custom .nav-item.active .nav-link,
     .navbar-custom .nav-item:focus .nav-link,
     .navbar-custom .nav-item:hover .nav-link {
-    color: gold;
-  }
-
-  .bottom-right { 
-    bottom: 0; 
-    right: 0; 
-  }
-  
-  .textBlock-bg {
-    opacity: 0.9;
-    color: blanchedalmond;
-  }
-  
-  .customBtn {
-    border: 2px solid blanchedalmond;
-  }
-  
-  .btn {
-    color: blanchedalmond;
-  }
-  
-  .footer {
-    border: 2px solid blanchedalmond;
-    border-top-left-radius:30px;
-    border-bottom-left-radius:30px;
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    /*width: 50%;*/
-    background: rgba(41, 43, 44, 0.8); 
-    text-align: center;
-  }
-  
-     .modal-body {
-      background-image: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url( "https://cdna.artstation.com/p/assets/images/images/007/566/572/large/dominik-mayer-inktober-02.jpg?1507027593");
-      
-     
-      
-      /* Background image is centered vertically and horizontally at all times */
-    background-position: top center;
-
-    /* Background image doesn't tile */
-    background-repeat: no-repeat;
-
-    /* Background image is fixed in the viewport so that it doesn't move when 
-       the content's height is greater than the image's height */
-    background-attachment: fixed;
-
-    /* This is what makes the background image rescale based
-       on the container's size */
-    background-size: cover;
-
-    /* Set a background color that will be displayed
-       while the background image is loading */
-    background-color: #464646;
-    background-color: rgba(41, 43, 44, 0.8); 
-    
+      color: gold;
     }
-    
+
+    .bottom-right {
+      bottom: 0;
+      right: 0;
+    }
+
+    .textBlock-bg {
+      opacity: 0.9;
+      color: blanchedalmond;
+    }
+
+    .customBtn {
+      border: 2px solid blanchedalmond;
+    }
+
+    .btn {
+      color: blanchedalmond;
+    }
+
+    .footer {
+      border: 2px solid blanchedalmond;
+      border-top-left-radius: 30px;
+      border-bottom-left-radius: 30px;
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      /*width: 50%;*/
+      background: rgba(41, 43, 44, 0.8);
+      text-align: center;
+    }
+
+    .modal-body {
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.9) 100%), url("https://cdna.artstation.com/p/assets/images/images/007/566/572/large/dominik-mayer-inktober-02.jpg?1507027593");
+
+
+
+      /* Background image is centered vertically and horizontally at all times */
+      background-position: top center;
+
+      /* Background image doesn't tile */
+      background-repeat: no-repeat;
+
+      /* Background image is fixed in the viewport so that it doesn't move when 
+       the content's height is greater than the image's height */
+      background-attachment: fixed;
+
+      /* This is what makes the background image rescale based
+       on the container's size */
+      background-size: cover;
+
+      /* Set a background color that will be displayed
+       while the background image is loading */
+      background-color: #464646;
+      background-color: rgba(41, 43, 44, 0.8);
+
+    }
+
     .modal-title {
       color: blanchedalmond;
     }
-    
-  .bodyDiv {
-    height:310px;
-    overflow-y: auto;
-  }
-.text-left {
-  text-align: left !important;
-}
 
-</style>
+    .bodyDiv {
+      height: 310px;
+      overflow-y: auto;
+    }
+
+    .text-left {
+      text-align: left !important;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="container-fluid">
+  <div class="container-fluid">
 
-<div class="row"> <!-- top row -->
-    <!-- <div class="col-6 pl-0"> -->
-    <div class="bg-dark d-flex flex-wrap topBar p-1 border-left-0 border-top-0">
-      <button type="button" class="btn btn-dark" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Menu</button>
-      
+    <div class="row">
+      <!-- top row -->
+      <!-- <div class="col-6 pl-0"> -->
+      <div class="bg-dark d-flex flex-wrap topBar p-1 border-left-0 border-top-0">
+        <button type="button" class="btn btn-dark" data-toggle="collapse" data-target="#collapseExample"
+          aria-expanded="false" aria-controls="collapseExample">Menu</button>
 
-      <button type="button" class="btn btn-dark text-left">The Grail Quest</button>
-      <button data-toggle="modal" href="#myModal" type="button" class="btn btn-dark">
-        <span class="text-left">Sir Roland</span>
-        <br>
-        <span >HP: </span><span id="topDivCharHP" class="bg-danger rounded px-1 pb-1 mr-1">40 </span>
-        <span> of </span><span>45</span>
-      </button>
-      <div class="pt-0">
-        <span class="text-center pr-2">Turn: </span><br>
-        <p id="topDivTurnCounter" class="text-center">1</p>
+
+        <button type="button" class="btn btn-dark text-left">The Grail Quest</button>
+        <button data-toggle="modal" href="#myModal" type="button" class="btn btn-dark">
+          <span class="text-left">Sir Roland</span>
+          <br>
+          <span>HP: </span><span id="topDivCharHP" class="bg-danger rounded px-1 pb-1 mr-1">40 </span>
+          <span> of </span><span>45</span>
+        </button>
+        <div class="pt-0">
+          <span class="text-center pr-2">Turn: </span><br>
+          <p id="topDivTurnCounter" class="text-center">1</p>
+        </div>
       </div>
+      <!-- </div> -->
+      <!-- col -->
+    </div> <!-- top row -->
+
+
+
+    <div class="pt-5">
+      <!-- spacer that we don't really need-->
     </div>
-  <!-- </div> --> <!-- col -->
-</div> <!-- top row -->
-  
-  
-  
-<div class="pt-5">  <!-- spacer that we don't really need--> </div>
-  
-  <div class="row bodyDiv">  <!-- body row -->
-  
-    <div class="col-3 px-0">  <!-- first col (side menu goes here) -->
-    
-    <div class="d-flex flex-wrap">
-    <div class="col px-0">
-      
-      <div class="collapse" id="collapseExample">
-        
-        <div class="bg-dark d-flex flex-wrap textBlock-bg">
-           <div class="btn-group-vertical">
-			<button type="button" class="btn btn-dark">Sign In/Sign Up</button>
-          
-            <button type="button" class="btn btn-dark">Save Game</button>
-           
-            <button type="button" class="btn btn-dark">Restart Game</button>
-            <button id="backgroundURL1_btn" class="btn btn-dark rounded">Background 1</button>
-            <button id="backgroundURL2_btn" class="btn btn-dark rounded">Background 2</button>
-            
+
+    <div class="row bodyDiv">
+      <!-- body row -->
+
+      <div class="col-3 px-0">
+        <!-- first col (side menu goes here) -->
+
+        <div class="d-flex flex-wrap">
+          <div class="col px-0">
+
+            <div class="collapse" id="collapseExample">
+
+              <div class="bg-dark d-flex flex-wrap textBlock-bg">
+                <div class="btn-group-vertical">
+                  <button type="button" class="btn btn-dark">Sign In/Sign Up</button>
+
+                  <button type="button" class="btn btn-dark">Save Game</button>
+
+                  <button type="button" class="btn btn-dark">Restart Game</button>
+                  <button id="backgroundURL1_btn" class="btn btn-dark rounded">Background 1</button>
+                  <button id="backgroundURL2_btn" class="btn btn-dark rounded">Background 2</button>
+
+                </div>
+              </div>
             </div>
+          </div>
+
+        </div> <!-- col -->
+
+
+
+      </div> <!-- col -->
+      <div class="col">
+        <!-- main body column -->
+
+
+
+        <div class="d-flex flex-wrap">
+          <div class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">The journey continues...
+          </div>
         </div>
-      </div>
-    </div>
-    
-    </div> <!-- col -->
-    
-    
-    
-    </div> <!-- col -->
-    <div class="col">  <!-- main body column -->
-    
-
-  
-    <div class="d-flex flex-wrap">
-      <div class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">The journey continues...
+        <br>
+        <div class="d-flex flex-wrap">
+          <div class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">You are lost. If you have a Merchant retainer,
+            he knows of a shortcut, treat as a result of 1 on this table instead. If you don not have a merchant, roll
+            on this table again with a +1.</div>
         </div>
-      </div>
-      <br>
-      <div class="d-flex flex-wrap">
-      <div class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">You are lost. If you have a Merchant retainer, he knows of a shortcut, treat as a result of 1 on this table instead. If you don not have a merchant, roll on this table again with a +1.</div></div>
 
-<br>
-    <div class="d-flex flex-wrap">
-    <div class=" px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">
-    Crossroads. Roll on the Inn Table
+        <br>
+        <div class="d-flex flex-wrap">
+          <div class=" px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">
+            Crossroads. Roll on the Inn Table
 
-    </div></div>
-<br>
+          </div>
+        </div>
+        <br>
 
 
-    <div>
-      <button id="backgroundURL1_btn" class="btn btn-dark px-4 mt-2 rounded-pill textBlock-bg customBtn border-top-0 border-left-0 border-right-0">Background 1</button>
-      
+        <div>
+          <button id="backgroundURL1_btn"
+            class="btn btn-dark px-4 mt-2 rounded-pill textBlock-bg customBtn border-top-0 border-left-0 border-right-0">Background
+            1</button>
+
+        </div>
+
+      </div> <!-- column 2-->
+      <div class="col-3"></div> <!-- column 3-->
     </div>
-
-    </div>  <!-- column 2-->
-    <div class="col-3"></div>  <!-- column 3-->
   </div>
-</div>
 
 
-<!-- The Modal -->
+  <!-- The Modal -->
   <div class="modal fade" id="myModal">
     <div class="modal-dialog">
       <div class="modal-content bg-dark text-white">
-      
+
         <!-- Modal Header -->
         <div class="modal-header">
           <h4 class="modal-title">Character Sheet</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        
+
         <!-- Modal body -->
         <div class="modal-body">
           <div class="container text-dark">
@@ -251,68 +270,71 @@
             <p>Longsword</p>
             <p>Chainmail</p>
             <p>Potion of Healing (x3)</p>
-            
+
           </div>
         </div>
-            
+
         <!-- Modal footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         </div>
-        
+
       </div>
     </div>
   </div> <!-- modal -->
-    </div> <!-- col -->
+  </div> <!-- col -->
   </div> <!-- row -->
-</div> <!-- container -->
+  </div> <!-- container -->
 
 
-  </div> <!-- body col --> 
-</div> <!-- body row -->
-  
-  
-  
-<div class="container-fluid">
-<div class="row">  <!-- footer row-->
-
-<div class="footer textBlock-bg pl-3 pt-2  border-bottom-0 border-right-0 bg-dark d-flex flex-wrap d-flex justify-content-end ">
-  <button type="button" class="btn btn-dark text-left">Inventory</button>
-  <button type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Character</button>
-  <button type="button" class="btn btn-dark text-left">View Log</button>
-</div>
-
-
-</div> <!-- footer row-->
-  
-</div>
+  </div> <!-- body col -->
+  </div> <!-- body row -->
 
 
 
+  <div class="container-fluid">
+    <div class="row">
+      <!-- footer row-->
 
-<script>
-let backgroundImageURL1 = "https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763"
+      <div
+        class="footer textBlock-bg pl-3 pt-2  border-bottom-0 border-right-0 bg-dark d-flex flex-wrap d-flex justify-content-end ">
+        <button type="button" class="btn btn-dark text-left">Inventory</button>
+        <button type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Character</button>
+        <button type="button" class="btn btn-dark text-left">View Log</button>
+      </div>
 
-let backgroundImageURL2 = "https://cdnb.artstation.com/p/assets/images/images/020/284/017/large/andreas-rocha-cursedforesthr.jpg?1567153102"
 
-$(document).ready(function(){
-  $("#backgroundURL1_btn").click(function(){
-    //alert("Background color = " + $("p").css("background-color"));
-    //alert("Background url = " + $("body").css("background-image"));
+    </div> <!-- footer row-->
 
-    $('body').css('background-image', 'url(' + backgroundImageURL1 + ')');
+  </div>
 
-  });
-  
-  $("#backgroundURL2_btn").click(function(){
-    //alert("Background color = " + $("p").css("background-color"));
-    //alert("Background url = " + $("body").css("background-image"));
 
-    $('body').css('background-image', 'url(' + backgroundImageURL2 + ')');
 
-  });
-});
-</script>
+
+  <script>
+    let backgroundImageURL1 = "https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763"
+
+    let backgroundImageURL2 = "https://cdnb.artstation.com/p/assets/images/images/020/284/017/large/andreas-rocha-cursedforesthr.jpg?1567153102"
+
+    $(document).ready(function () {
+      $("#backgroundURL1_btn").click(function () {
+        //alert("Background color = " + $("p").css("background-color"));
+        //alert("Background url = " + $("body").css("background-image"));
+
+        $('body').css('background-image', 'url(' + backgroundImageURL1 + ')');
+
+      });
+
+      $("#backgroundURL2_btn").click(function () {
+        //alert("Background color = " + $("p").css("background-color"));
+        //alert("Background url = " + $("body").css("background-image"));
+
+        $('body').css('background-image', 'url(' + backgroundImageURL2 + ')');
+
+      });
+    });
+  </script>
 
 </body>
+
 </html>
