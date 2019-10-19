@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html>
+  <head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <style>
+    body {
+      font-size: 12px;
+    }
+  </style>
+  </head>
 <body>
 
 <h2>Grail Knight Character Info</h2>
@@ -10,6 +22,7 @@
 // Create an object:
 var grail_knight = {
   characterName: "Sir Perceval",
+  level: 1,
   exp: 50,
   max_hp: 40,
   cur_hp: 40,
@@ -27,7 +40,11 @@ var grail_knight = {
   defeated_foes: 2,
   captains_defeated: ["The Green Knight"],
   duels_won: 1,
-  duels_lost: 0
+  duels_lost: 0,
+  rebellion_level: 0,
+  rumors: 0,
+  retainers: [],
+  dishonor: false
   
 };
 
@@ -36,33 +53,21 @@ var txt = ""
 
 grail_knight.log.forEach(myFunction);
 
-  // Display some data from the object:
-  document.getElementById("demo").innerHTML =
-txt;
-
-
 function myFunction(value) {
-
-txt = txt + value + "<br>"; 
-
+  txt = txt + value + "<br>"; 
 }
 
-
-recursivelyIterateProperties(grail_knight)
-
-function recursivelyIterateProperties(jsonObject) {
-    for (var prop in Object.keys(example)) {
-        console.log(prop);
-        if (!(typeof(jsonObject[prop]) === 'string')
-            && !(jsonObject[prop] instanceof Array)) {
-                recursivelyIterateProperties(jsonObject[prop]);
-
-            }
-
-     }
-}
+// Display some data from the object:
+document.getElementById("demo").innerHTML = txt;
 
 
+txt = ""
+$.each(grail_knight, function(key, value) {
+  console.log(key, value)
+  txt += key + ": " + value + "<br>"
+})
+
+document.getElementById("demo").innerHTML = txt;
 
 
 </script>

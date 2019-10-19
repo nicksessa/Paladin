@@ -1,0 +1,27 @@
+var grail_knight = {
+    characterName: "Sir Perceval",
+    level: 1,
+    exp: 50,
+    max_hp: 40,
+    cur_hp: 40,
+    attack: 7,
+    damage: 2,
+    armor: 1,
+    readied_weapon: "Longsword",
+    armor_worn: "Padded Armor",
+    equipment: ["Padded Armor", "Longsword"],
+    healing_potions: 3,
+    money: 125,
+    cur_turn: 4,
+    log: ["Went to an inn.", "Fought an evil knight", "Defeated Brigands"],
+    pilgrimages: 0,
+    defeated_foes: 2,
+    captains_defeated: ["The Green Knight"],
+    duels_won: 1,
+    duels_lost: 0,
+    rebellion_level: 0,
+    rumors: 0,
+    retainers: [],
+    dishonor: false
+    
+  }
