@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Actions Available While Staying at an Inn</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+<style>
+body {
+  background-color: black;
+  text-align: left;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+</style>
+</head>
+<body>
+
+<h1>Staying at an Inn</h1>
+<p>Actions</p>
+<ol>
+  <li>Pay 10 silver coins.</li>
+  <li>Heal 2d6 hit points.</li>
+  <li>Re-employ retainers for 5 silver each.</li>
+  <li>Determine if any new retainers are available at 10 silver each.</li>
+  <li>Buy and Sell items. (Items sell at 50% of the listed value.)</li>
+  <li>Roll 1d6 for rumors.  On a 4+ gain one rumor.  One or more streetwise retainers add +2 to the roll.</li>
+  <li>If you have one or more merchant retainers, roll a d6. On a 5-6,
+the merchant hears of a religious relic for sale, that can be
+bought for 5d6 x 5 sp. See table 13 regarding authenticity tests.</li>
+</ol>
+
+<div id="mainBody"></div>
+
+<script>
+
+// character has enough money.
+// character does not have enough money.
+
+
+money = 40
+cur_hp = 30
+max_hp = 40
+num_retainers = 1
+
+
+if (money >= 10) {
+  console.log("You pay 10 silver to stay at the inn")
+  money = money - 10
+  $("#mainBody").html("<p>You pay 10 silver to stay at the inn.</p>")
+
+  healAtInn()
+  // click to continue to re-employ retainers
+  if (retainers > 0) reemployRetainers()
+  // next, click to go to the employ retainers function
+  
+  // ASK: Do you want to hire any retainers?
+  // if yes then:
+  if (retainers < 6) hireRetainers()
+  
+  // if purchased retainers, update json file and screen
+  
+  // next go to the Merchant screen to buy and sell goods
+  
+  // roll for rumors
+  
+  // if merchant retainer, roll for artifacts
+  
+}
+
+function healAtInn() {
+  // heal if cur_hp < max_hp
+  if (cur_hp < max_hp) {
+    let num1 = rollDie(6)
+    let num2 = rollDie(6)
+    let num3 = num1 + num2
+    $("#mainBody").append(`<p>Healing Roll: ${num1} + ${num2} = ${num3}</p>`)
+    if ((num3 + cur_hp) >= max_hp) {
+      cur_hp = max_hp
+      
+      $("#mainBody").append("<p>After a good night's sleep, ALL of your wounds have healed!</p>")
+    } else {
+      cur_hp = num3 + cur_hp
+      $("#mainBody").append("<p>After a good night's sleep, some of your wounds have healed.</p>")
+      
+    }
+    $("#mainBody").append(`<p>Current Health: ${cur_hp}</p>`)
+  }
+}
+
+function reemployRetainers() {
+  // change Brute to Man-at-arms or Mercenary or Soldier
+  // change Hunter to Woodsman, Warden or Forester or Yeoman
+  // change Streetwise to Rogue
+  // build a page or modal like the Burger project
+  // buttons will allow the player to pay for their retainers
+  // SET retainer_status = "unpaid" at the start  (retainer_paid = false)
+  //   if any retainers are still "unpaid" when the user clicks on the Journey button, the retainers leave.
+  //  NOTE: the page must be accepted/completed before the player can go on.  maybe a modal works best?
+  // the reason why is that if the user wanted to hire new retainers, he must do so in the next step and in order to determine if any new retainers are available, the game must know how many retainers the player currently has.
+  
+  
+}
+
+function hireRetainers() {
+  // check to see how many are available
+  
+  let num1 = rollDie(6)
+  let total = num_retainers - num1
+  $("#mainBody").append(`<p>Retainer Roll: ${num1} - number of retainers (${num_retainers}) = ${total}</p>`)
+  if (total > 0) {
+    $("#mainBody").append(`<p>There are: ${total} retainers available.</p>`)
+    // display retainers in a table with "hire" buttons
+    
+  }
+  
+}
+
+function rollDie (dieType) {
+  let result = Math.floor(Math.random() * dieType +1);
+  return result
+}
+
+</script>
+
+</body>
+</html>
