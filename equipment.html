@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+
+body {
+  background-color: black;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0} 
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  /*background-color: #5cb85c;*/
+  color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+  padding: 2px 16px;
+  /*background-color: #5cb85c;*/
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<h2>Equipment in a Modal</h2>
+
+<!-- Trigger/Open The Modal -->
+<button id="myBtn">View Equipment</button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header bg-dark">
+      <span class="close">&times;</span>
+      <h2>Equpiment</h2>
+    </div>
+    <div class="modal-body">
+     
+      
+<div class="container mt-1">
+  <!-- <h1 class="text-center text-dark">Retainers Page</h1> -->
+  <div id="mainBody"></div>
+
+</div>
+      
+      
+      
+    </div>
+    <div class="modal-footer bg-dark">
+      <h3>Modal Footer</h3>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+
+
+let equipment = [
+    {
+      id: 0,
+      name: "Longsword",
+      type: "Hand Weapon",
+      ranged: false,
+      readied: true,
+      cost: 6,
+      damage_bonus: 2
+    },
+    {
+      id: 1,
+      name: "Short sword",
+      type: "Light Hand Weapon",
+      ranged: false,
+      readied: false,
+      cost: 5,
+      damage_bonus: 1
+    },
+    {
+      id: 2,
+      name: "Leather Jerkin",
+      type: "Light Armor",
+      ranged: false,
+      readied: true,
+      cost: 5,
+      damage_bonus: 0
+    },
+    {
+      id: 3,
+      name: "Padded Armor",
+      type: "Light Armor",
+      ranged: false,
+      readied: true,
+      cost: 4,
+      damage_bonus: 0
+    }
+  ]
+  
+  function createTable() {
+  
+  let equipmentTable = `
+    <div class='row'>
+  <div class="col-lg-12 bg-white rounded shadow-sm mb-5">
+            Retainer Table
+            <div class="table-responsive">
+              <table class="table" id="equipmentTable">
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-left">Name</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-left">Type</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-left">Cost</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-left">Sale Price</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-center">Sell Item</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="equipmentTableBody">
+                  <!-- Javascript fills in the table here -->
+                </tbody>
+              </table>
+            </div> <!-- End Table container -->
+          </div> <!-- END column 1-->
+  </div>  <!-- END row -->
+  `
+  
+
+  $("#mainBody").empty()
+  $("#mainBody").append(equipmentTable)
+  
+  // this is the same as the jQuery loop below
+  /*Object.keys(retainers).forEach(function (item) {
+    retainter_name = retainers[item].name
+    retainer_profession = retainers[item].profession
+  })*/
+  
+  $.each(equipment, function(key, value) {
+    let item_id = value.id
+    let item_name = value.name
+    let item_type = value.type
+    let item_cost = value.cost
+    let divisor = 2
+    let res = (item_cost % divisor)
+    let item_salePrice = (item_cost - res) / divisor
+    
+    //value.employed = false
+    //let retainer_status = value.employed
+
+    //var status = retainer_status ? retainer_status = "Retained" : retainer_status = "Not Retained"
+    
+  let equipmentRow = `
+    <tr>
+    <td id="name_${item_id}" class="border-0 align-center text-left p-2 px-3"> ${item_name}</td>
+    <td class="border-0 align-center text-left p-2 px-3"> ${item_type}</td>
+    <td class="border-0 align-center text-left p-2 px-3"> ${item_cost}</td>
+    <td id="salePrice_${item_id}" class="border-0 align-center text-left p-2 px-3"> ${item_salePrice}</td>
+    <td class="border-0 align-center text-left p-2 px-3 justify"> 
+      <div class="d-flex justify-content-center px-2">
+      <button data-id="${item_id}" type="button" class="sellBtn btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Sell
+      </button>
+      </div>
+    </td>
+    </tr>
+  `
+    
+      //console.log("Name: " + retainer_name + " Profession: " + retainer_profession);
+      $("#equipmentTable").append(equipmentRow)
+    });
+  
+  }
+  
+  createTable()
+  
+  
+ 
+  $(document).on('click', '.sellBtn', function () {
+    var id = $(this).attr('data-id');
+    var itemId = "#name_" + id
+    //var itemName = $("#name_0").html()
+    var itemName = $(itemId).html()
+    
+    // make this a choice.  "Are you sure..."
+    if (confirm("Are you sure you want to sell " + itemName + " ?")) {
+      txt = "You pressed OK!";
+      //let statusId = "#"+ id + "_status"
+      //$(statusId).text("Fired")
+      // get a handle on the correct object
+      var obj = $.grep(equipment, function(obj){return obj.id === id;})[0];
+      // set the object value to: false
+      //obj.employed = false
+      
+      
+      
+      var salePriceId = "#salePrice_" + id
+      //var itemName = $("#name_0").html()
+      var salePrice = $(salePriceId).html()
+      
+      alert("You sold " + itemName + " for " + salePrice + " silver!")
+      
+      
+      
+      // remove the object from the array
+      equipment = $.grep(equipment, function(e){ 
+           return e.id != id; 
+      });
+      // next we have to refresh the screen
+      createTable()
+      
+      
+
+    } else {
+      txt = "You pressed Cancel!";
+    }
+    
+  })
+
+
+
+
+
+
+  
+  /*
+var json = [
+{ 'red': '#f00' },
+{ 'green': '#0f0' },
+{ 'blue': '#00f' }
+];
+
+$.each(json, function () {
+  $.each(this, function (name, value) {
+    console.log(name + '=' + value);
+  });
+});
+
+$.each(retainers, function () {
+  $.each(this, function (name, value) {
+    console.log(name + ' = ' + value)
+  })
+  console.log("-------------------------------")
+})
+
+$.each(retainers, function() {
+  console.log()
+})
+  
+  
+  var obj = [
+    {
+      first: "John",
+      last: "Doe"
+    },
+    {
+      first: "Jane",
+      last: "Smith"
+    }
+  ];
+
+//
+//	Visit non-inherited enumerable keys
+//
+Object.keys(obj).forEach(function(key) {
+
+  console.log(key, obj[key].first);
+
+});
+  
+Object.keys(obj).map(function(value, key) {
+    console.log(value, key);
+});
+  
+  */
+
+
+
+</script>
+
+</body>
+</html>
