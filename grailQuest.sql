@@ -2,6 +2,8 @@ CREATE DATABASE grailQuest_db;
 USE grailQuest_db;
 
 -- the key is the user_name which is an email address
+drop table users;
+
 
 CREATE TABLE users (
 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
