@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>The Grail Quest</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <!-- Import Custom Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IM Fell English SC">
+
+  <style>
+    body {
+      font-family: 'IM Fell English SC', serif;
+      color: blanchedalmond;
+      /* Location of the image */
+      background-image: url("https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763");
+      /* Background image is centered vertically and horizontally at all times */
+      background-position: center center;
+      /* Background image doesn't tile */
+      background-repeat: no-repeat;
+      /* Background image is fixed in the viewport so that it doesn't move when 
+       the content's height is greater than the image's height */
+      background-attachment: fixed;
+      /* This is what makes the background image rescale based
+       on the container's size */
+      background-size: cover;
+      /* Set a background color that will be displayed
+       while the background image is loading */
+      background-color: #464646;
+    }
+    .topBar {
+      /*order-radius: 30px;*/
+      border-bottom-right-radius: 30px;
+      border-top-right-radius: 30px;
+      opacity: 0.9;
+      border: 2px solid blanchedalmond;
+    }
+    /* change the background color */
+    .navbar-custom {
+      background-color: #ff5500;
+    }
+    /* change the brand and text color */
+    .navbar-custom .navbar-brand,
+    .navbar-custom .navbar-text {
+      color: blanchedalmond;
+    }
+    /* change the link color */
+    .navbar-custom .navbar-nav .nav-link {
+      color: blanchedalmond;
+    }
+    /* change the color of active or hovered links */
+    .navbar-custom .nav-item.active .nav-link,
+    .navbar-custom .nav-item:focus .nav-link,
+    .navbar-custom .nav-item:hover .nav-link {
+      color: gold;
+    }
+    .bottom-right {
+      bottom: 0;
+      right: 0;
+    }
+    .textBlock-bg {
+      opacity: 0.9;
+      color: blanchedalmond;
+    }
+    .customBtn {
+      border: 2px solid blanchedalmond;
+    }
+    .btn {
+      color: blanchedalmond;
+    }
+    .footer {
+      border: 2px solid blanchedalmond;
+      border-top-left-radius: 30px;
+      border-bottom-left-radius: 30px;
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      /*width: 50%;*/
+      background: rgba(41, 43, 44, 0.8);
+      text-align: center;
+    }
+    .modal-body {
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.9) 100%), url("https://cdna.artstation.com/p/assets/images/images/007/566/572/large/dominik-mayer-inktober-02.jpg?1507027593");
+      /* Background image is centered vertically and horizontally at all times */
+      background-position: top center;
+      /* Background image doesn't tile */
+      background-repeat: no-repeat;
+      /* Background image is fixed in the viewport so that it doesn't move when 
+       the content's height is greater than the image's height */
+      background-attachment: fixed;
+      /* This is what makes the background image rescale based
+       on the container's size */
+      background-size: cover;
+      /* Set a background color that will be displayed
+       while the background image is loading */
+      background-color: #464646;
+      background-color: rgba(41, 43, 44, 0.8);
+    }
+    .modal-title {
+      color: blanchedalmond;
+    }
+    .bodyDiv {
+      height: 350px;
+      height: 80%;
+      overflow-y: auto;
+    }
+    .text-left {
+      text-align: left !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container-fluid">
+
+    <div class="row">
+      <!-- top row -->
+      <!-- <div class="col-6 pl-0"> -->
+      <div class="bg-dark d-flex flex-wrap topBar p-1 border-left-0 border-top-0">
+        <button type="button" class="btn btn-dark" data-toggle="collapse" data-target="#collapseExample"
+          aria-expanded="false" aria-controls="collapseExample">Menu</button>
+
+
+        <button type="button" class="btn btn-dark text-left">The Grail Quest</button>
+        <button data-toggle="modal" href="#myModal" type="button" class="btn btn-dark">
+          <span class="text-left">Sir Roland</span>
+          <br>
+          <span>HP: </span><span id="topDivCharHP" class="bg-danger rounded px-1 pb-1 mr-1">40 </span>
+          <span> of </span><span>45</span>
+        </button>
+        <div class="pt-0">
+          <span class="text-center pr-2">Turn: </span><br>
+          <p id="topDivTurnCounter" class="text-center">1</p>
+        </div>
+      </div>
+      <!-- </div> -->
+      <!-- col -->
+    </div> <!-- top row -->
+
+
+
+    <div class="pt-5">
+      <!-- spacer that we don't really need-->
+    </div>
+
+    <div class="row bodyDiv">
+      <!-- body row -->
+
+      <div class="col-3 px-0">
+        <!-- first col (side menu goes here) -->
+
+        <div class="d-flex flex-wrap">
+          <div class="col px-0">
+
+            <div class="collapse" id="collapseExample">
+
+              <div class="bg-dark d-flex flex-wrap textBlock-bg">
+                <div class="btn-group-vertical">
+                  <button type="button" class="btn btn-dark">Sign In/Sign Up</button>
+
+                  <button type="button" class="btn btn-dark">Save Game</button>
+
+                  <button type="button" class="btn btn-dark">Restart Game</button>
+                  <button id="backgroundURL1_btn" class="btn btn-dark rounded">Background 1</button>
+                  <button id="backgroundURL2_btn" class="btn btn-dark rounded">Background 2</button>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- col -->
+
+
+
+      </div> <!-- col -->
+      <div class="col">
+        <!-- main body column -->
+
+
+
+        <div class="d-flex flex-wrap">
+          <div id="gameTableTitle" class="px-4 py-2 mb-2 bg-dark rounded shadow-sm textBlock-bg">The journey continues...
+          </div>
+        </div>
+
+        
+        <div class="d-flex flex-wrap">
+          <div id="gameTableInfo" class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">Info goes here
+          </div>
+        </div>
+        
+        <div id="infoButtons">
+          <button id="infoBtn1"
+            class="btn btn-dark px-4 mt-2 rounded-pill textBlock-bg customBtn border-top-0 border-left-0 border-right-0">infoBtn1</button>
+
+        </div>
+        
+        <div class="d-flex flex-wrap">
+          <div id="gameTableText" class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">You are lost. If you have a Merchant retainer,
+            he knows of a shortcut, treat as a result of 1 on this table instead. If you don not have a merchant, roll
+            on this table again with a +1.</div>
+        </div>
+<!--
+        <br>
+        <div class="d-flex flex-wrap">
+          <div class=" px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">
+            Crossroads. Roll on the Inn Table
+
+          </div>
+        </div>
+        <br>
+-->
+
+        <div id="gameButtons">
+          <button id="backgroundURL1_btn"
+            class="btn btn-dark px-4 mt-2 rounded-pill textBlock-bg customBtn border-top-0 border-left-0 border-right-0">Background
+            1</button>
+
+        </div>
+
+      </div> <!-- column 2-->
+      <div class="col-3"></div> <!-- column 3-->
+    </div>
+  </div>
+
+
+  <!-- The Modal -->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-white">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Character Sheet</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="container text-dark">
+            <h1>Name: Sir Roland</h1>
+            <hr>
+            <p>Hit Points: 30/30</p>
+            <p>Attack: 7+</p>
+            <p>Damage Modifier: +2 (longsword)</p>
+            <p>Armor: 1 (padding)</p>
+            <h3>Equipment</h3>
+            <hr>
+            <p>Longsword</p>
+            <p>Chainmail</p>
+            <p>Potion of Healing (x3)</p>
+
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div> <!-- modal -->
+  </div> <!-- col -->
+  </div> <!-- row -->
+  </div> <!-- container -->
+
+
+  </div> <!-- body col -->
+  </div> <!-- body row -->
+
+
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- footer row-->
+
+      <div
+        class="footer textBlock-bg pl-3 pt-2  border-bottom-0 border-right-0 bg-dark d-flex flex-wrap d-flex justify-content-end ">
+        <button type="button" class="btn btn-dark text-left">Inventory</button>
+        <button type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Character</button>
+        <button type="button" class="btn btn-dark text-left">View Log</button>
+      </div>
+
+
+    </div> <!-- footer row-->
+
+  </div>
+
+
+
+
+  <script>
+    let backgroundImageURL1 = "https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763"
+    let backgroundImageURL2 = "https://cdnb.artstation.com/p/assets/images/images/020/284/017/large/andreas-rocha-cursedforesthr.jpg?1567153102"
+    $(document).ready(function () {
+      $("#backgroundURL1_btn").click(function () {
+        //alert("Background color = " + $("p").css("background-color"));
+        //alert("Background url = " + $("body").css("background-image"));
+        $('body').css('background-image', 'url(' + backgroundImageURL1 + ')');
+      });
+      $("#backgroundURL2_btn").click(function () {
+        //alert("Background color = " + $("p").css("background-color"));
+        //alert("Background url = " + $("body").css("background-image"));
+        $('body').css('background-image', 'url(' + backgroundImageURL2 + ')');
+      });
+    });
+    // import the character.js file for the character object
+    // check local storage for file.
+    let playerCharacter = localStorage.getItem("theGrailQuest")
+    if (playerCharacter !== null && localStorage.playerCharacter !== '') {
+    
+    }
+    
+    // -----------------------------------------------------
+    // Encounter Table
+    // -----------------------------------------------------
+    
+    function rollDie (dieType) {
+  	  let result = Math.floor(Math.random() * dieType + 1);
+      return result
+    }
+    
+    const encounterTable = {
+      2: "Morgana",
+      3: "Castle Perilous",
+      4: "Village of Plague and Death",
+      5: "Grail Castle",
+      6: "Minions",
+      7: "A Knight Issues a Challenge!",
+      8: "Minions",
+      9: "A Heroic Quest",
+      10: "Village of Poverty and Famine",
+      11: "Test of Piety",
+      12: "Merlin"
+    }
+    
+    let numRumors = 3
+    let pietyPoints = 1
+    
+    // get encounter
+    
+    let firstRoll = rollDie(6)
+    let secondRoll = rollDie(6)
+    let totalRoll = firstRoll + secondRoll
+    
+    //alert("Roll: (" + firstRoll + " + " + secondRoll + ") = " + totalRoll)
+    
+    let theEncounter = encounterTable[totalRoll]
+    
+    //alert("You encounter: " + theEncounter)
+    
+    // create an encounter list in anticipation of the player spending rumor points to modify the results
+    let encounterChoices = []
+    // The table consists of two steps above and two steps below the result.
+    // For example, if the player rolled a 7, then this object will consist of:
+    // 5, 6, 8, 9
+    // Note: cannot go lower than 2 or higher than 12
+    
+    if (totalRoll == 2) {
+      encounterChoices.push(encounterTable[3])
+      encounterChoices.push(encounterTable[4])
+    }
+    if (totalRoll == 3) {
+      encounterChoices.push(encounterTable[2])
+      encounterChoices.push(encounterTable[4])
+      encounterChoices.push(encounterTable[5])
+    }
+    if (totalRoll == 4) {
+      encounterChoices.push(encounterTable[2])
+      encounterChoices.push(encounterTable[3])
+      encounterChoices.push(encounterTable[5])
+      encounterChoices.push(encounterTable[6])
+    }
+    if (totalRoll == 5) {
+      encounterChoices.push(encounterTable[3])
+      encounterChoices.push(encounterTable[4])
+      encounterChoices.push(encounterTable[6])
+      encounterChoices.push(encounterTable[7])
+    }
+    if (totalRoll == 6) {
+      encounterChoices.push(encounterTable[4])
+      encounterChoices.push(encounterTable[5])
+      encounterChoices.push(encounterTable[7])
+      encounterChoices.push(encounterTable[8])
+    }
+    if (totalRoll == 7) {
+      encounterChoices.push(encounterTable[5])
+      encounterChoices.push(encounterTable[6])
+      encounterChoices.push(encounterTable[8])
+      encounterChoices.push(encounterTable[9])
+    }
+    if (totalRoll == 8) {
+      encounterChoices.push(encounterTable[6])
+      encounterChoices.push(encounterTable[7])
+      encounterChoices.push(encounterTable[9])
+      encounterChoices.push(encounterTable[10])
+    }
+    if (totalRoll == 9) {
+      encounterChoices.push(encounterTable[7])
+      encounterChoices.push(encounterTable[8])
+      encounterChoices.push(encounterTable[10])
+      encounterChoices.push(encounterTable[11])
+    }
+    if (totalRoll == 10) {
+      encounterChoices.push(encounterTable[8])
+      encounterChoices.push(encounterTable[9])
+      encounterChoices.push(encounterTable[11])
+      encounterChoices.push(encounterTable[12])
+    }
+    if (totalRoll == 11) {
+      encounterChoices.push(encounterTable[9])
+      encounterChoices.push(encounterTable[10])
+      encounterChoices.push(encounterTable[12])
+    }
+    if (totalRoll == 12) {
+      encounterChoices.push(encounterTable[10])
+      encounterChoices.push(encounterTable[11])
+    }
+      
+    $("#gameTableText").empty()
+    
+    $("#gameTableTitle").html("An Encounter!")
+    
+    if (numRumors < 3) {
+      $("#gameTableInfo").parent().empty()
+      $("#infoButtons").empty()
+      $("#gameTableText").html(theEncounter)
+      $("#gameButtons").empty()
+      let gotoEncounterButton = `
+        <div class="mt-2">
+        <button onclick="gotoEncounter()" data-id="gotoEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Go To Encounter
+        </button>
+      `
+      $("#gameButtons").append(gotoEncounterButton)
+    } else {
+    
+      //$("#gameTableInfo").parent().empty()
+      $("#gameTableInfo").empty()
+      $("#infoButtons").empty()
+      //$("#gameTableText").html(theEncounter)
+      
+      
+      $("#gameTableInfo").html("You have rolld a " + totalRoll + " (" + theEncounter + ") on the Encounter table.  Go to that encounter OR you may spend 3 rumors to select an encounter from the list below.")
+
+      // show radio
+
+      $.each(encounterChoices, function( index, value ) {
+        //alert( index + ": " + value );
+
+        let myRadio = `
+          <div class="mt-2 custom-control custom-radio">
+            <input class="custom-control-input" type="radio" name="customRadio" id="myRadio${index}" disabled> 
+            <label class="custom-control-label" for="myRadio${index}">${value}</label>
+          </div>
+    `
+        $("#gameTableText").append(myRadio)
+
+      });
+
+      // Spend rumors Y/N  (button)
+
+      $("#infoButtons").empty()
+      let rumorButton = `
+        <div class="mt-2">
+        <button onclick="enableEncounters()" data-id="spendRumorsBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Click here to Spend 3 Rumors
+        </button>
+      `
+
+      // Show radio options but make them all inactive
+      
+      $("#gameButtons").html(rumorButton)
+      
+      let gotoEncounterButton = `
+        <div class="mt-2">
+        <button onclick="gotoEncounter()" data-id="gotoEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Go To Encounter
+        </button>
+      
+      `
+      $("#gameButtons").append(gotoEncounterButton)
+    }
+    
+    function enableEncounters () {
+      $("input[type=radio]").attr('disabled', false);
+    }
+    
+    
+    // -----------------------------------------------------
+    // Encounter Table
+    // -----------------------------------------------------
+    
+  </script>
+
+</body>
+
+</html>
