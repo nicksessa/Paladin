@@ -33,6 +33,28 @@
        while the background image is loading */
       background-color: #464646;
     }
+
+    .parchment {
+      background-image:  url("https://lh3.googleusercontent.com/-FqHXhBs4f-M/TYnajL75ZSI/AAAAAAAAAJ4/MW4HAb-7NaQ/s200/Parchment.jpg");
+      /* Background image is centered vertically and horizontally at all times */
+      background-position: center center;
+      /* Background image doesn't tile */
+      background-repeat: no-repeat;
+      /* Background image is fixed in the viewport so that it doesn't move when 
+       the content's height is greater than the image's height */
+      background-attachment: fixed;
+      /* This is what makes the background image rescale based
+       on the container's size */
+      background-size: cover;
+      /* Set a background color that will be displayed
+       while the background image is loading */
+      background-color: #464646;
+      background-size: 100% 100%;
+      box-shadow: 7px 7px 8px black, -4px -1px 8px black;
+      box-shadow: 7px 7px 8px #1c1d1f, -4px -1px 8px #1c1d1f;
+      
+    }
+
     .topBar {
       /*order-radius: 30px;*/
       border-bottom-right-radius: 30px;
@@ -73,6 +95,18 @@
     .btn {
       color: blanchedalmond;
     }
+    .sideMenuBtn {
+      color: black;
+    }
+
+    .sideMenuBtn:hover {
+      color: blue;
+      text-shadow: 1px 1px 2px black, 0 0 25px yellow, 0 0 5px red;
+      color: black;
+      text-shadow: 1px 1px 2px black, 0 0 25px yellow, 0 0 5px red;
+      font-size: x-large;
+    }
+
     .footer {
       border: 2px solid blanchedalmond;
       border-top-left-radius: 30px;
@@ -122,20 +156,46 @@
     <div class="row">
       <!-- top row -->
       <!-- <div class="col-6 pl-0"> -->
-      <div class="bg-dark d-flex flex-wrap topBar p-1 border-left-0 border-top-0">
+      <div class="pt-0 bg-dark d-flex flex-wrap topBar p-1 border-left-0 border-top-0">
         <button type="button" class="btn btn-dark" data-toggle="collapse" data-target="#collapseExample"
           aria-expanded="false" aria-controls="collapseExample">Menu</button>
 
 
         <button type="button" class="btn btn-dark text-left">The Grail Quest</button>
+        
         <button data-toggle="modal" href="#myModal" type="button" class="btn btn-dark">
-          <span class="text-left">Sir Roland</span>
+          <span id="topDivCharName" class="text-left">Sir Roland</span>
           <br>
-          <span>HP: </span><span id="topDivCharHP" class="bg-danger rounded px-1 pb-1 mr-1">40 </span>
-          <span> of </span><span>45</span>
+          <span>HP: </span><span id="topDivCurHP" class="bg-success rounded px-1 pb-1 mr-1">40 </span>
+          <span> of </span><span id="topDivMaxHP">45</span>
         </button>
-        <div class="pt-0">
-          <span class="text-center pr-2">Turn: </span><br>
+        
+        <div class="pt-4 text-center">
+          Piety
+          <br>
+          <span id="topDivPiety">1</span>
+        </div>
+        
+        <button type="button" class="btn btn-dark text-center">Healing <br> Potions
+          <br>
+          <span id="topDivPotions">2</span>
+        </button>
+        
+        <div class="pt-4 pr-2 text-center">
+          Rumors
+          <br>
+          <span id="topDivRumors">3</span>
+        </div>
+        
+        <div class="pt-2 pr-2 text-center">
+          Rebellion<br>Level
+          <br>
+          <span id="topDivRebellionLevel">1</span>
+        </div>
+        
+        
+        <div class="pt-4">
+          <span class="text-center pt-4 px-2">Turn </span><br>
           <p id="topDivTurnCounter" class="text-center">1</p>
         </div>
       </div>
@@ -160,15 +220,15 @@
 
             <div class="collapse" id="collapseExample">
 
-              <div class="bg-dark d-flex flex-wrap textBlock-bg">
+              <div class="bg-dark d-flex flex-wrap textBlock-bg parchment rounded">
                 <div class="btn-group-vertical">
-                  <button type="button" class="btn btn-dark">Sign In/Sign Up</button>
+                  <button type="button" class="btn sideMenuBtn">Sign In/Sign Up</button>
 
-                  <button type="button" class="btn btn-dark">Save Game</button>
+                  <button type="button" class="btn sideMenuBtn">Save Game</button>
 
-                  <button type="button" class="btn btn-dark">Restart Game</button>
-                  <button id="backgroundURL1_btn" class="btn btn-dark rounded">Background 1</button>
-                  <button id="backgroundURL2_btn" class="btn btn-dark rounded">Background 2</button>
+                  <button type="button" class="btn sideMenuBtn">Restart Game</button>
+                  <button id="backgroundURL1_btn" class="btn sideMenuBtn rounded">Background 1</button>
+                  <button id="backgroundURL2_btn" class="btn sideMenuBtn rounded">Background 2</button>
 
                 </div>
               </div>
@@ -207,16 +267,6 @@
             he knows of a shortcut, treat as a result of 1 on this table instead. If you don not have a merchant, roll
             on this table again with a +1.</div>
         </div>
-<!--
-        <br>
-        <div class="d-flex flex-wrap">
-          <div class=" px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">
-            Crossroads. Roll on the Inn Table
-
-          </div>
-        </div>
-        <br>
--->
 
         <div id="gameButtons">
           <button id="backgroundURL1_btn"
@@ -244,7 +294,7 @@
 
         <!-- Modal body -->
         <div class="modal-body">
-          <div class="container text-dark">
+          <div id="characterStatsModal" class="container text-dark">
             <h1>Name: Sir Roland</h1>
             <hr>
             <p>Hit Points: 30/30</p>
@@ -286,6 +336,7 @@
         class="footer textBlock-bg pl-3 pt-2  border-bottom-0 border-right-0 bg-dark d-flex flex-wrap d-flex justify-content-end ">
         <button type="button" class="btn btn-dark text-left">Inventory</button>
         <button type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Character</button>
+        <button type="button" class="btn btn-dark text-left">Retainers</button>
         <button type="button" class="btn btn-dark text-left">View Log</button>
       </div>
 
@@ -312,12 +363,117 @@
         $('body').css('background-image', 'url(' + backgroundImageURL2 + ')');
       });
     });
+    
     // import the character.js file for the character object
     // check local storage for file.
-    let playerCharacter = localStorage.getItem("theGrailQuest")
-    if (playerCharacter !== null && localStorage.playerCharacter !== '') {
+    
+    let playerCharacterStats = localStorage.getItem("theGrailQuest_ryu2012_character")
+    if (playerCharacterStats !== null && localStorage.playerCharacterStats !== '') {
     
     }
+    let playerCharacterEquipment = localStorage.getItem("theGrailQuest_ryu2012_equipment")
+    if (playerCharacterEquipment !== null && localStorage.playerCharacterEquipment !== '') {
+    
+    }
+    let playerCharacterLog = localStorage.getItem("theGrailQuest_ryu2012_log")
+    if (playerCharacterLog !== null && localStorage.playerCharacterLog !== '') {
+    
+    }
+    
+    // Go here for more examples: https://www.w3schools.com/jsref/obj_storage.asp
+    
+    
+  // this will close the menu on click outside the menu
+  
+  $(document).mouseup(function(e) 
+  {
+      var container = $("#collapseExample");
+
+      // if the target of the click isn't the container nor a descendant of the container
+      if (!container.is(e.target) && container.has(e.target).length === 0) 
+      {
+          container.collapse('hide');
+      }
+  });  
+    
+    // -----------------------------------------------------
+    // On Load set the top div
+    // -----------------------------------------------------
+    
+    let playerCharacter = {
+      name: "Sir Percival",
+      max_hp: 40,
+      cur_hp: 13,
+      armor: 1,
+      attack: 7,
+      att_mod: 0,
+      dmg_mod: 2,
+      exp: 0,
+      money: 20,
+      species: "human",
+      sex: "male",
+      healingPotions: 2,
+      alive: true,
+      rumors: 5,
+      rebellionLevel: 2,
+      turn: 5,
+      piety: 2
+    }
+    
+    $("#topDivCharName").html(playerCharacter.name)
+    $("#topDivCurHP").html(playerCharacter.cur_hp)
+    $("#topDivMaxHP").html(playerCharacter.max_hp)
+    $("#topDivPiety").html(playerCharacter.piety)
+    $("#topDivPotions").html(playerCharacter.healingPotions)
+    $("#topDivRumors").html(playerCharacter.rumors)
+    $("#topDivRebellionLevel").html(playerCharacter.rebellionLevel)
+    $("#topDivTurnCounter").html(playerCharacter.turn)
+    
+    // set color for HP
+    // first unset all colors
+    $("#topDivCurHP").removeClass(["bg-success", "bg-warning", "bg-danger", "bg-secondary"]);
+    
+    let a = Math.floor(playerCharacter.max_hp / 3);
+    let firstThird = (playerCharacter.max_hp - a)
+    let secondThird = (playerCharacter.max_hp - (a * 2))
+      
+    console.log("a: " + a)
+    console.log("firstThird: " + firstThird)
+    console.log("secondThird: " + secondThird)
+
+    
+    if (playerCharacter.cur_hp >= firstThird) {
+      $("#topDivCurHP").addClass("bg-success")
+    } else if (playerCharacter.cur_hp < firstThird && playerCharacter.cur_hp >= secondThird) {
+      $("#topDivCurHP").addClass("bg-warning")
+    } else if (playerCharacter.cur_hp > 0 && playerCharacter.cur_hp < secondThird) {
+      $("#topDivCurHP").addClass("bg-danger")
+    } else {
+      $("#topDivCurHP").addClass("bg-secondary")
+    }
+    
+    
+    // -----------------------------------------------------
+    // Next, set the Character Stats Modal
+    // -----------------------------------------------------
+    
+    let characterStats = `
+      <div>
+        <h1>${playerCharacter.name}</h1>
+        <hr>
+        <span>Hit Points: ${playerCharacter.cur_hp} / ${playerCharacter.max_hp}</span><br>
+        <span>Attack: ${playerCharacter.attack}+</span><br>
+        <span>Damage Modifier: ${playerCharacter.dmg_mod}</span><br>
+        <span>Armor Modifier: ${playerCharacter.armor}</span><br>
+        <hr>
+        <h3>Equipment</h3>
+        <span>Longsword</span><br>
+        <span>Chainmail</span><br>
+        <span>Shield</span><br>
+      </div>
+    `
+    $("#characterStatsModal").html(characterStats)
+    
     
     // -----------------------------------------------------
     // Encounter Table
@@ -450,13 +606,10 @@
       //$("#gameTableText").html(theEncounter)
       
       
-      $("#gameTableInfo").html("You have rolld a " + totalRoll + " (" + theEncounter + ") on the Encounter table.  Go to that encounter OR you may spend 3 rumors to select an encounter from the list below.")
-
+      $("#gameTableInfo").html("You have rolled a " + totalRoll + " (" + theEncounter + ") on the Encounter table.  Go to that encounter OR you may spend 3 rumors to select an encounter from the list below.")
       // show radio
-
       $.each(encounterChoices, function( index, value ) {
         //alert( index + ": " + value );
-
         let myRadio = `
           <div class="mt-2 custom-control custom-radio">
             <input class="custom-control-input" type="radio" name="customRadio" id="myRadio${index}" disabled> 
@@ -464,11 +617,8 @@
           </div>
     `
         $("#gameTableText").append(myRadio)
-
       });
-
       // Spend rumors Y/N  (button)
-
       $("#infoButtons").empty()
       let rumorButton = `
         <div class="mt-2">
@@ -477,7 +627,6 @@
           Click here to Spend 3 Rumors
         </button>
       `
-
       // Show radio options but make them all inactive
       
       $("#gameButtons").html(rumorButton)
