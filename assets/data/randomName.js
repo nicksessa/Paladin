@@ -226,3 +226,63 @@ function randomRetainerName() {
     //alert("Random Inn Name is: " + name)
     return name
   }
+
+  // Random Questing Knight Name
+
+  let questingKnightNames = [
+    "Sir Baudwin",
+    "Sir Bedwyr",
+    "Sir Bors",
+    "Sir Breunor",
+    "Sir Caradoc",
+    "Sir Dagonet",
+    "Sir Hector",
+    "Sir Galahad",
+    "Sir Griflet",
+    "Sir Kay",
+    "Sir Lionel",
+    "Sir Pelleas",
+    "Sir Percivale",
+    "Sir Safere",
+    "Sir Sagramore",
+    "Sir Segwarides",
+    "Sir Ulfius",
+    "Sir Ywain"
+  ]
+  
+function randomQuestingKnightName () {
+  let name = ""
+  let randomNum = rollDie(questingKnightNames.length)
+  name = questingKnightNames[randomNum -1]
+  return name
+}
+
+// Random Challenge Knight Name
+
+  let challengeKnightNames = [
+    "Sir Aglovale",
+    "Sir Andred",
+    "Sir Brastias",
+    "Sir Colgrevance",
+    "Sir Damas",
+    "Sir Edward",
+    "Sir Elyan",
+    "Sir Galehaut",
+    "Sir Gingalain",
+    "Sir Gringamore",
+    "Sir Helios",
+    "Sir Hue",
+    "Sir Manassen",
+    "Sir Meleagrance",
+    "Sir Morien",
+    "Sir Phelot",
+    "Sir Pinell",
+    "Sir Tor"
+  ]
+
+  function randomChallengeKnightName () {
+    let name = ""
+    let randomNum = rollDie(challengeKnightNames.length)
+    name = challengeKnightNames[randomNum -1]
+    return name
+  }
