@@ -253,20 +253,18 @@
 
         
         <div class="d-flex flex-wrap">
-          <div id="gameTableInfo" class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">Info goes here
+          <div id="gameTableInfo" class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">game info goes here
           </div>
         </div>
         
         <div id="infoButtons">
           <button id="infoBtn1"
-            class="btn btn-dark px-4 mt-2 rounded-pill textBlock-bg customBtn border-top-0 border-left-0 border-right-0">infoBtn1</button>
+            class="btn btn-dark px-4 mt-2 rounded-pill textBlock-bg customBtn border-top-0 border-left-0 border-right-0">infoBtn1 for buttons related to game info</button>
 
         </div>
         
         <div class="d-flex flex-wrap">
-          <div id="gameTableText" class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">You are lost. If you have a Merchant retainer,
-            he knows of a shortcut, treat as a result of 1 on this table instead. If you don not have a merchant, roll
-            on this table again with a +1.</div>
+          <div id="gameTableText" class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg"> --- game text goes here. --- </div>
         </div>
 
         <div id="gameButtons">
@@ -296,7 +294,7 @@
         <!-- Modal body -->
         <div class="modal-body">
           <div id="characterStatsModal" class="container text-dark">
-            <h1>Name: Sir Roland</h1>
+            <h1>Name: Sir NOBODY</h1>
             <hr>
             <p>Hit Points: 30/30</p>
             <p>Attack: 7+</p>
@@ -499,158 +497,196 @@
       12: "Merlin"
     }
     
-    let numRumors = 3
-    let pietyPoints = 1
     
-    // get encounter
+    let castlePerilousTable = [
+      "The White Knight. In a room you see a white shield with red cross, the Shield of Evalach. It is guarded by a white† knight, level 7 with 8 life points. No quarter is asked or given. If you defeat the white knight, you may take the shield and get one XP roll. If you already have the shield, roll on this table again.",
+      "Penance. You fall asleep. If you committed an act of Dishonor during the game, you wake up outside an abandoned church. Any armor, shield and weapon you had are stolen (except magical ones), and you are left with only a dagger (light slashing weapon). Treasures, coins and retainers remain with you. Otherwise, you heal 1 life point for a good night’s sleep.",
+      "The Wanderer. You meet an immortal, over 1,000 years old. If you are currently under Dishonor, it is removed. He takes you to a crossroads, treat as if a 1 was rolled on the Inn Table (2)",
+      "The Black Knight or the Red Knight? Opening a door you see two scenes. First: A questing paladin is about to be killed by a black† knight . Second: A maiden is about to be attacked by a red† knight . Choose who to save. If you save the maiden, roll for a piety point, but the Rebellion Level increases by 1 as the questing paladin dies. If you save the questing paladin, do not increase the Rebellion Level. You only fight one of the knights; they are both level 7 with 8 life points. You get an XP roll if you win. No quarter is asked or given. There is no treasure. ",
+      "The Hermit. You meet an old hermit who can sell you up to 3 rumors for 50gp each (or at least that value in treasure).",
+      "The Dwarf. At the castle gate, a dwarf with a cart offers you a lift. If you pay him 50 gold pieces (or at least that value in treasure), you, along with retainers, can be taken to any quest of your choice from the Side Quest Table (9). You can also ride for free, roll a d6; on a 1-3 go to event 7, and on a 4-6 go to event 9 on the Encounter Table (3)."
+    ]  
     
-    let firstRoll = rollDie(6)
-    let secondRoll = rollDie(6)
-    let totalRoll = firstRoll + secondRoll
-    
+    //let numRumors = 3
+    //let pietyPoints = 1
     let altEncounter = false
+    let theEncounter = "THE UNDERWORLD"
     
-    //alert("Roll: (" + firstRoll + " + " + secondRoll + ") = " + totalRoll)
+    startEncounter()
     
-    let theEncounter = encounterTable[totalRoll]
-    console.log("The encounter rolled: "+ theEncounter)
-    
-    //alert("You encounter: " + theEncounter)
-    
-    // create an encounter list in anticipation of the player spending rumor points to modify the results
-    let encounterChoices = []
-    // The table consists of two steps above and two steps below the result.
-    // For example, if the player rolled a 7, then this object will consist of:
-    // 5, 6, 8, 9
-    // Note: cannot go lower than 2 or higher than 12
-    
-    if (totalRoll == 2) {
-      encounterChoices.push(encounterTable[3])
-      encounterChoices.push(encounterTable[4])
-    }
-    if (totalRoll == 3) {
-      encounterChoices.push(encounterTable[2])
-      encounterChoices.push(encounterTable[4])
-      encounterChoices.push(encounterTable[5])
-    }
-    if (totalRoll == 4) {
-      encounterChoices.push(encounterTable[2])
-      encounterChoices.push(encounterTable[3])
-      encounterChoices.push(encounterTable[5])
-      encounterChoices.push(encounterTable[6])
-    }
-    if (totalRoll == 5) {
-      encounterChoices.push(encounterTable[3])
-      encounterChoices.push(encounterTable[4])
-      encounterChoices.push(encounterTable[6])
-      encounterChoices.push(encounterTable[7])
-    }
-    if (totalRoll == 6) {
-      encounterChoices.push(encounterTable[4])
-      encounterChoices.push(encounterTable[5])
-      encounterChoices.push(encounterTable[7])
-      encounterChoices.push(encounterTable[8])
-    }
-    if (totalRoll == 7) {
-      encounterChoices.push(encounterTable[5])
-      encounterChoices.push(encounterTable[6])
-      encounterChoices.push(encounterTable[8])
-      encounterChoices.push(encounterTable[9])
-    }
-    if (totalRoll == 8) {
-      encounterChoices.push(encounterTable[6])
-      encounterChoices.push(encounterTable[7])
-      encounterChoices.push(encounterTable[9])
-      encounterChoices.push(encounterTable[10])
-    }
-    if (totalRoll == 9) {
-      encounterChoices.push(encounterTable[7])
-      encounterChoices.push(encounterTable[8])
-      encounterChoices.push(encounterTable[10])
-      encounterChoices.push(encounterTable[11])
-    }
-    if (totalRoll == 10) {
-      encounterChoices.push(encounterTable[8])
-      encounterChoices.push(encounterTable[9])
-      encounterChoices.push(encounterTable[11])
-      encounterChoices.push(encounterTable[12])
-    }
-    if (totalRoll == 11) {
-      encounterChoices.push(encounterTable[9])
-      encounterChoices.push(encounterTable[10])
-      encounterChoices.push(encounterTable[12])
-    }
-    if (totalRoll == 12) {
-      encounterChoices.push(encounterTable[10])
-      encounterChoices.push(encounterTable[11])
-    }
-      
-    $("#gameTableText").empty()
-    
-    $("#gameTableTitle").html("An Encounter!")
-    
-    if (numRumors < 3) {
-      $("#gameTableInfo").parent().empty()
-      $("#infoButtons").empty()
-      $("#gameTableText").html(theEncounter)
-      $("#gameButtons").empty()
-      let gotoEncounterButton = `
-        <div class="mt-2">
-        <button onclick="gotoEncounter()" data-id="gotoEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-          <i class="mt-2"></i>
-          Go To Encounter
-        </button>
-      `
-      $("#gameButtons").append(gotoEncounterButton)
-    } else {
-    
-      //$("#gameTableInfo").parent().empty()
+    function startEncounter() {
+      $("#gameTableTitle").html("Encounter Table")
       $("#gameTableInfo").empty()
       $("#infoButtons").empty()
-      //$("#gameTableText").html(theEncounter)
+      $("#gameButtons").empty()
+      $("#gameTableText").html("Click below to generate an encounter.")
       
-      
-      $("#gameTableInfo").html("You have rolled a " + totalRoll + " (" + theEncounter + ") on the Encounter table.  Go to that encounter OR you may spend 3 rumors to select an encounter from the list below.")
-      // show radio
-      
-      let formDiv = `
-        <form id="altEncountersForm"></form>
-      `
-      $("#gameTableText").append(formDiv)
-      
-      $.each(encounterChoices, function( index, value ) {
-        //alert( index + ": " + value );
-        let myRadio = `
-          <div class="mt-2 custom-control custom-radio">
-            <input id="myRadio${index}" class="custom-control-input" type="radio" name="customRadio" disabled> 
-            <label class="custom-control-label" for="myRadio${index}">${value}</label>
-          </div>
-    `
-        $("#altEncountersForm").append(myRadio)
-      });
-      // Spend rumors Y/N  (button)
-      $("#infoButtons").empty()
-      let rumorButton = `
-        <div class="mt-2">
-        <button onclick="enableEncounters()" data-id="spendRumorsBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-          <i class="mt-2"></i>
-          Click here to Spend 3 Rumors
-        </button>
-      `
-      // Show radio options but make them all inactive
-      
-      $("#gameButtons").html(rumorButton)
-      
-      let gotoEncounterButton = `
-        <div class="mt-2">
-        <button onclick="gotoEncounter()" data-id="gotoEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-          <i class="mt-2"></i>
-          Go To Encounter
-        </button>
-      
-      `
-      $("#gameButtons").append(gotoEncounterButton)
+      let createEncounterButton = `
+          <div class="mt-2">
+          <button onclick="rollEncounterTable()" data-id="createEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Create Encounter
+          </button>
+        `
+      $("#gameButtons").html(createEncounterButton)
     }
+    
+    
+    // get encounter
+    function rollEncounterTable() {
+      $("#gameButtons").empty()
+      $("#gameTableText").empty()
+      
+      let firstRoll = rollDie(6)
+      let secondRoll = rollDie(6)
+      let totalRoll = firstRoll + secondRoll
+
+      altEncounter = false
+
+      //alert("Roll: (" + firstRoll + " + " + secondRoll + ") = " + totalRoll)
+
+      theEncounter = encounterTable[totalRoll]
+      console.log("The encounter rolled: "+ theEncounter)
+
+      //alert("You encounter: " + theEncounter)
+
+      // create an encounter list in anticipation of the player spending rumor points to modify the results
+      let encounterChoices = []
+      // The table consists of two steps above and two steps below the result.
+      // For example, if the player rolled a 7, then this object will consist of:
+      // 5, 6, 8, 9
+      // Note: cannot go lower than 2 or higher than 12
+
+      if (totalRoll == 2) {
+        encounterChoices.push(encounterTable[3])
+        encounterChoices.push(encounterTable[4])
+      }
+      if (totalRoll == 3) {
+        encounterChoices.push(encounterTable[2])
+        encounterChoices.push(encounterTable[4])
+        encounterChoices.push(encounterTable[5])
+      }
+      if (totalRoll == 4) {
+        encounterChoices.push(encounterTable[2])
+        encounterChoices.push(encounterTable[3])
+        encounterChoices.push(encounterTable[5])
+        encounterChoices.push(encounterTable[6])
+      }
+      if (totalRoll == 5) {
+        encounterChoices.push(encounterTable[3])
+        encounterChoices.push(encounterTable[4])
+        encounterChoices.push(encounterTable[6])
+        encounterChoices.push(encounterTable[7])
+      }
+      if (totalRoll == 6) {
+        encounterChoices.push(encounterTable[4])
+        encounterChoices.push(encounterTable[5])
+        encounterChoices.push(encounterTable[7])
+        encounterChoices.push(encounterTable[8])
+      }
+      if (totalRoll == 7) {
+        encounterChoices.push(encounterTable[5])
+        encounterChoices.push(encounterTable[6])
+        encounterChoices.push(encounterTable[8])
+        encounterChoices.push(encounterTable[9])
+      }
+      if (totalRoll == 8) {
+        encounterChoices.push(encounterTable[6])
+        encounterChoices.push(encounterTable[7])
+        encounterChoices.push(encounterTable[9])
+        encounterChoices.push(encounterTable[10])
+      }
+      if (totalRoll == 9) {
+        encounterChoices.push(encounterTable[7])
+        encounterChoices.push(encounterTable[8])
+        encounterChoices.push(encounterTable[10])
+        encounterChoices.push(encounterTable[11])
+      }
+      if (totalRoll == 10) {
+        encounterChoices.push(encounterTable[8])
+        encounterChoices.push(encounterTable[9])
+        encounterChoices.push(encounterTable[11])
+        encounterChoices.push(encounterTable[12])
+      }
+      if (totalRoll == 11) {
+        encounterChoices.push(encounterTable[9])
+        encounterChoices.push(encounterTable[10])
+        encounterChoices.push(encounterTable[12])
+      }
+      if (totalRoll == 12) {
+        encounterChoices.push(encounterTable[10])
+        encounterChoices.push(encounterTable[11])
+      }
+
+      $("#gameTableText").empty()
+
+      $("#gameTableTitle").html("An Encounter!")
+
+      if (playerCharacter.rumors < 3) {
+        $("#gameTableInfo").empty()
+        $("#infoButtons").empty()
+        $("#gameTableText").html(theEncounter)
+        $("#gameButtons").empty()
+        let gotoEncounterButton = `
+          <div class="mt-2">
+          <button onclick="gotoEncounter()" data-id="gotoEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Go To Encounter
+          </button>
+        `
+        $("#gameButtons").append(gotoEncounterButton)
+      } else {
+
+        //$("#gameTableInfo").parent().empty()
+        $("#gameTableInfo").empty()
+        $("#infoButtons").empty()
+        //$("#gameTableText").html(theEncounter)
+
+
+        $("#gameTableInfo").html("You have rolled a " + totalRoll + " (" + theEncounter + ") on the Encounter table.  Go to that encounter OR you may spend 3 rumors to select an encounter from the list below.")
+        // show radio
+
+        let formDiv = `
+          <form id="altEncountersForm"></form>
+        `
+        $("#gameTableText").append(formDiv)
+
+        $.each(encounterChoices, function( index, value ) {
+          //alert( index + ": " + value );
+          let myRadio = `
+            <div class="mt-2 custom-control custom-radio">
+              <input id="myRadio${index}" class="custom-control-input" type="radio" name="customRadio" disabled> 
+              <label class="custom-control-label" for="myRadio${index}">${value}</label>
+            </div>
+      `
+          $("#altEncountersForm").append(myRadio)
+        });
+        // Spend rumors Y/N  (button)
+        $("#infoButtons").empty()
+        let rumorButton = `
+          <div class="mt-2">
+          <button onclick="enableEncounters()" data-id="spendRumorsBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Click here to Spend 3 Rumors
+          </button>
+        `
+        // Show radio options but make them all inactive
+
+        $("#gameButtons").html(rumorButton)
+
+        let gotoEncounterButton = `
+          <div class="mt-2">
+          <button onclick="gotoEncounter()" data-id="gotoEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Go To Encounter
+          </button>
+
+        `
+        $("#gameButtons").append(gotoEncounterButton)
+      }
+    }
+    
+    
     
     function enableEncounters () {
       playerCharacter.rumors = playerCharacter.rumors -3
@@ -715,6 +751,10 @@
           $("#gameTableTitle").html("An Encounter with Minions!")
           runMinions()
         break;
+        case "A Knight Issues a Challenge!":
+          $("#gameTableTitle").html("A Knight Issues a Challenge!")
+          runKnightChallengeQuest()
+        break;
         case "A Heroic Quest":
           $("#gameTableTitle").html("A Heroic Quest!")
           runHeroicQuest()
@@ -738,8 +778,8 @@
     function runMorgana() {
       $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").parent().empty()
-      $("#gameTableInfo").parent().empty()
+      $("#gameTableText").empty()
+      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
       $("#infoButtons").empty()
       $("#gameTableInfo").html("Morgana uses trickery to make you forget.")
@@ -779,157 +819,187 @@
           $("#gameTableInfo").append(`<p>She causes you to forget ${savesFailed} rumors.  Consider yourself lucky!</p>`)
         }
       }
-      // click to go to the Journey table
+      // click to go to the Journey table  -- startEncounter for now!
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="gotoJourney()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="startEncounter()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
         `
       $("#gameButtons").empty()
-      $("#gameButtons").html(gotoJourney)
+      $("#gameButtons").html(gotoJourneyButton)
       $("#infoButtons").empty()
     }
     
     function runCastlePerilous() {
+    
       $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").parent().empty()
-      $("#gameTableInfo").parent().empty()
+      //$("#gameTableText").parent().empty()
+      //$("#gameTableInfo").parent().empty()
       $("#gameButtons").empty()
       $("#infoButtons").empty()
+      
+      let castlePerilousQuest = castlePerilousTable[rollDie(6) -1]
+      //let castlePerilousQuest = ""
+      //alert("Your event is: " + castlePerilousQuest)
+      $("#gameTableInfo").html(castlePerilousQuest)
+      
+      
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="gotoJourney()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="startEncounter()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
       `
-      $("#gameButtons").html(gotoJourney)
+      $("#gameButtons").html(gotoJourneyButton)
         
     }
     
     function runPlagueVillage() {
       $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").parent().empty()
-      $("#gameTableInfo").parent().empty()
+      $("#gameTableText").empty()
+      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
       $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="gotoJourney()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="startEncounter()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
       `
-      $("#gameButtons").html(gotoJourney)
+      $("#gameButtons").html(gotoJourneyButton)
         
     }
     
     function runGrailCastle() {
       $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").parent().empty()
-      $("#gameTableInfo").parent().empty()
+      $("#gameTableText").empty()
+      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
       $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="gotoJourney()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="startEncounter()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
       `
-      $("#gameButtons").html(gotoJourney)
+      $("#gameButtons").html(gotoJourneyButton)
         
     }
     
     function runMinions() {
       $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").parent().empty()
-      $("#gameTableInfo").parent().empty()
+      $("#gameTableText").empty()
+      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
       $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="gotoJourney()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="startEncounter()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
       `
-      $("#gameButtons").html(gotoJourney)
+      $("#gameButtons").html(gotoJourneyButton)
         
     }
+    
+    function runKnightChallengeQuest() {
+      $("#gameTableInfo").empty()
+      $("#gameTableText").empty()
+      $("#gameTableText").empty()
+      $("#gameTableInfo").empty()
+      $("#gameButtons").empty()
+      $("#infoButtons").empty()
+      // click to go to the Journey table
+      let gotoJourneyButton = `
+        <div class="mt-2">
+        <button onclick="startEncounter()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Continue your Journey
+            </button>
+      `
+      $("#gameButtons").html(gotoJourneyButton)
+        
+    }
+    
+    
     
     function runHeroicQuest() {
       $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").parent().empty()
-      $("#gameTableInfo").parent().empty()
+      $("#gameTableText").empty()
+      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
       $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="gotoJourney()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="startEncounter()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
       `
-      $("#gameButtons").html(gotoJourney)
+      $("#gameButtons").html(gotoJourneyButton)
         
     }
     
     function runPovertyVillage() {
       $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").parent().empty()
-      $("#gameTableInfo").parent().empty()
+      $("#gameTableText").empty()
+      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
       $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="gotoJourney()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="startEncounter()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
       `
-      $("#gameButtons").html(gotoJourney)
+      $("#gameButtons").html(gotoJourneyButton)
         
     }
     
     function runTestOfPiety() {
       $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").parent().empty()
-      $("#gameTableInfo").parent().empty()
+      $("#gameTableText").empty()
+      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
       $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="gotoJourney()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="startEncounter()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
       `
-      $("#gameButtons").html(gotoJourney)
+      $("#gameButtons").html(gotoJourneyButton)
         
     }
     
     function runMerlin() {
       $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").parent().empty()
-      $("#gameTableInfo").parent().empty()
+      //$("#gameTableText").parent().empty()
+      $("#gameTableText").empty()
+      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
       
       $("#infoButtons").empty()
@@ -937,12 +1007,12 @@
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="gotoJourney()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="startEncounter()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
       `
-      $("#gameButtons").html(gotoJourney)
+      $("#gameButtons").html(gotoJourneyButton)
         
     }
     
