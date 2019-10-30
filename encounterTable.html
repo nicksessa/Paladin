@@ -19,6 +19,10 @@
       color: blanchedalmond;
       /* Location of the image */
       background-image: url("https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763");
+      
+      /* this is the google drive version: */
+      background-image: url("https://drive.google.com/open?id=14muus5B7-Qj1L57aNh2vAeERkGQq9eTU")
+      
       /* Background image is centered vertically and horizontally at all times */
       background-position: center center;
       /* Background image doesn't tile */
@@ -35,7 +39,8 @@
     }
 
     .parchment {
-      background-image:  url("https://lh3.googleusercontent.com/-FqHXhBs4f-M/TYnajL75ZSI/AAAAAAAAAJ4/MW4HAb-7NaQ/s200/Parchment.jpg");
+      background-image: url("http://drive.google.com/uc?export=view&id=1ekfXcSNZ2xz4JmwGsq1xjx1ywGM5J7Sw");
+      background
       /* Background image is centered vertically and horizontally at all times */
       background-position: center center;
       /* Background image doesn't tile */
@@ -237,41 +242,24 @@
           </div>
 
         </div> <!-- col -->
-
-
-
       </div> <!-- col -->
-      <div class="col">
-        <!-- main body column -->
-
-
-
+      
+<!-- main body column -->
+      
+      <div class="col"> 
         <div class="d-flex flex-wrap">
-          <div id="gameTableTitle" class="px-4 py-2 mb-2 bg-dark rounded shadow-sm textBlock-bg">The journey continues...
-          </div>
-        </div>
-
-        
-        <div class="d-flex flex-wrap">
-          <div id="gameTableInfo" class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">game info goes here
+          <div id="gameTableTitle" class="px-4 py-2 mb-2 bg-dark rounded shadow-sm textBlock-bg">
+            GAME TABLE TITLE
           </div>
         </div>
         
-        <div id="infoButtons">
-          <button id="infoBtn1"
-            class="btn btn-dark px-4 mt-2 rounded-pill textBlock-bg customBtn border-top-0 border-left-0 border-right-0">infoBtn1 for buttons related to game info</button>
-
-        </div>
-        
         <div class="d-flex flex-wrap">
-          <div id="gameTableText" class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg"> --- game text goes here. --- </div>
+          <div id="gameTableText" class="px-4 py-2 bg-dark rounded shadow-sm textBlock-bg">
+            --- GAME TABLE TEXT --- 
+          </div>
         </div>
 
         <div id="gameButtons">
-          <button id="backgroundURL1_btn"
-            class="btn btn-dark px-4 mt-2 rounded-pill textBlock-bg customBtn border-top-0 border-left-0 border-right-0">Background
-            1</button>
-
         </div>
 
       </div> <!-- column 2-->
@@ -350,6 +338,7 @@
   <script>
     let backgroundImageURL1 = "https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763"
     let backgroundImageURL2 = "https://cdnb.artstation.com/p/assets/images/images/020/284/017/large/andreas-rocha-cursedforesthr.jpg?1567153102"
+    backgroundImageURL1 = "https://drive.google.com/uc?export=view&id=14muus5B7-Qj1L57aNh2vAeERkGQq9eTU"
     $(document).ready(function () {
       $("#backgroundURL1_btn").click(function () {
         //alert("Background color = " + $("p").css("background-color"));
@@ -516,8 +505,6 @@
     
     function startEncounter() {
       $("#gameTableTitle").html("Encounter Table")
-      $("#gameTableInfo").empty()
-      $("#infoButtons").empty()
       $("#gameButtons").empty()
       $("#gameTableText").html("Click below to generate an encounter.")
       
@@ -623,8 +610,6 @@
       $("#gameTableTitle").html("An Encounter!")
 
       if (playerCharacter.rumors < 3) {
-        $("#gameTableInfo").empty()
-        $("#infoButtons").empty()
         $("#gameTableText").html(theEncounter)
         $("#gameButtons").empty()
         let gotoEncounterButton = `
@@ -638,12 +623,9 @@
       } else {
 
         //$("#gameTableInfo").parent().empty()
-        $("#gameTableInfo").empty()
-        $("#infoButtons").empty()
         //$("#gameTableText").html(theEncounter)
 
-
-        $("#gameTableInfo").html("You have rolled a " + totalRoll + " (" + theEncounter + ") on the Encounter table.  Go to that encounter OR you may spend 3 rumors to select an encounter from the list below.")
+        $("#gameTableText").append("You have rolled a " + totalRoll + " (" + theEncounter + ") on the Encounter table.  Go to that encounter OR you may spend 3 rumors to select an encounter from the list below.")
         // show radio
 
         let formDiv = `
@@ -662,7 +644,7 @@
           $("#altEncountersForm").append(myRadio)
         });
         // Spend rumors Y/N  (button)
-        $("#infoButtons").empty()
+        
         let rumorButton = `
           <div class="mt-2">
           <button onclick="enableEncounters()" data-id="spendRumorsBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -704,8 +686,7 @@
         </button>
       `
       $("#gameButtons").append(gotoEncounterButton)
-      $("#gameTableInfo").empty()
-      $("#gameTableInfo").html("Select one of the following encounters.")
+      $("#gameTableText").append("Select one of the following encounters.")
       altEncounter = true
     }
     
@@ -714,7 +695,6 @@
       console.log("Alternative Encounter selected? " + altEncounter)
       if (altEncounter) {
         //theEncounter = $("#altEncountersForm input[type='radio']:checked").val()
-        
         //theEncounter = $("input[name='customRadio']:checked").val()
         
         $("input[type='radio']:checked").each(function() {
@@ -802,21 +782,21 @@
       $("#topDivRumors").html(playerCharacter.rumors)
       
       if (savesFailed == 0) {
-        $("#gameTableInfo").append("<p>You have successfully resisted Morgana's spell!</p>")
+        $("#gameTableText").append("<p>You have successfully resisted Morgana's spell!</p>")
 
       } else {
       
         if (savesFailed > 1 && outOfRumors) {
-          $("#gameTableInfo").append(`<p>You failed ${savesFailed} saves and face a challenger!</p>`)
+          $("#gameTableText").append(`<p>You failed ${savesFailed} saves and face a challenger!</p>`)
         }
         if (savesFailed == 1 && outOfRumors) {
-          $("#gameTableInfo").append(`<p>You failed ${savesFailed} save and face a challenger!</p>`)
+          $("#gameTableText").append(`<p>You failed ${savesFailed} save and face a challenger!</p>`)
         }
         if (savesFailed == 1  && !outOfRumors) {
-          $("#gameTableInfo").append("<p>She causes you to forget 1 rumor.  Consider yourself lucky!</p>")
+          $("#gameTableText").append("<p>She causes you to forget 1 rumor.  Consider yourself lucky!</p>")
         }
         if (savesFailed > 1  && !outOfRumors) {
-          $("#gameTableInfo").append(`<p>She causes you to forget ${savesFailed} rumors.  Consider yourself lucky!</p>`)
+          $("#gameTableText").append(`<p>She causes you to forget ${savesFailed} rumors.  Consider yourself lucky!</p>`)
         }
       }
       // click to go to the Journey table  -- startEncounter for now!
@@ -829,22 +809,21 @@
         `
       $("#gameButtons").empty()
       $("#gameButtons").html(gotoJourneyButton)
-      $("#infoButtons").empty()
+
     }
     
     function runCastlePerilous() {
     
-      $("#gameTableInfo").empty()
+
       $("#gameTableText").empty()
       //$("#gameTableText").parent().empty()
       //$("#gameTableInfo").parent().empty()
       $("#gameButtons").empty()
-      $("#infoButtons").empty()
       
       let castlePerilousQuest = castlePerilousTable[rollDie(6) -1]
       //let castlePerilousQuest = ""
       //alert("Your event is: " + castlePerilousQuest)
-      $("#gameTableInfo").html(castlePerilousQuest)
+      $("#gameTableText").append(castlePerilousQuest)
       
       
       // click to go to the Journey table
@@ -860,12 +839,8 @@
     }
     
     function runPlagueVillage() {
-      $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").empty()
-      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
-      $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
@@ -879,12 +854,8 @@
     }
     
     function runGrailCastle() {
-      $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").empty()
-      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
-      $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
@@ -898,12 +869,8 @@
     }
     
     function runMinions() {
-      $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").empty()
-      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
-      $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
@@ -917,12 +884,8 @@
     }
     
     function runKnightChallengeQuest() {
-      $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").empty()
-      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
-      $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
@@ -938,12 +901,8 @@
     
     
     function runHeroicQuest() {
-      $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").empty()
-      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
-      $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
@@ -957,12 +916,8 @@
     }
     
     function runPovertyVillage() {
-      $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").empty()
-      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
-      $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
@@ -976,12 +931,8 @@
     }
     
     function runTestOfPiety() {
-      $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      $("#gameTableText").empty()
-      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
-      $("#infoButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
@@ -995,15 +946,8 @@
     }
     
     function runMerlin() {
-      $("#gameTableInfo").empty()
       $("#gameTableText").empty()
-      //$("#gameTableText").parent().empty()
-      $("#gameTableText").empty()
-      $("#gameTableInfo").empty()
       $("#gameButtons").empty()
-      
-      $("#infoButtons").empty()
-      
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
