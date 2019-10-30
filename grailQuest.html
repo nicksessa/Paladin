@@ -188,6 +188,12 @@
         </button>
         
         <div class="pt-4 pr-2 text-center">
+          Money
+          <br>
+          <span id="topDivMoney">999</span>
+        </div>
+        
+        <div class="pt-4 pr-2 text-center">
           Rumors
           <br>
           <span id="topDivRumors">3</span>
@@ -407,12 +413,15 @@
       turn: 5,
       piety: 2,
       sideQuests: 0,
-      findRetainerModifier: 0
+      findRetainerModifier: 0,
+      wasLost: false,
+      captainsSlain: 0,
+      onPilgrimage: false
     }
     
     let retainers = []
     let adventureLog = []
-    let merchant = 0
+    let merchant = 1
     
     //alert("Num Retainers: " + retainers.length)
     console.log("Num Retainers: " + retainers.length)
@@ -425,6 +434,7 @@
       $("#topDivMaxHP").html(playerCharacter.max_hp)
       $("#topDivPiety").html(playerCharacter.piety)
       $("#topDivPotions").html(playerCharacter.healingPotions)
+      $("#topDivMoney").html(playerCharacter.money)
       $("#topDivRumors").html(playerCharacter.rumors)
       $("#topDivRebellionLevel").html(playerCharacter.rebellionLevel)
       $("#topDivTurnCounter").html(playerCharacter.turn)
@@ -479,9 +489,9 @@
     // -----------------------------------------------------
         // Tables
     let journeyTable = [
-      "Crossroads. Roll on the Inn Table (2) or the Encounter Table (3). You choose which table to use.",
-      "Roll on the Inn Table (2) or bypass and roll on the Journey Table (1) again. You choose which table to use.",
-      "You are lost. If you have a Merchant retainer, he knows of a shortcut, treat as a result of 1 on this table instead. If you don not have a merchant, roll on this table again with a +1.",
+      "You have found an inn at a Crossroads. You may choose to stay at the inn or face the danger that awaits. Choose wisely.",
+      "an inn.  You may choose to stay at the inn or or bypass it by clicking on the Journey On button.",
+      "You are lost! If you have a Merchant retainer, he knows of a shortcut, treat as a result of 1 on this table instead. If you don not have a merchant, roll on this table again with a +1.",
       "Roll on the Encounter Table (3).",
       "If the Rebellion Level is 4, roll on the Challenge Table (7). Otherwise, roll on the Encounter Table (3).",
       "If the Rebellion Level is 4, roll on the Challenge Table (7). Otherwise, roll on the Traitors Attack Table (4)."
@@ -497,7 +507,11 @@
       "A wealthy noble donates 3d6 x 5gp to your worthy cause."
     ]
     
-    
+    let traitorsTable = [
+      "You hear that a questing paladin has been killed by the traitors in a distant location. The Rebellion Level has increased!",
+      "You find a questing paladin, mortally wounded by the traitors. Before he dies, he gives you some information. You have gained one rumor but the Rebellion Level has also increased!",
+      "There are signs of a brave fight, but no dead questing paladin. This was a lucky escape, the traitors did not get their kill."
+    ]
     
     
     // -----------------------------------------------------
@@ -510,7 +524,8 @@
       
     // Start Game: Roll on the Journey Table
     function startGame() {
-    $("#gameTableTitle").html("Journey Table")
+      $("#gameTableTitle").empty()
+      $("#gameTableTitle").html("Journey Table")
       $("#gameButtons").empty()
       $("#gameTableText").html("Click below to roll on the Journey Table.")
       
@@ -525,15 +540,22 @@
     }
     
     function rollJourneyTable() {
+      $("#gameTableTitle").empty()
+      $("#gameTableTitle").html("Journey Table")
       $("#gameTableText").empty()
-      $("#gameTableText").html(`${playerCharacter.name} sets off on a journey and encounters...`)
+      $("#gameTableText").html(`${playerCharacter.name} sets off on a journey and ...`)
       console.log("roll on the journey table")
       playerCharacter.turn++
       updateNavbar()
       
       let journeyRoll = rollDie(6)
       
-      journeyRoll = 1
+      if (playerCharacter.wasLost) {
+        journeyRoll++
+        playerCharacter.wasLost = false
+      }
+      
+      journeyRoll = 6
 
       //alert("The begin adventure button was clicked. You rolled: " + d6Roll);
       // Save turn data in the log (we'll push this to MySql at some point)
@@ -545,33 +567,41 @@
       switch (journeyRoll) {
         // crossroads
         case 1:
+          $("#gameTableTitle").append(" - Crossroads")
           crossroads()
           break;
         // Inn table or roll again
         case 2:
+          $("#gameTableTitle").append(" - Journey on or Stay at Inn")
           journeyOrInn()
           break;
         // lost
         case 3:
+          $("#gameTableTitle").append(" - Lost!")
           youAreLost()
           break;
         // Encounter
         case 4:
-          startEncounterTable()
+          $("#gameTableTitle").append(" - An Encounter!")
+          rollEncounterTable()
           break;
         // Encounter or Challenge
         case 5:
           if (playerCharacter.rebellionLevel > 3) {
+            $("#gameTableTitle").append(" - A Challenge!")
             rollChallengeTable()
           } else {
-            startEncounterTable()
+            $("#gameTableTitle").append(" - An Encounter!")
+            rollEncounterTable()
           }
           break;
         // Traitors or Challenge
         case 6:
           if (playerCharacter.rebellionLevel > 3) {
+            $("#gameTableTitle").append(" - A Challenge!")
             rollChallengeTable()
           } else {
+            $("#gameTableTitle").append(" - Traitors!")
             rollTraitorsTable()
           }
           break;
@@ -582,7 +612,6 @@
     
     function crossroads() {
       //$("#gameButtons").empty()
-      $("#gameTableTitle").append(" - Crossroads")
       $("#gameTableText").empty()
       $("#gameTableText").append(journeyTable[0])
       //$("#adventureLogTableBody").empty()
@@ -595,18 +624,17 @@
         </button>
         <button onclick="startEncounter()" data-id="startEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
             <i class="mt-2"></i>
-            Go To Encounter
+            Go To Encounter!
         </button>
         </div>
         `
-      $("#gameTableText").append(rowString)
+      $("#gameButtons").empty()
+      $("#gameButtons").html(rowString)
     }
     
 // --- Journey or Inn Choice---
     
     function journeyOrInn() {
-      //$("#storyDiv").empty()
-      //$("#adventureLogTableBody").empty()
       $("#gameTableText").append(journeyTable[1])
       
       let rowString = `
@@ -621,7 +649,8 @@
         </button>
         </div>
         `
-      $("#gameTableText").append(rowString)  
+      $("#gameButtons").empty()
+      $("#gameButtons").html(rowString)  
     }
     
 // --- Roll on the Inn Table ---    
@@ -648,6 +677,8 @@
           modifier = 3
       }
       
+      $("#gameTableTitle").html("Inn Table")
+      
       let rowString = ""
       // clear the story div
       $("#gameTableText").empty()
@@ -671,6 +702,7 @@
           console.log("[2] Grumpy Patrons")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Grumpy patrons' });
           playerCharacter.rumors--
+          updateNavbar()
           rowString = "Grumpy patrons (rumors -1)"
           if (retainers > 0) {
             let first_d6Roll = Math.floor(Math.random() * 6) + 1;
@@ -678,7 +710,7 @@
             let twoD6 = first_d6Roll + second_d6Roll
             if (twoD6 < 8) {
               // random retainer has been killed
-              rowString += "If that wasn't bad enough, one of your retainers has been killed in an ambush!"
+              rowString += "<br>If that wasn't bad enough, one of your retainers has been killed in an ambush!"
               adventureLog.push({ 'turn': playerCharacter.turn, 'roll': twoD6, 'result': 'One of your retainers has been killed!' });
             }
           }
@@ -686,7 +718,7 @@
         break;
         case 3:
           console.log("[3] Shady Characters")
-          $("#gameTableText").append("Shady characters abound, making it hard to find good help. (-1 to the retainer roll)")
+          $("#gameTableText").append("Shady characters abound, making it hard to find good help. (-1 to the retainer roll)<br>")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Shady Characters.' });
           let first_d6Roll = Math.floor(Math.random() * 6) + 1;
           let second_d6Roll = Math.floor(Math.random() * 6) + 1;
@@ -697,8 +729,10 @@
             let third_d6Roll = Math.floor(Math.random() * 6) + 1;
             let threeD6 = first_d6Roll + second_d6Roll + third_d6Roll
             rowString = "Robbed!"
-            rowString += "You lose " + threeD6 + " silver pieces."
+            rowString += "<br>You lose " + threeD6 + " silver pieces."
             adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'You have been robbed!' });
+            playerCharacter.money -= threeD6
+            updateNavbar()
             $("#gameTableText").append(rowString)
           }
         break;
@@ -719,6 +753,7 @@
           console.log("[5] Talkative innkeeper")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Talkative innkeeper.' });
           playerCharacter.rumors++
+          updateNavbar()
           break;
         case 6:
           let num = rollDie(6)
@@ -754,37 +789,55 @@
           console.log("You gain: " + money + " silver pieces")
           $("#gameTableText").append(`<p>You gain ${money} silver pieces! </p>`)
           playerCharacter.money += money
+          updateNavbar()
         break;
       }
       //logTurn()
       rowString = `
-        <div class="d-flex mt-2 justify-content-around">
+        <div class="d-flex mt-2">
         <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
             <i class="mt-2"></i>
             Journey On
         </button>
         </div>`
-      $("#gameTableText").append(rowString)
+      $("#gameButtons").empty()
+      $("#gameButtons").html(rowString)
     }
     
 // --- You are lost ---
 
     function youAreLost() {
-      $("#gameTableText").append(journeyTable[2])
+      $("#gameTableText").append("<p>becomes lost!</p>")
+      console.log(journeyTable[2])
       let rowString = ""
       if (merchant == 0) {
         // roll again but with +1 to the roll
-        rowString += `<div class="d-flex mt-2 justify-content-around">
-    <a href="#" id="journeyBtn" class="journeyBtn btn btn-dark px-4 rounded-pill">Continue Journey</a>
-  </div>`
-        $("#gameTableText").append(rowString)
+        // set wasLost to true which tells the journey table to add +1 to the journey roll
+        $("#gameTableText").append("<br>You have no choice but to continue on...")
+        playerCharacter.wasLost = true
+        rowString += `
+        <div class="d-flex mt-2">
+        <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Journey On
+        </button>
+        </div>`
+        $("#gameButtons").empty()
+        $("#gameButtons").html(rowString)
 
       } else {
         // go to the crossroads
-        rowString += `<div class="d-flex mt-2 justify-content-around">
-    <a href="#" id="crossroadsBtn" class="crossroadsBtn btn btn-dark px-4 rounded-pill">Go to Crossroads</a>
-  </div>`
-        $("#gameTableText").append(rowString)
+        $("#gameTableText").append("But luckily your Merchant friend knew a way to get you to an inn.")
+        
+        rowString += `
+        <div class="d-flex mt-2">
+        <button onclick="crossroads()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Go to Crossroads
+        </button>
+        </div>`
+        $("#gameButtons").empty()
+        $("#gameButtons").html(rowString)
 
       }
     }
@@ -1139,7 +1192,7 @@
     function runCastlePerilous() {
     
 
-      $("#gameTableText").empty()
+      //$("#gameTableText").empty()
       //$("#gameTableText").parent().empty()
       //$("#gameTableInfo").parent().empty()
       $("#gameButtons").empty()
@@ -1163,7 +1216,7 @@
     }
     
     function runPlagueVillage() {
-      $("#gameTableText").empty()
+      //$("#gameTableText").empty()
       $("#gameButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
@@ -1178,7 +1231,7 @@
     }
     
     function runGrailCastle() {
-      $("#gameTableText").empty()
+      //$("#gameTableText").empty()
       $("#gameButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
@@ -1193,7 +1246,7 @@
     }
     
     function runMinions() {
-      $("#gameTableText").empty()
+      //$("#gameTableText").empty()
       $("#gameButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
@@ -1208,24 +1261,52 @@
     }
     
     function runKnightChallengeQuest() {
-      $("#gameTableText").empty()
+      
+      // NOTE! Fight a Knight OR Visit a Shrine (Pilgrimage Table)
+      $("#gameTableText").append("You may fight a knight or undertake a perilous Pilgrimage to a Shrine.")
+      
+      let rowString = `
+        <div class="d-flex mt-2 justify-content-around">
+        <button onclick="rollChallengeTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Fight Challenger!
+        </button>
+        <button onclick="rollPilgrimageTable()" data-id="rollInnBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Go to a Shrine!
+        </button>
+        </div>
+        `
       $("#gameButtons").empty()
-      // click to go to the Journey table
-      let gotoJourneyButton = `
-        <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
-            </button>
-      `
-      $("#gameButtons").html(gotoJourneyButton)
-        
+      $("#gameButtons").html(rowString)        
     }
     
     
     
     function runHeroicQuest() {
-      $("#gameTableText").empty()
+    
+      // NOTE! Heroic Quest OR Visit a Shrine (Pilgrimage Table)
+
+      $("#gameTableText").append("You may embark on a Heroic Quest or undertake a perilous Pilgrimage to a Shrine!")
+      
+      let rowString = `
+        <div class="d-flex mt-2 justify-content-around">
+        <button onclick="rollHeroicQuestTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Heroic Quest!
+        </button>
+        <button onclick="rollPilgrimageTable()" data-id="rollInnBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Go to a Shrine!
+        </button>
+        </div>
+        `
+      $("#gameButtons").empty()
+      $("#gameButtons").html(rowString) 
+      
+      
+      
+      //$("#gameTableText").empty()
       $("#gameButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
@@ -1286,6 +1367,167 @@
     
     // -----------------------------------------------------
     // Encounter Table
+    // -----------------------------------------------------
+    
+    
+    // -----------------------------------------------------
+    // Traitors Table
+    // -----------------------------------------------------
+    
+    function rollTraitorsTable() { 
+      //$("#gameTableText").empty()
+      $("#gameButtons").empty()
+      // number of captains slain modifies this roll
+      // 1 captain = +1
+      // 2-3 captains = +2
+      // 4+ captains = +3
+      let modifier = 0
+      switch (playerCharacter.captainsSlain) {
+        case 0:
+          modifier = 0
+        break;
+        case 1:
+          modifier = 1
+        break;
+        case 2:
+        case 3:
+          modifier = 2
+        break;
+        default:
+          modifier = 3
+      }
+      let roll = (rollDie(6) + modifier)
+      
+      if (playerCharacter.onPilgrimage) roll = 1
+      
+      switch (roll) {
+        case 1:
+        case 2:
+          $("#gameTableText").append(traitorsTable[0])
+          playerCharacter.rebellionLevel++
+          updateNavbar()
+        break
+        case 3:
+        case 4:
+          $("#gameTableText").append(traitorsTable[1])
+          playerCharacter.rumors++
+          playerCharacter.rebellionLevel++
+          updateNavbar()
+        break
+        default:
+          $("#gameTableText").append(traitorsTable[2])
+      }
+      let rowString = ""
+      if (playerCharacter.onPilgrimage) {
+        rowString = `
+          <div class="d-flex mt-2">
+          <button onclick="rollPilgrimageTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Continue Pilgrimage
+          </button>
+        </div>`
+      } else {
+        rowString = `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Journey On
+          </button>
+        </div>`
+      }
+      $("#gameButtons").html(rowString)
+    }
+    
+    // -----------------------------------------------------
+    // Traitors Table
+    // -----------------------------------------------------
+    
+    // -----------------------------------------------------
+    // Challenge Table
+    // -----------------------------------------------------
+    
+    function rollChallengeTable() {
+      // add rebellion level to this roll
+      let modifier = 0
+      switch (playerCharacter.rebellionLevel) {
+        case 0:
+          modifier = 0
+        break;
+        case 1:
+          modifier = 1
+        break;
+        case 2:
+        case 3:
+          modifier = 2
+        break;
+        default:
+          modifier = 3
+      }
+      let roll = (rollDie(6) + modifier)
+      switch (roll) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+          $("#gameTableText").append("A knight issues a challenge!")
+          //gotoCombat()
+        break;
+        case 6:
+          $("#gameTableText").append("Sir Agravain issues a challenge!")
+        break;
+        case 7:
+          $("#gameTableText").append("Sir Garlon issues a challenge!")
+        break;
+        case 8:
+          $("#gameTableText").append("Sir Turquine issues a challenge!")
+        break;
+        default:
+          $("#gameTableText").append("Sir Mordred issues a challenge!")
+        break;
+      }
+      let rowString = `
+        <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Journey On
+          </button>
+        </div>`
+      $("#gameButtons").html(rowString)
+    }
+    
+    // -----------------------------------------------------
+    // Challenge Table
+    // -----------------------------------------------------
+    
+    
+    // -----------------------------------------------------
+    // Pilgrimage Table
+    // -----------------------------------------------------
+    
+    function rollPilgrimageTable() {
+      // keep rolling until a 6 is rolled
+      let roll = rollDie(6)
+      let modifier = 0
+      
+      
+    }
+    
+    // -----------------------------------------------------
+    // Pilgrimage Table
+    // -----------------------------------------------------
+    
+    
+    // -----------------------------------------------------
+    // Heroic Quest Table
+    // -----------------------------------------------------
+    
+    function rollHeroicQuestTable() {
+    
+    }
+    
+    // -----------------------------------------------------
+    // Heroic Quest Table
     // -----------------------------------------------------
     
   </script>
