@@ -403,7 +403,7 @@
     let playerCharacter = {
       name: "Sir Percival",
       max_hp: 40,
-      cur_hp: 13,
+      cur_hp: 25,
       armor: 1,
       attack: 7,
       att_mod: 0,
@@ -422,12 +422,16 @@
       findRetainerModifier: 0,
       wasLost: false,
       captainsSlain: 0,
-      onPilgrimage: false
+      onPilgrimage: false,
+      pilgrimageModifier: 0
     }
     
     let retainers = []
     let adventureLog = []
     let merchant = 1
+    let hunter = 0
+    let mercenary = 0
+    let rogue = 0
     
     //alert("Num Retainers: " + retainers.length)
     console.log("Num Retainers: " + retainers.length)
@@ -556,7 +560,7 @@
         playerCharacter.wasLost = false
       }
       
-      journeyRoll = 6
+      journeyRoll = 4
       //alert("The begin adventure button was clicked. You rolled: " + d6Roll);
       // Save turn data in the log (we'll push this to MySql at some point)
       adventureLog.push({ 'turn': playerCharacter.turn, 'roll': journeyRoll, 'result': journeyTable[journeyRoll - 1] });
@@ -905,6 +909,9 @@
       let firstRoll = rollDie(6)
       let secondRoll = rollDie(6)
       let totalRoll = firstRoll + secondRoll
+      
+      totalRoll = 7
+      
       altEncounter = false
       //alert("Roll: (" + firstRoll + " + " + secondRoll + ") = " + totalRoll)
       theEncounter = encounterTable[totalRoll]
@@ -1395,6 +1402,7 @@
       }
       let rowString = ""
       if (playerCharacter.onPilgrimage) {
+        $("#gameTableText").append("<p><br>Your pilgrimage continues...</p>")
         rowString = `
           <div class="d-flex mt-2">
           <button onclick="rollPilgrimageTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -1482,9 +1490,110 @@
     // -----------------------------------------------------
     
     function rollPilgrimageTable() {
+      $("#gameTableTitle").html("Pilgrimage!")
+      playerCharacter.turn++
+      updateNavbar()
+      let rowString = ""
+      
       // keep rolling until a 6 is rolled
       let roll = rollDie(6)
-      let modifier = 0
+      modifier = playerCharacter.pilgrimageModifier
+      console.log("Pilgrimage mod: " + modifier)
+      playerCharacter.onPilgrimage = true
+      roll == roll + modifier
+      switch (roll) {
+        case 1: 
+          playerCharacter.pilgrimageModifier = (merchant > 0) ? 2 : 1;
+          /*if (merchant > 0) {
+            playerCharacter.pilgrimageModifier = 2
+          } else {
+            playerCharacter.pilgrimageModifier = 1
+          }*/
+          console.log("Pilgrimage mod is now: " + playerCharacter.pilgrimageModifier)
+          $("#gameTableText").html("<p>This is taking too long!  Time is running out and traitors have attacked!</p>")
+          rollTraitorsTable()
+        break;
+        case 2:
+          $("#gameTableText").html("You enter a dense forest, slowing you down.")
+          if (hunter > 0) {
+            $("#gameTableText").append("<br>Good thing you have a hunter though!")
+            playerCharacter.pilgrimageModifier = 0
+          } else {
+            $("#gameTableText").append("<br>Too bad you didn't have a woodsman.")
+            playerCharacter.pilgrimageModifier = -1
+          }
+          $("#gameTableText").append("<p><br>Your pilgrimage continues...</p>")
+          rowString = `
+            <div class="d-flex mt-2">
+            <button onclick="rollPilgrimageTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Continue Pilgrimage
+            </button>
+          </div>`
+          $("#gameButtons").html(rowString)
+        break
+        case 3:
+          $("#gameTableText").html("You enter lawless area with many bandits.")
+          if (mercenary > 0) {
+            $("#gameTableText").append("<br>Which are dispatched in no time due to the help of your man-at-arms!")
+            playerCharacter.pilgrimageModifier = 0
+          } else {
+            $("#gameTableText").append("<br>Too bad you didn't have any men-at-arms.")
+            playerCharacter.pilgrimageModifier = -1
+          }
+          $("#gameTableText").append("<p><br>Your pilgrimage continues...</p>")
+          rowString = `
+            <div class="d-flex mt-2">
+            <button onclick="rollPilgrimageTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Continue Pilgrimage
+            </button>
+          </div>`
+          $("#gameButtons").html(rowString)
+        break
+        case 4:
+          $("#gameTableText").html("You meet other pilgrims who insist on story telling and feasting, slowing you down.")
+          if (rogue > 0) {
+            $("#gameTableText").append("<br>Thankfully, your rogue friend is very entertaining!")
+            playerCharacter.pilgrimageModifier = 0
+          } else {
+            $("#gameTableText").append("<br>Too bad you didn't have any rogues in your group of retainers.")
+            playerCharacter.pilgrimageModifier = -1
+          }
+          $("#gameTableText").append("<p><br>Your pilgrimage continues...</p>")
+          rowString = `
+            <div class="d-flex mt-2">
+            <button onclick="rollPilgrimageTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Continue Pilgrimage
+            </button>
+          </div>`
+          $("#gameButtons").html(rowString)
+        break
+        case 5:
+          $("#gameTableText").html("You meet a physician.  He can heal you for 5 silver pieces")
+          $("#gameTableText").append("<p><br>Your pilgrimage continues...</p>")
+          rowString = `
+            <div class="d-flex mt-2">
+            <button onclick="rollPilgrimageTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Continue Pilgrimage
+            </button>
+          </div>`
+          $("#gameButtons").html(rowString)
+        break
+        case 6:
+          $("#gameTableText").html("You reach the shrine, the pilgrimage is over!")
+          rowString = `
+            <div class="d-flex mt-2">
+              <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Journey On
+              </button>
+            </div>`
+          $("#gameButtons").html(rowString)
+        break
+      }
       
       
     }
