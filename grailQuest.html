@@ -41,7 +41,7 @@
       background-image: url("http://drive.google.com/uc?export=view&id=1ekfXcSNZ2xz4JmwGsq1xjx1ywGM5J7Sw");
       /* Background image is centered vertically and horizontally at all times */
       background-position: center center;
-      /* Background image doesn't tile */
+      /* Background image doesn'=t tile */
       background-repeat: no-repeat;
       /* Background image is fixed in the viewport so that it doesn't move when 
        the content's height is greater than the image's height */
@@ -1135,7 +1135,7 @@ let retainers = [
       } 
       // 'theEncounter' is either the alt or the original
       // Now run the encounter
-      alert("The encounter is: " + theEncounter)
+      //alert("The encounter is: " + theEncounter)
       
       $("#gameTableText").empty()
       
@@ -1770,14 +1770,14 @@ let retainers = [
   
   $(document).on('click', '.re-employBtn', function () {
     var id = $(this).attr('data-id');
-    alert("You clicked: " + id)
+    //alert("You clicked: " + id)
     let statusId = "#"+ id + "_status"
     $(statusId).text("Retained")
     // get a handle on the correct object
     var obj = $.grep(retainers, function(obj){return obj.name === id;})[0];
     // set the object value to: true
     obj.employed = true
-    alert("the value of employed: " + obj.employed)
+    //alert("the value of employed: " + obj.employed)
     // remove 5 silver from the character's money total
     
   })
@@ -1801,7 +1801,7 @@ let retainers = [
       // next we have to refresh the screen
       createTable()
       
-      alert("the value of employed: " + obj.employed)
+      //=alert("the value of employed: " + obj.employed)
     } else {
       txt = "You pressed Cancel!";
     }
