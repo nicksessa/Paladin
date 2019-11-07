@@ -21,7 +21,7 @@
       background-image: url("https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763");
       
       /* this is the google drive version: */
-      background-image: url("https://drive.google.com/uc?export=view&id=14muus5B7-Qj1L57aNh2vAeERkGQq9eTU");
+      background-image: url("http://drive.google.com/uc?export=view&id=14muus5B7-Qj1L57aNh2vAeERkGQq9eTU");
       
       /* Background image is centered vertically and horizontally at all times */
       background-position: center center;
@@ -147,6 +147,7 @@
       border: none;
       text-align: center;
       padding: 0px 5px;
+      
     }
 
     .bodyDiv {
@@ -158,6 +159,10 @@
     .text-left {
       text-align: left !important;
     }
+    
+    
+
+    
   </style>
 </head>
 
@@ -182,7 +187,7 @@
           <thead>
           <tr>
             <th class="m-0 p-0">
-              <button data-toggle="modal" href="#myModal" type="button" class="btn btn-dark">
+              <button onclick="setCharacterModal()" data-toggle="modal" href="#myModal" type="button" class="btn btn-dark">
           <span id="topDivCharName" class="text-left">Sir Percival</span>
           
         </button>
@@ -287,7 +292,7 @@
 
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Character Sheet</h4>
+          <h4 id="modalTitle" class="modal-title">Character Sheet</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
 
@@ -317,6 +322,7 @@
       </div>
     </div>
   </div> <!-- modal -->
+   
   </div> <!-- col -->
   </div> <!-- row -->
   </div> <!-- container -->
@@ -334,8 +340,8 @@
       <div
         class="footer textBlock-bg pl-3 pt-2  border-bottom-0 border-right-0 bg-dark d-flex flex-wrap d-flex justify-content-end ">
         <button type="button" class="btn btn-dark text-left">Inventory</button>
-        <button type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Character</button>
-        <button type="button" class="btn btn-dark text-left">Retainers</button>
+        <button onclick="setCharacterModal()" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Character</button>
+        <button onclick="setRetainerModal()" id="openRetainerModal" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Retainers</button>
         <button type="button" class="btn btn-dark text-left">View Log</button>
       </div>
 
@@ -426,7 +432,60 @@
       pilgrimageModifier: 0
     }
     
-    let retainers = []
+    
+    
+
+let retainers = [
+    {
+      name: "Fred",
+      profession: "Mercenary",
+      employed: true,
+      cur_hp: 20,
+      max_hp: 20,
+      weapon: "Longsword",
+      armor: "Padded",
+      attack: 7,
+      damage_bonus: 2,
+      armor_bonus: 1,
+      morale: 1
+    },
+    {
+      name: "Oliver",
+      profession: "Rogue",
+      employed: true,
+      cur_hp: 15,
+      max_hp: 15,
+      weapon: "Shortsword",
+      armor: "Leather Jerkin",
+      attack: 7,
+      damage_bonus: 2,
+      armor_bonus: 1,
+      morale: -1
+    },
+    {
+      name: "Trogdor",
+      profession: "Woodsman",
+      employed: true,
+      cur_hp: 20,
+      max_hp: 20,
+      weapon: "Longbow and Shortsword",
+      armor: "Leather Jerkin",
+      attack: 7,
+      damage_bonus: 2,
+      armor_bonus: 1,
+      morale: 0
+    }
+  ]
+    
+    
+     
+    
+    
+        
+    
+    
+    
+    //let retainers = []
     let adventureLog = []
     let merchant = 1
     let hunter = 0
@@ -472,23 +531,25 @@
     // Next, set the Character Stats Modal
     // -----------------------------------------------------
     
-    let characterStats = `
-      <div>
-        <h1>${playerCharacter.name}</h1>
-        <hr>
-        <span>Hit Points: ${playerCharacter.cur_hp} / ${playerCharacter.max_hp}</span><br>
-        <span>Attack: ${playerCharacter.attack}+</span><br>
-        <span>Damage Modifier: ${playerCharacter.dmg_mod}</span><br>
-        <span>Armor Modifier: ${playerCharacter.armor}</span><br>
-        <hr>
-        <h3>Equipment</h3>
-        <span>Longsword</span><br>
-        <span>Chainmail</span><br>
-        <span>Shield</span><br>
-      </div>
-    `
-    $("#characterStatsModal").html(characterStats)
-    
+    function setCharacterModal() {
+      $("#modalTitle").html("Character Stats")
+      let characterStats = `
+        <div>
+          <h1>${playerCharacter.name}</h1>
+          <hr>
+          <span>Hit Points: ${playerCharacter.cur_hp} / ${playerCharacter.max_hp}</span><br>
+          <span>Attack: ${playerCharacter.attack}+</span><br>
+          <span>Damage Modifier: ${playerCharacter.dmg_mod}</span><br>
+          <span>Armor Modifier: ${playerCharacter.armor}</span><br>
+          <hr>
+          <h3>Equipment</h3>
+          <span>Longsword</span><br>
+          <span>Chainmail</span><br>
+          <span>Shield</span><br>
+        </div>
+      `
+      $("#characterStatsModal").html(characterStats)
+    }
     // -----------------------------------------------------
     // Journey Table
     // -----------------------------------------------------
@@ -1614,6 +1675,149 @@
     // -----------------------------------------------------
     // Heroic Quest Table
     // -----------------------------------------------------
+    
+    
+    
+    // -----------------------------------------------------
+    // Retainers
+    // -----------------------------------------------------
+    
+    function setRetainerModal() {
+      $("#modalTitle").html("Retainers")
+  let retainerTable = `
+    <div class='row'>
+  <div class="col-lg-12 bg-white rounded shadow-sm mb-5">
+            Retainer Table
+            <div class="table-responsive">
+              <table class="table" id="retainerTable">
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-left text-dark">Name</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-left text-dark">Profession</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-left text-dark">Status</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-center text-dark">Re-Employ / Fire</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="retainerTableBody">
+                  <!-- Javascript fills in the table here -->
+                </tbody>
+              </table>
+            </div> <!-- End Table container -->
+          </div> <!-- END column 1-->
+  </div>  <!-- END row -->
+  `
+  
+
+  //$("#mainBody").empty()
+  //$("#mainBody").append(retainerTable)
+  $("#characterStatsModal").html(retainerTable)
+  
+  // this is the same as the jQuery loop below
+  /*Object.keys(retainers).forEach(function (item) {
+    retainter_name = retainers[item].name
+    retainer_profession = retainers[item].profession
+  })*/
+  
+  $.each(retainers, function(key, value) {
+  
+    let retainer_name = value.name
+    let retainer_profession = value.profession
+    
+    value.employed = false
+    
+    let retainer_status = value.employed
+    let retainer_id = 0
+    var status = retainer_status ? retainer_status = "Retained" : retainer_status = "Not Retained"
+    
+  let retainerRow = `
+    <tr>
+    <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_name}</td>
+    <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_profession}</td>
+    <td id="${retainer_name}_status"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_status}</td>
+    <td class="border-0 align-center text-left text-dark p-2 px-3 justify"> 
+      <div class="d-flex justify-content-center px-2">
+      <button data-id="${retainer_name}" type="button" class="re-employBtn btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Re-Employ
+      </button>
+      <button data-id="${retainer_name}" type="button" class="fireBtn btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Fire
+      </button>
+      </div>
+    </td>
+    </tr>
+  `
+    
+      //console.log("Name: " + retainer_name + " Profession: " + retainer_profession);
+      $("#retainerTable").append(retainerRow)
+      
+     // $("#characterStatsModal").html(retainerRow)
+    });
+  
+  }
+  
+  //createTable()
+  
+  
+  $(document).on('click', '.re-employBtn', function () {
+    var id = $(this).attr('data-id');
+    alert("You clicked: " + id)
+    let statusId = "#"+ id + "_status"
+    $(statusId).text("Retained")
+    // get a handle on the correct object
+    var obj = $.grep(retainers, function(obj){return obj.name === id;})[0];
+    // set the object value to: true
+    obj.employed = true
+    alert("the value of employed: " + obj.employed)
+    // remove 5 silver from the character's money total
+    
+  })
+  
+  $(document).on('click', '.fireBtn', function () {
+    var id = $(this).attr('data-id');
+    // make this a choice.  "Are you sure..."
+    if (confirm("Are you sure you want to fire " + id + " ?")) {
+      txt = "You pressed OK!";
+      let statusId = "#"+ id + "_status"
+      $(statusId).text("Fired")
+      // get a handle on the correct object
+      var obj = $.grep(retainers, function(obj){return obj.name === id;})[0];
+      // set the object value to: false
+      obj.employed = false
+      
+      // remove the object from the array
+      retainers = $.grep(retainers, function(e){ 
+           return e.name != id; 
+      });
+      // next we have to refresh the screen
+      createTable()
+      
+      alert("the value of employed: " + obj.employed)
+    } else {
+      txt = "You pressed Cancel!";
+    }
+    
+  })
+
+
+
+    
+    
+    // -----------------------------------------------------
+    // Retainers
+    // -----------------------------------------------------
+    
+    
+    
     
   </script>
 
