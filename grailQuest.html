@@ -63,6 +63,7 @@
       border-top-right-radius: 30px;
       opacity: 0.9;
       border: 2px solid blanchedalmond;
+      color: blanchedalmond;
     }
     /* change the background color */
     .navbar-custom {
@@ -139,8 +140,17 @@
       color: blanchedalmond;
     }
     
+    .modal-dialog{
+      position: relative;
+      display: table; /* This is important */ 
+      overflow-y: auto;    
+      overflow-x: auto;
+      width: auto;
+      min-width: 300px;   
+	}
+    
     .table {
-      color: blanchedalmond;
+      color: black;
     }
     
     th, tr {
@@ -149,10 +159,9 @@
       padding: 0px 5px;
       
     }
-
     .bodyDiv {
       height: 80%;
-      height: 350px;
+      height: 375px;
       
       overflow-y: auto;
     }
@@ -160,8 +169,9 @@
       text-align: left !important;
     }
     
-    
-
+    .wideModal {
+      width: 80%;
+    }
     
   </style>
 </head>
@@ -178,7 +188,7 @@
           aria-expanded="false" aria-controls="collapseExample">Menu</button>
 
 
-        <button type="button" class="btn btn-dark text-left">The Grail Quest</button>
+        <button type="button" class="btn btn-dark text-left"><strong>The Grail Quest</strong></button>
         
         
         <!-- top div table -->
@@ -188,7 +198,7 @@
           <tr>
             <th class="m-0 p-0">
               <button onclick="setCharacterModal()" data-toggle="modal" href="#myModal" type="button" class="btn btn-dark">
-          <span id="topDivCharName" class="text-left">Sir Percival</span>
+          <span id="topDivCharName" class="text-left"><strong>Sir Percival</strong></span>
           
         </button>
             </th>
@@ -339,9 +349,9 @@
 
       <div
         class="footer textBlock-bg pl-3 pt-2  border-bottom-0 border-right-0 bg-dark d-flex flex-wrap d-flex justify-content-end ">
-        <button type="button" class="btn btn-dark text-left">Inventory</button>
+        <button onclick="showInventory()" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Inventory</button>
         <button onclick="setCharacterModal()" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Character</button>
-        <button onclick="setRetainerModal()" id="openRetainerModal" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Retainers</button>
+        <button onclick="showRetainersModal()" id="openRetainerModal" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Retainers</button>
         <button type="button" class="btn btn-dark text-left">View Log</button>
       </div>
 
@@ -354,6 +364,15 @@
 
 
   <script>
+  
+
+  
+  $('#myModal').on('show.bs.modal', function () {
+      $('.modal-body',this).css({width:'auto',height:'auto', 'max-height':'100%'});
+});
+
+  
+  
     let backgroundImageURL1 = "https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763"
     let backgroundImageURL2 = "https://cdnb.artstation.com/p/assets/images/images/020/284/017/large/andreas-rocha-cursedforesthr.jpg?1567153102"
     backgroundImageURL1 = "https://drive.google.com/uc?export=view&id=14muus5B7-Qj1L57aNh2vAeERkGQq9eTU"
@@ -421,6 +440,7 @@
       healingPotions: 2,
       alive: true,
       rumors: 5,
+      rumorModifier: 0,
       rebellionLevel: 2,
       turn: 5,
       piety: 2,
@@ -434,7 +454,6 @@
     
     
     
-
 let retainers = [
     {
       name: "Fred",
@@ -447,7 +466,8 @@ let retainers = [
       attack: 7,
       damage_bonus: 2,
       armor_bonus: 1,
-      morale: 1
+      morale: 1,
+      cost: 5
     },
     {
       name: "Oliver",
@@ -460,7 +480,8 @@ let retainers = [
       attack: 7,
       damage_bonus: 2,
       armor_bonus: 1,
-      morale: -1
+      morale: -1,
+      cost: 5
     },
     {
       name: "Trogdor",
@@ -473,24 +494,102 @@ let retainers = [
       attack: 7,
       damage_bonus: 2,
       armor_bonus: 1,
-      morale: 0
+      morale: 0,
+      cost: 5
     }
   ]
     
     
-     
+    let availableRetainers = []
     
     
-        
+  // -------------------------------------
+  // Retainer Names
+  
+let retainerNameFirst_A = [
+      "Bard",
+      "Cadm",
+      "Guel",
+      "Har",
+      "Mael",
+      "Rayg"
+    ]
     
+    let retainerNameSecond_A = [
+      "an",
+      "ar",
+      "oc"
+    ]
     
+    let retainerNameFirst_B = [
+      "Adal",
+      "Childe",
+      "Ed",
+      "Leof",
+      "Theud",
+      "Wulf"
+    ]
+    let retainerNameSecond_B = [
+      "berg",
+      "mund",
+      "ric"
+    ]
     
-    //let retainers = []
+    let retainerNameFirst_C = [
+      "Berw",
+      "Cadw",
+      "Gwrh",
+      "Llyw",
+      "Ow",
+      "Tyw"
+    ]
+    let retainerNameSecond_C = [
+      "en",
+      "yr",
+      "yn"
+    ]
+    
+    let retainerNameFirst_D = [
+      "Aligr",
+      "Bedin",
+      "Dion",
+      "Gaheri",
+      "Guivr",
+      "Mordr"
+    ]
+    let retainerNameSecond_D = [
+      "auz",
+      "es",
+      "et"
+    ]
+  
+  // -------------------------------------
+    
+
     let adventureLog = []
-    let merchant = 1
-    let hunter = 0
+    
+    
+    let merchant = 0
+    let woodsman = 0
     let mercenary = 0
     let rogue = 0
+    
+    // get some totals for retainers
+    
+    $.each(retainers, function(key, value) {
+
+      let retainer_name = value.name
+      let retainer_profession = value.profession
+      if (retainer_profession == "Mercenary") mercenary++
+      if (retainer_profession == "Rogue") rogue++
+      if (retainer_profession == "Woodsman") woodsman++
+      if (retainer_profession == "Merchant") merchant++
+      
+    })
+    
+    let manageRetainersComplete = false
+    
+    
     
     //alert("Num Retainers: " + retainers.length)
     console.log("Num Retainers: " + retainers.length)
@@ -498,7 +597,7 @@ let retainers = [
     updateNavbar()
     
     function updateNavbar() {
-      $("#topDivCharName").html(playerCharacter.name)
+      $("#topDivCharName").html(`<strong>${playerCharacter.name}</strong>`)
       $("#topDivCurHP").html(playerCharacter.cur_hp)
       $("#topDivMaxHP").html(playerCharacter.max_hp)
       $("#topDivPiety").html(playerCharacter.piety)
@@ -556,7 +655,7 @@ let retainers = [
         // Tables
     let journeyTable = [
       "You have found an inn at a Crossroads. You may choose to stay at the inn or face the danger that awaits. Choose wisely.",
-      "an inn.  You may choose to stay at the inn or or bypass it by clicking on the Journey On button.",
+      "finds an inn.  You may choose to stay at the inn or or bypass it by clicking on the Journey On button.",
       "You are lost! If you have a Merchant retainer, he knows of a shortcut, treat as a result of 1 on this table instead. If you don not have a merchant, roll on this table again with a +1.",
       "Roll on the Encounter Table (3).",
       "If the Rebellion Level is 4, roll on the Challenge Table (7). Otherwise, roll on the Encounter Table (3).",
@@ -574,9 +673,9 @@ let retainers = [
     ]
     
     let traitorsTable = [
-      "You hear that a questing paladin has been killed by the traitors in a distant location. The Rebellion Level has increased!",
-      "You find a questing paladin, mortally wounded by the traitors. Before he dies, he gives you some information. You have gained one rumor but the Rebellion Level has also increased!",
-      "There are signs of a brave fight, but no dead questing paladin. This was a lucky escape, the traitors did not get their kill."
+      "hears that a questing paladin has been killed by the traitors in a distant location. The Rebellion Level has increased!",
+      "finds a questing paladin, mortally wounded by the traitors. Before he dies, he gives you some information. You have gained one rumor but the Rebellion Level has also increased!",
+      "finds signs of a brave fight, but no dead questing paladin. This was a lucky escape, the traitors did not get their kill."
     ]
     
     
@@ -621,7 +720,7 @@ let retainers = [
         playerCharacter.wasLost = false
       }
       
-      journeyRoll = 4
+      //journeyRoll = 4
       //alert("The begin adventure button was clicked. You rolled: " + d6Roll);
       // Save turn data in the log (we'll push this to MySql at some point)
       adventureLog.push({ 'turn': playerCharacter.turn, 'roll': journeyRoll, 'result': journeyTable[journeyRoll - 1] });
@@ -761,14 +860,15 @@ let retainers = [
         case 1:
           console.log("[1] Your paladin is turned away!  Journey on...")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': innTable[0] });
-          $("#gameTableText").append("Your paladin is turned away.")
+          $("#gameTableText").append("<p>Your paladin is turned away.</p>")
         break;
         case 2:
           console.log("[2] Grumpy Patrons")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Grumpy patrons' });
-          playerCharacter.rumors--
+          playerCharacter.rumorModifier = -1
           updateNavbar()
-          rowString = "Grumpy patrons (rumors -1)"
+          rowString = "<p>Grumpy patrons (rumor modifier -1)</p>"
+          
           if (retainers > 0) {
             let first_d6Roll = Math.floor(Math.random() * 6) + 1;
             let second_d6Roll = Math.floor(Math.random() * 6) + 1;
@@ -783,7 +883,7 @@ let retainers = [
         break;
         case 3:
           console.log("[3] Shady Characters")
-          $("#gameTableText").append("Shady characters abound, making it hard to find good help. (-1 to the retainer roll)<br>")
+          $("#gameTableText").append("<p>Shady characters abound, making it hard to find good help. (-1 to the retainer roll)</p>")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Shady Characters.' });
           let first_d6Roll = Math.floor(Math.random() * 6) + 1;
           let second_d6Roll = Math.floor(Math.random() * 6) + 1;
@@ -794,7 +894,7 @@ let retainers = [
             let third_d6Roll = Math.floor(Math.random() * 6) + 1;
             let threeD6 = first_d6Roll + second_d6Roll + third_d6Roll
             rowString = "Robbed!"
-            rowString += "<br>You lose " + threeD6 + " silver pieces."
+            rowString += "<br>You lose " + threeD6 + " silver pieces.<br>"
             adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'You have been robbed!' });
             playerCharacter.money -= threeD6
             updateNavbar()
@@ -808,38 +908,38 @@ let retainers = [
           if (merchant < 1) {
             // items cost double. items sold for half
             console.log("Greedy traders. Items cost double and are sold for half!")
-            $("#gameTableText").append("Greedy Traders, everything costs double and everything you sell is at half the normal value!")
+            $("#gameTableText").append("<p>Greedy Traders, everything costs double and everything you sell is at half the normal value!</p>")
           } else {
-            $("#gameTableText").append("Greedy Traders but your merchant is able to counter them!")
+            $("#gameTableText").append("<p>Greedy Traders but your merchant is able to counter them!</p>")
           }
         break;
         case 5:
-          $("#gameTableText").append("Talkative innkeeper.  Add +1 to the Rumor Roll")
+          $("#gameTableText").append("<p>Talkative innkeeper.  Add +1 to the Rumor Roll</p>")
           console.log("[5] Talkative innkeeper")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Talkative innkeeper.' });
-          playerCharacter.rumors++
+          playerCharacter.rumorModifier = 1
           updateNavbar()
           break;
         case 6:
           let num = rollDie(6)
           if (num < 6) {
             console.log("[6] Abundant Retainers looking for work")
-            $("#gameTableText").append("Abundant Retainers looking for work.  +1 to the Find Retainer Roll")
+            $("#gameTableText").append("<p>Abundant Retainers looking for work.  +1 to the Find Retainer Roll</p>")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Add +1 to the Find Retainer roll.' });
             playerCharacter.findRetainerModifier++
           } else {
-            $("#gameTableText").append("Nothing special happens this time.")
+            $("#gameTableText").append("<p>Nothing special happens this time.</p>")
           }
         break;
         case 7:
           num = rollDie(6)
           if (num < 6) {
             console.log("[6] Free Food & Abundant Retainers looking for work!")
-            $("#gameTableText").append("Abundant Retainers looking for work.  +1 to the Find Retainer Roll")
+            $("#gameTableText").append("<p>Abundant Retainers looking for work.  +1 to the Find Retainer Roll</p>")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Add +1 to the Find Retainer roll.' });
             playerCharacter.findRetainerModifier++
           }
-          $("#gameTableText").append("<br>Free food and lodging!")
+          $("#gameTableText").append("<br>Free food and lodging!<br>")
           console.log("[7] Free food and lodging!")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Free food and lodging!' });
         break;
@@ -852,22 +952,267 @@ let retainers = [
           }
           money = (5 * money)
           console.log("You gain: " + money + " silver pieces")
-          $("#gameTableText").append(`<p>You gain ${money} silver pieces! </p>`)
+          $("#gameTableText").append(`<p>A wealthy patron donates to your cause! You gain ${money} silver pieces! </p>`)
           playerCharacter.money += money
           updateNavbar()
         break;
       }
       //logTurn()
+      if (roll_1d6 > 1) {
+        stayAtInn()
+      } else {
+        rowString = `
+          <div class="d-flex mt-2">
+            <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+            </button>
+          </div>`
+        $("#gameButtons").empty()
+        $("#gameButtons").html(rowString)
+      }
+      
+      
+    }
+    
+// --------------------    
+// Stay at Inn    
+  function stayAtInn() {
+    let rowString = ""
+    if (playerCharacter.money < 10) {
+      // charity
+      $("#gameTableText").append(`<p>Since you don't have enough money, the local church, having heard of your daring exploits, puts you up for the night for free. </p>`)
+      healUp()
+      // Re-employ all retainers.
+      // Since they default to hired, then there is nothing to do here.
       rowString = `
-        <div class="d-flex mt-2">
+      <div class="d-flex mt-2">
         <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-            <i class="mt-2"></i>
-            Journey On
-        </button>
-        </div>`
+        <i class="mt-2"></i>
+        Journey On
+    	</button>
+      </div>`
       $("#gameButtons").empty()
       $("#gameButtons").html(rowString)
+    } else {
+      playerCharacter.money -= 10
+      $("#gameTableText").append(`<p>You pay the innkeeper 10 silver pieces for food and lodging for the night. </p>`)
+      healUp()
+      rollForRumors()
+      // retain/fire retainers
+
+      let numRetainers = retainers.length
+      let newRetainers = numAvailableRetainers()
+      
+      if (newRetainers > 0 ) {
+        $("#gameTableText").append(`<p>New possible retainers are available.</p>`)
+        // roll em up now, not on click.
+        // then add them to the new retainers object
+        
+        for (let i=0; i<newRetainers; i++) {
+          createRetainer(i)
+        }
+
+      }
+        rowString = `
+        <div class="d-flex mt-2 justify-content-around">
+        <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+          Journey Onward!
+        </button>
+        <button onclick="manageRetainersModal()" data-id="manageRetainersBtn" type="button" data-toggle="modal" href="#myModal" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+          Manage Retainers
+        </button>
+        <button onclick="generalStore()" data-id="generalStoreBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+          General Store
+        </button>
+        </div>
+        `
+        $("#gameButtons").empty()
+        $("#gameButtons").html(rowString)
+      }    
+    updateNavbar()
+  }
+    
+  function healUp() {
+    // heal if cur_hp < max_hp
+    if (playerCharacter.cur_hp < playerCharacter.max_hp) {
+      let num1 = rollDie(6)
+      let num2 = rollDie(6)
+      let num3 = num1 + num2
+      $("#gameTableText").append(`<p>Healing Roll: ${num1} + ${num2} = ${num3}</p>`)
+      if ((num3 + playerCharacter.cur_hp) >= playerCharacter.max_hp) {
+        playerCharacter.cur_hp = playerCharacter.max_hp
+
+        $("#gameTableText").append("<p>After a good night's sleep, ALL of your wounds have healed!</p>")
+      } else {
+        playerCharacter.cur_hp = num3 + playerCharacter.cur_hp
+        $("#gameTableText").append("<p>After a good night's sleep, some of your wounds have healed.</p>")
+
+      }
+      $("#gameTableText").append(`<p>Current Health: ${playerCharacter.cur_hp}</p>`)
+      updateNavbar()
     }
+  }
+    
+  function rollForRumors() {
+    let randomNum = rollDie(6) 
+    let rumorMod = playerCharacter.rumorModifier
+    let rogueMod = 0
+    
+    let haveRogue = false
+    $.each(retainers, function(key, value) {
+        let retainer_profession = value.profession
+        if (retainer_profession == "Rogue") haveRogue = true
+    })
+    if (haveRogue) {
+      rogueMod = 2
+    }
+    let total = randomNum + rumorMod + rogueMod
+    if (haveRogue) {
+      $("#gameTableText").append(`<p>Rumor Roll: ${randomNum} + modifier: ${rumorMod} + rogue: ${rogueMod} = ${total}</p>`)
+    } else {
+      $("#gameTableText").append(`<p>Rumor Roll: ${randomNum} + modifier: ${rumorMod} = ${total}</p>`)
+    }
+    if (total > 3) {
+      playerCharacter.rumors++
+      $("#gameTableText").append("You gain 1 rumor!")
+    } else {
+      $("#gameTableText").append("Sorry pal, no new rumors for you.")
+    }
+  }
+    
+    
+    function generalStore() {
+      $("#gameTableText").append("<p>The store is closed.</p>")
+      let gotoJourneyButton = `
+        <div class="mt-2">
+        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Continue your Journey
+            </button>
+      `
+      $("#gameButtons").html(gotoJourneyButton)
+    }
+
+    function numAvailableRetainers () {
+      let num1 = rollDie(6)
+      //alert("You rolled a: " + num1)
+      let numRetainers = retainers.length
+      let total = num1 - numRetainers
+      //alert("Total: " + total)
+      return total
+    }
+    
+    function createRetainer (i) {
+      availableRetainers = []
+      // get name
+      retainerName = createName(i)
+
+      // get profession
+      retainerProfession = getRetainerProfession(i)
+
+      let newObj = {
+        name: retainerName,
+        profession: retainerProfession,
+        employed: false,
+        cost: 10
+      }
+      // push to availableRetainers[]
+
+      availableRetainers.push(newObj)
+
+    }
+    
+  function createName(i) {
+    let firstPart = ""
+    let secondPart = ""
+    let retainerName = ""
+    let firstRoll = 0
+    let secondRoll = 0
+    
+    firstRoll = rollDie(6)
+    switch(firstRoll) {
+      case 1:
+      case 2:
+        secondRoll = rollDie(retainerNameFirst_A.length)
+        firstPart = retainerNameFirst_A[secondRoll -1]
+        console.log("First Part is: " + firstPart)
+        thirdRoll = rollDie(retainerNameSecond_A.length)
+        secondPart = retainerNameSecond_A[thirdRoll -1]
+        console.log("Second Part is: " + secondPart)
+        retainerName = firstPart + secondPart
+        console.log("Retainer Name is: " + retainerName)
+      break;
+      case 3:
+      case 4:
+        secondRoll = rollDie(retainerNameFirst_B.length)
+        firstPart = retainerNameFirst_B[secondRoll -1]
+        console.log("First Part is: " + firstPart)
+        thirdRoll = rollDie(retainerNameSecond_B.length)
+        secondPart = retainerNameSecond_B[thirdRoll -1]
+        console.log("Second Part is: " + secondPart)
+        retainerName = firstPart + secondPart
+        console.log("Retainer Name is: " + retainerName)
+      break;
+      case 5:
+        secondRoll = rollDie(retainerNameFirst_C.length)
+        firstPart = retainerNameFirst_C[secondRoll -1]
+        console.log("First Part is: " + firstPart)
+        thirdRoll = rollDie(retainerNameSecond_C.length)
+        secondPart = retainerNameSecond_C[thirdRoll -1]
+        console.log("Second Part is: " + secondPart)
+        retainerName = firstPart + secondPart
+        console.log("Retainer Name is: " + retainerName)
+      break;
+      case 6:
+        secondRoll = rollDie(retainerNameFirst_D.length)
+        firstPart = retainerNameFirst_D[secondRoll -1]
+        console.log("First Part is: " + firstPart)
+        thirdRoll = rollDie(retainerNameSecond_D.length)
+        secondPart = retainerNameSecond_D[thirdRoll -1]
+        console.log("Second Part is: " + secondPart)
+        retainerName = firstPart + secondPart
+        console.log("Retainer Name is: " + retainerName)
+      break;
+    }
+    //alert("Retainer ["+ i + "] is " + retainerName)
+    return retainerName
+  }
+  
+  
+  function getRetainerProfession() {
+    let num1 = rollDie(6)
+    switch(num1) {
+      case 1:
+      case 2:
+      case 3:
+        return "Mercenary"
+      break;
+      case 4:
+        return "Woodsman"
+      break;
+      case 5:
+        return "Merchant"
+      break;
+      case 6:
+        return "Rogue"
+      break;
+    }
+  }
+    
+   
+   
+ 
+   
+   
+   
+    
+    
+// Stay At Inn
+// --------------------
     
 // --- You are lost ---
     function youAreLost() {
@@ -971,7 +1316,7 @@ let retainers = [
       let secondRoll = rollDie(6)
       let totalRoll = firstRoll + secondRoll
       
-      totalRoll = 7
+      //totalRoll = 7
       
       altEncounter = false
       //alert("Roll: (" + firstRoll + " + " + secondRoll + ") = " + totalRoll)
@@ -1576,8 +1921,8 @@ let retainers = [
         break;
         case 2:
           $("#gameTableText").html("You enter a dense forest, slowing you down.")
-          if (hunter > 0) {
-            $("#gameTableText").append("<br>Good thing you have a hunter though!")
+          if (woodsman > 0) {
+            $("#gameTableText").append("<br>Good thing you have a woodsman though!")
             playerCharacter.pilgrimageModifier = 0
           } else {
             $("#gameTableText").append("<br>Too bad you didn't have a woodsman.")
@@ -1682,14 +2027,59 @@ let retainers = [
     // Retainers
     // -----------------------------------------------------
     
-    function setRetainerModal() {
+    function showRetainersModal() {
       $("#modalTitle").html("Retainers")
-  let retainerTable = `
-    <div class='row'>
-  <div class="col-lg-12 bg-white rounded shadow-sm mb-5">
-            Retainer Table
+      let retainersTable = `
+        <div class='row'>
+        <div class="col-lg-12 bg-white rounded shadow-sm mb-5">
             <div class="table-responsive">
-              <table class="table" id="retainerTable">
+              <table class="table" id="showRetainersTable">
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-left text-dark">Name</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-left text-dark">Profession</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="showRetainerTableBody">
+                  <!-- Javascript fills in the table here -->
+                </tbody>
+              </table>
+            </div> <!-- End Table container -->
+          </div> <!-- END column 1-->
+      </div>  <!-- END row -->
+      `
+  
+      $("#characterStatsModal").html(retainersTable)
+      
+      $.each(retainers, function(key, value) {
+
+        let retainer_name = value.name
+        let retainer_profession = value.profession
+
+        let retainer_id = 0
+
+        let retainerRow = `
+          <tr>
+            <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_name}</td>
+            <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_profession}</td>
+          </tr>
+        `
+        //console.log("Name: " + retainer_name + " Profession: " + retainer_profession);
+        $("#showRetainersTable").append(retainerRow)
+      });
+    }
+    
+    function manageRetainersModal() {
+      $("#modalTitle").html("Manage Retainers")
+      let retainerHireFireTable = `
+        <div class='row'>
+        <div class="col-lg-12 bg-white rounded shadow-sm mb-5">
+            <div class="table-responsive">
+              <table class="table" id="manageRetainersTable">
                 <thead>
                   <tr>
                     <th scope="col" class="border-0 bg-light">
@@ -1702,6 +2092,9 @@ let retainers = [
                       <div class="py-2 text-uppercase text-left text-dark">Status</div>
                     </th>
                     <th scope="col" class="border-0 bg-light">
+                      <div class="py-2 text-uppercase text-left text-dark">Cost</div>
+                    </th>
+                    <th scope="col" class="border-0 bg-light">
                       <div class="py-2 text-uppercase text-center text-dark">Re-Employ / Fire</div>
                     </th>
                   </tr>
@@ -1712,60 +2105,90 @@ let retainers = [
               </table>
             </div> <!-- End Table container -->
           </div> <!-- END column 1-->
-  </div>  <!-- END row -->
-  `
+      </div>  <!-- END row -->
+      `
   
+      $("#characterStatsModal").html(retainerHireFireTable)
+  
+      // this is the same as the jQuery loop below
+      /*Object.keys(retainers).forEach(function (item) {
+        retainter_name = retainers[item].name
+        retainer_profession = retainers[item].profession
+      })*/
+  
+      $.each(retainers, function(key, value) {
 
-  //$("#mainBody").empty()
-  //$("#mainBody").append(retainerTable)
-  $("#characterStatsModal").html(retainerTable)
-  
-  // this is the same as the jQuery loop below
-  /*Object.keys(retainers).forEach(function (item) {
-    retainter_name = retainers[item].name
-    retainer_profession = retainers[item].profession
-  })*/
-  
-  $.each(retainers, function(key, value) {
-  
-    let retainer_name = value.name
-    let retainer_profession = value.profession
-    
-    value.employed = false
-    
-    let retainer_status = value.employed
-    let retainer_id = 0
-    var status = retainer_status ? retainer_status = "Retained" : retainer_status = "Not Retained"
-    
-  let retainerRow = `
-    <tr>
-    <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_name}</td>
-    <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_profession}</td>
-    <td id="${retainer_name}_status"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_status}</td>
-    <td class="border-0 align-center text-left text-dark p-2 px-3 justify"> 
-      <div class="d-flex justify-content-center px-2">
-      <button data-id="${retainer_name}" type="button" class="re-employBtn btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Re-Employ
-      </button>
-      <button data-id="${retainer_name}" type="button" class="fireBtn btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Fire
-      </button>
-      </div>
-    </td>
-    </tr>
-  `
-    
-      //console.log("Name: " + retainer_name + " Profession: " + retainer_profession);
-      $("#retainerTable").append(retainerRow)
+        let retainer_name = value.name
+        let retainer_profession = value.profession
+        let retainer_cost = value.cost
+
+        value.employed = false
+
+        let retainer_status = value.employed
+        let retainer_id = 0
+        var status = retainer_status ? retainer_status = "Retained" : retainer_status = "Not Retained"
+
+        let retainerRow = `
+          <tr>
+          <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_name}</td>
+          <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_profession}</td>
+          <td id="${retainer_name}_status"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_status}</td>
+          <td id="${retainer_name}_cost"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_cost}</td>
+          <td class="border-0 align-center text-left text-dark p-2 px-3 justify"> 
+            <div class="d-flex justify-content-center px-2">
+            <button data-id="${retainer_name}" type="button" class="re-employBtn btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Re-Employ
+            </button>
+            <button data-id="${retainer_name}" type="button" class="fireBtn btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Fire
+            </button>
+            </div>
+          </td>
+          </tr>
+        `
+        //console.log("Name: " + retainer_name + " Profession: " + retainer_profession);
+        $("#manageRetainersTable").append(retainerRow)
       
-     // $("#characterStatsModal").html(retainerRow)
-    });
-  
+      });
+    
+    
+      // add possible new retainers
+      
+      if (availableRetainers.length > 0) {
+        $.each(availableRetainers, function(key, value) {
+          let retainer_name = value.name
+          let retainer_profession = value.profession
+          let retainer_cost = value.cost
+
+          value.employed = false
+
+          let retainer_status = value.employed
+          let retainer_id = 0
+          var status = retainer_status ? retainer_status = "Retained" : retainer_status = "Not Retained"
+
+        let retainerRow = `
+          <tr>
+          <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_name}</td>
+          <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_profession}</td>
+          <td id="${retainer_name}_status"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_status}</td>
+          <td id="${retainer_name}_cost"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_cost}</td>
+          <td class="border-0 align-center text-left text-dark p-2 px-3 justify"> 
+            <div class="d-flex justify-content-center px-2">
+            <button data-id="${retainer_name}" type="button" class="re-employBtn btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Hire
+            </button>
+            </div>
+          </td>
+          </tr>
+        `
+        //console.log("Name: " + retainer_name + " Profession: " + retainer_profession);
+        $("#manageRetainersTable").append(retainerRow)
+      });
+    }
   }
-  
-  //createTable()
   
   
   $(document).on('click', '.re-employBtn', function () {
@@ -1779,7 +2202,9 @@ let retainers = [
     obj.employed = true
     //alert("the value of employed: " + obj.employed)
     // remove 5 silver from the character's money total
-    
+    let cost = "#"+ id + "_cost"
+    playerCharacter.money -= cost
+    updateNavbar()
   })
   
   $(document).on('click', '.fireBtn', function () {
@@ -1807,14 +2232,137 @@ let retainers = [
     }
     
   })
-
-
-
     
     
     // -----------------------------------------------------
     // Retainers
     // -----------------------------------------------------
+    
+    
+    // -----------------------------------------------------
+    // Inventory
+    // -----------------------------------------------------
+    
+    let inventory = [
+      {
+        id: 0,
+        name: "Longsword",
+        type: "Hand Weapon",
+        ranged: false,
+        readied: true,
+        cost: 6,
+        damage_bonus: 2
+      },
+      {
+        id: 1,
+        name: "Short sword",
+        type: "Light Hand Weapon",
+        ranged: false,
+        readied: false,
+        cost: 5,
+        damage_bonus: 1
+      },
+      {
+        id: 2,
+        name: "Leather Jerkin",
+        type: "Light Armor",
+        ranged: false,
+        readied: true,
+        cost: 5,
+        damage_bonus: 0
+      },
+      {
+        id: 3,
+        name: "Padded Armor",
+        type: "Light Armor",
+        ranged: false,
+        readied: true,
+        cost: 4,
+        damage_bonus: 0
+      }
+    ]
+    
+    function showInventory() {
+      $("#modalTitle").html("Inventory")
+      let inventoryTable = `
+        <div class='row'>
+      	<div class="col-lg-12 bg-white rounded shadow-sm mb-5">
+          <div class="table-responsive">
+          <table class="table" id="equipmentTable">
+            <thead>
+            <tr>
+            <th scope="col" class="border-0 bg-light">
+            <div class="py-2 text-uppercase text-left">Name</div>
+                </th>
+            <th scope="col" class="border-0 bg-light">
+            <div class="py-2 text-uppercase text-left">Type</div>
+                </th>
+            <th scope="col" class="border-0 bg-light">
+            <div class="py-2 text-uppercase text-left">Cost</div>
+                </th>
+            <th scope="col" class="border-0 bg-light">
+            <div class="py-2 text-uppercase text-left">Sale Price</div>
+                </th>
+            <th scope="col" class="border-0 bg-light">
+            <div class="py-2 text-uppercase text-center">Sell Item</div>
+            </th>
+            </tr>
+            </thead>
+          	<tbody id="inventoryTableBody">
+          <!-- Javascript fills in the table here -->
+              </tbody>
+              </table>
+              </div> <!-- End Table container -->
+        </div> <!-- END column 1-->
+      </div>  <!-- END row -->
+      `
+      $("#characterStatsModal").html(inventoryTable)
+
+ 
+      // this is the same as the jQuery loop below
+      /*Object.keys(retainers).forEach(function (item) {
+        retainter_name = retainers[item].name
+        retainer_profession = retainers[item].profession
+      })*/
+  
+      $.each(inventory, function(key, value) {
+        let item_id = value.id
+        let item_name = value.name
+        let item_type = value.type
+        let item_cost = value.cost
+        let divisor = 2
+        let res = (item_cost % divisor)
+        let item_salePrice = (item_cost - res) / divisor
+    
+    
+        let inventoryRow = `
+          <tr>
+          <td id="name_${item_id}" class="border-0 align-center text-left p-2 px-3"> ${item_name}</td>
+          <td class="border-0 align-center text-left p-2 px-3"> ${item_type}</td>
+          <td class="border-0 align-center text-left p-2 px-3"> ${item_cost}</td>
+          <td id="salePrice_${item_id}" class="border-0 align-center text-left p-2 px-3"> ${item_salePrice}</td>
+          <td class="border-0 align-center text-left p-2 px-3 justify"> 
+            <div class="d-flex justify-content-center px-2">
+            <button data-id="${item_id}" type="button" class="sellBtn btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Sell
+            </button>
+            </div>
+          </td>
+          </tr>
+        `
+    
+      //console.log("Name: " + retainer_name + " Profession: " + retainer_profession);
+      $("#inventoryTableBody").append(inventoryRow)
+    });
+    
+    }
+    
+    
+    // -----------------------------------------------------
+    // Inventory
+    // -----------------------------------------------------
+    
     
     
     
