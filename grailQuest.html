@@ -139,6 +139,10 @@
     .modal-title {
       color: blanchedalmond;
     }
+
+    .defaultText {
+      color: blanchedalmond;
+    }
     
     .modal-dialog{
       position: relative;
@@ -421,14 +425,11 @@
       }
   });  
     
-    // -----------------------------------------------------
-    // On Load set the top div
-    // -----------------------------------------------------
     
     let playerCharacter = {
       name: "Sir Percival",
       max_hp: 40,
-      cur_hp: 25,
+      cur_hp: 35,
       armor: 1,
       attack: 7,
       att_mod: 0,
@@ -441,7 +442,8 @@
       alive: true,
       rumors: 5,
       rumorModifier: 0,
-      rebellionLevel: 2,
+      rebellionLevel: 0,
+      rebellionLevelMod: 0,
       turn: 5,
       piety: 2,
       sideQuests: 0,
@@ -594,9 +596,38 @@ let retainerNameFirst_A = [
     //alert("Num Retainers: " + retainers.length)
     console.log("Num Retainers: " + retainers.length)
     
+    
+    // -----------------------------------------------------
+    // On Load set the top div
+    // -----------------------------------------------------
+    
     updateNavbar()
     
     function updateNavbar() {
+      // attack bonus 
+      // rebellion level 1 = +1
+      // rebellion level 2-3 = +2
+      // rebellion level 4 = +3
+    
+      let rebellionLevel = playerCharacter.rebellionLevel
+      let rebellionLevelMod = 0
+      let hpMod = 0
+      switch(rebellionLevel) {
+        case 0: 
+          playerCharacter.rebellionLevelMod = 0
+        break;
+        case 1: 
+          playerCharacter.rebellionLevelMod = 1
+        break;
+        case 2:
+        case 3:
+          playerCharacter.rebellionLevelMod = 2
+        break;
+        default: 
+          playerCharacter.rebellionLevelMod = 3
+        break;
+      }
+    
       $("#topDivCharName").html(`<strong>${playerCharacter.name}</strong>`)
       $("#topDivCurHP").html(playerCharacter.cur_hp)
       $("#topDivMaxHP").html(playerCharacter.max_hp)
@@ -612,9 +643,9 @@ let retainerNameFirst_A = [
       let a = Math.floor(playerCharacter.max_hp / 3);
       let firstThird = (playerCharacter.max_hp - a)
       let secondThird = (playerCharacter.max_hp - (a * 2))
-      console.log("a: " + a)
-      console.log("firstThird: " + firstThird)
-      console.log("secondThird: " + secondThird)
+      //console.log("a: " + a)
+      //console.log("firstThird: " + firstThird)
+      //console.log("secondThird: " + secondThird)
       if (playerCharacter.cur_hp >= firstThird) {
         $("#topDivCurHP").addClass("bg-success")
       } else if (playerCharacter.cur_hp < firstThird && playerCharacter.cur_hp >= secondThird) {
@@ -627,7 +658,7 @@ let retainerNameFirst_A = [
     }
     
     // -----------------------------------------------------
-    // Next, set the Character Stats Modal
+    // Set the Character Stats Modal
     // -----------------------------------------------------
     
     function setCharacterModal() {
@@ -692,7 +723,7 @@ let retainerNameFirst_A = [
       $("#gameTableTitle").empty()
       $("#gameTableTitle").html("Journey Table")
       $("#gameButtons").empty()
-      $("#gameTableText").html("Click below to roll on the Journey Table.")
+      $("#gameTableText").html("Click below to journey onward!")
       
       let runJourneyButton = `
           <div class="mt-2">
@@ -1266,7 +1297,7 @@ let retainerNameFirst_A = [
       4: "Village of Plague and Death",
       5: "Grail Castle",
       6: "Minions",
-      7: "A Knight Issues a Challenge!",
+      7: "Undertake a Challenge!",
       8: "Minions",
       9: "A Heroic Quest",
       10: "Village of Poverty and Famine",
@@ -1505,8 +1536,8 @@ let retainerNameFirst_A = [
           $("#gameTableTitle").html("An Encounter with Minions!")
           runMinions()
         break;
-        case "A Knight Issues a Challenge!":
-          $("#gameTableTitle").html("A Knight Issues a Challenge!")
+        case "Undertake a Challenge!":
+          $("#gameTableTitle").html("Undertake a Challenge!")
           runKnightChallengeQuest()
         break;
         case "A Heroic Quest":
@@ -1836,7 +1867,10 @@ let retainerNameFirst_A = [
     // Challenge Table
     // -----------------------------------------------------
     
+    let challengerName = ""
+    
     function rollChallengeTable() {
+      $("#gameTableText").empty()
       // add rebellion level to this roll
       let modifier = 0
       switch (playerCharacter.rebellionLevel) {
@@ -1854,6 +1888,7 @@ let retainerNameFirst_A = [
           modifier = 3
       }
       let roll = (rollDie(6) + modifier)
+      
       switch (roll) {
         case 1:
         case 2:
@@ -1862,25 +1897,35 @@ let retainerNameFirst_A = [
         case 5:
           $("#gameTableText").append("A knight issues a challenge!")
           //gotoCombat()
+          $("#gameTableTitle").append(" - a Knight")
+          challengerName = "Sir Blank"
         break;
         case 6:
           $("#gameTableText").append("Sir Agravain issues a challenge!")
+          $("#gameTableTitle").append(" - Sir Agravain")
+          challengerName = "Sir Agravain"
         break;
         case 7:
           $("#gameTableText").append("Sir Garlon issues a challenge!")
+          $("#gameTableTitle").append(" - Sir Garlon")
+          challengerName = "Sir Agravain"
         break;
         case 8:
           $("#gameTableText").append("Sir Turquine issues a challenge!")
+          $("#gameTableTitle").append(" - Sir Turquine")
+          challengerName = "Sir Turquine"
         break;
         default:
           $("#gameTableText").append("Sir Mordred issues a challenge!")
+          $("#gameTableTitle").append(" - Sir Mordred")
+          challengerName = "Sir Mordred"
         break;
       }
       let rowString = `
         <div class="d-flex mt-2">
-          <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <button onclick="knightChallenge(challengerName)" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
             <i class="mt-2"></i>
-            Journey On
+            Go to Challenge
           </button>
         </div>`
       $("#gameButtons").html(rowString)
@@ -2361,6 +2406,352 @@ let retainerNameFirst_A = [
     
     // -----------------------------------------------------
     // Inventory
+    // -----------------------------------------------------
+    
+    // -----------------------------------------------------
+    // Combat
+    // -----------------------------------------------------
+    
+    // Notes: 35 HP is probably a good amount for named/tough encounters
+    // 20-25 for things like bears, boars, etc
+    // 10-12 for minions
+    // add 2 HP per Rebellion Level
+    
+    
+    
+    // Constructor function for NPC objects
+    function NPC(name, cur_hp, max_hp, armor, attack, att_mod, dmg_mod, sex, isAlive) {
+      this.name = name;
+      this.cur_hp = cur_hp;
+      this.max_hp = max_hp + (playerCharacter.rebellionLevel * 2);
+      this.armor = armor + (playerCharacter.rebellionLevel);
+      this.attack = attack;
+      this.att_mod = att_mod + playerCharacter.rebellionLevelMod;
+      this.dmg_mod = dmg_mod + playerCharacter.rebellionLevelMod;
+      this.sex = sex;
+      this.isAlive = isAlive;
+    }
+
+    var round = 1
+    var initiative = "pc"
+  
+    function knightChallenge(name) {
+      
+    
+      // Create a knight object
+      //alert("a challenge from: " + name)
+      let aKnight = new NPC(name, 35, 35, 1, 7, 2, 2, "male", "true");
+      
+      console.log("knight name: " + aKnight.name)
+      combat(aKnight)
+      
+    }
+    
+    function combat(aKnight) {
+      console.log("combat function round: " + round)
+      $("#gameTableText").empty()
+      //$("#attackBtn").html('Attack')
+      //let round = 1
+
+      //alert("A challenge from: " + aKnight.name)
+
+      if (round == 1) {
+        $("#gameTableText").append("<p id='npcParagraph'>Your Opponent is: <strong>" + aKnight.name + "!!!</strong></p>")
+        let roll_1d6 = rollDie(6);
+        if (roll_1d6 < 4) {
+          initiative = "npc"
+          $("#gameTableText").append("<p id='storyDivHead'>" + aKnight.name + " won initiative and has attacked first!</p>")
+        } else {
+          initiative = "pc"
+          $("#gameTableText").append("<p id='storyDivHead'>You have won initiative.  Attack, flee... or talk.</p>")
+        }
+      }
+
+      //console.log("made it here")
+      // add buttons to the top of the div
+      // they will stay until combat is over
+      //let rowString = "<p><strong>" + npc_name + "</strong> has the initiative.</p>"
+
+      let rowString = `<div id="combatCommandButtons" class="d-flex my-3 justify-content-between">
+      <button id="attackBtn2" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</button>
+      <button id="fleeBtn2"class="innBtn btn btn-dark px-4 rounded-pill">Flee!</button>
+      <button id="parlayBtn2"class="innBtn btn btn-dark px-4 rounded-pill">Parlay!</button>
+      </div>`
+      $("#gameButtons").html(rowString)
+      // Add a table to log combat
+      rowString =
+          `<div class="table-responsive">
+            <table class="table" id="combatTable">
+              <thead>
+                <tr>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="p-1 px-3 text-uppercase">Round</div>
+                  </th>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="p-1 px-3 text-uppercase">Result</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="combatTableBody">
+                <!-- Javascript fills in the table here -->
+              </tbody>
+            </table>
+          </div> <!-- End Table container -->`
+        $("#gameTableText").append(rowString)
+      if (round == 1 && initiative == "npc") {
+        // npc attacks first
+        console.log("npc has the initiative")
+        npcAttack(round)
+      }
+      // attach onClick events
+      $("#attackBtn2").off("click")
+      $(document).off("click")
+      $(document).on('click', '#attackBtn2', function () {
+      //$("attackBtn").on('click', function() {
+        //$(document.body).scrollTop($('#storyAnchor').offset().top);
+        
+      if (round > 1) {
+      	if (initiative == "npc") {
+          $("#storyDivHead").html('<p>' + aKnight.name + ' still has the initiative</p>')
+        } else {
+          $("#storyDivHead").html('<p>' + playerCharacter.name + ' has the initiative</p>')
+        }
+      }
+        
+        console.log("attack button2 clicked")
+        console.log("round: " + round)
+        console.log("initiative: " + initiative)
+        if (initiative == "pc") {
+          $("#combatTableBody").empty()
+          playerAttack(round, aKnight)
+          npcAttack(round, aKnight)
+        }
+        if (initiative == "npc" && round == 1) {
+          playerAttack(round, aKnight)
+        }
+        if (initiative == "npc" && round > 1) {
+          $("#combatTableBody").empty()
+          npcAttack(round, aKnight)
+          playerAttack(round, aKnight)
+        } 
+        round++
+      });
+      $("#fleeBtn2").off("click")
+      $(document).on('click', '#fleeBtn2', function () {
+      //$(fleeBtn).on('click', function () {
+        console.log("second flee button clicked")
+        flee(aKnight)
+        //console.log(this.value);
+      });
+      $("#parlayBtn").off("click")
+      $(document).on('click', '#parlayBtn2', function() {
+      //$("#parlayBtn").on('click', function () {
+        console.log("second parlay button clicked")
+        parlay(aKnight)
+        //console.log(this.value);
+      });
+    }
+    
+    function playerAttack(round, aKnight) {
+      // roll to hit
+      let first_d6Roll = Math.floor(Math.random() * 6) + 1;
+      let second_d6Roll = Math.floor(Math.random() * 6) + 1;
+      let twoD6 = first_d6Roll + second_d6Roll
+      if (twoD6 >= playerCharacter.attack - playerCharacter.att_mod) {
+        // a hit!  now calc dmg
+        console.log("PC rolled a hit!")
+        let dmg = twoD6 - playerCharacter.attack
+        dmg += playerCharacter.dmg_mod
+        if (dmg <= aKnight.armor) {
+          // saved by armor!
+          console.log("hit but made armor save")
+          rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+          rowString += `<td class="border-0 defaultText"> You hit ${aKnight.name} for 0 damage!</td></tr>`
+          //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
+          //$("#combatTableBody").append('<td class="border-0 text-center"> You hit ' + npc_name + " 0 damage!</td></tr>")
+          $("#combatTableBody").append(rowString)
+        } else {
+          // npc takes damage
+          dmg = dmg - aKnight.armor
+          aKnight.cur_hp = aKnight.cur_hp - dmg
+          console.log("you hit for " + dmg + " points of damage")
+          rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+          rowString += `<td class="border-0 defaultText">You hit ${aKnight.name} for ${dmg} points of damage!`
+          //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
+          //$("#combatTableBody").append('<td class="border-0 text-center">You hit ' + npc_name + " for " + dmg + " points of damage!</td></tr>")
+          $("#combatTableBody").append(rowString)
+        }
+      } else {
+        console.log("You attacked but missed!")
+        rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+        rowString += `<td class="border-0 defaultText">You attacked ${aKnight.name} but missed!</td></tr>`
+        //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
+        //$("#combatTableBody").append('<td class="border-0 text-center">You attacked ' + npc_name + " but missed!</td></tr>")
+        $("#combatTableBody").append(rowString)
+      }
+    }
+    
+    function npcAttack(round, aKnight) {
+      let rowString = ""
+      // npc attacks first
+      // if the PC is not dead the the PC can act
+      let first_d6Roll = Math.floor(Math.random() * 6) + 1;
+      let second_d6Roll = Math.floor(Math.random() * 6) + 1;
+      let twoD6 = first_d6Roll + second_d6Roll
+      if (twoD6 > 6) {
+        // a hit!  now calc dmg
+        console.log("npc rolled a hit")
+        let dmg = twoD6 - 6
+        dmg += aKnight.dmg_mod
+        if (dmg <= playerCharacter.armor) {
+          // saved by armor!
+          console.log("hit but made armor save")
+          rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+          rowString += `<td class="border-0 defaultText">${aKnight.name} hits you for 0 damage!</td></tr>`
+          $("#combatTableBody").append(rowString)
+          //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
+          //$("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " hits you for 0 damage!</td></tr>")
+        } else {
+          // pc takes damage
+          dmg = dmg - playerCharacter.armor
+          playerCharacter.cur_hp = playerCharacter.cur_hp - dmg
+          console.log("you were hit for " + dmg + " point(s) of damage")
+          rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+          rowString += `<td class="border-0 defaultText">${aKnight.name} hits you for ${dmg} points of damage!</td></tr>`
+          $("#combatTableBody").append(rowString)
+          //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
+          //$("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " hits you for " + dmg + " points of damage!</td></tr>")
+          
+          // check to see if the pc is alive, knocked out or dead
+          if (playerCharacter.cur_hp < 6 && playerCharacter.cur_hp > 0) {
+        	// PC is knocked out
+            console.log("PC is alive but knocked out")
+            $("#storyDivHead").empty()
+            $("#npcParagraph").empty()
+            $("#storyDivHead").html('<p>' + playerCharacter.name + ' has been knocked out by ' + aKnight.name + '!  You had best start praying for mercy!</p>')
+            
+            // empty the combatCommandButtons and then replace them with a single button to go to the start
+            $("#gameButtons").empty()
+            
+            let rowString = `<div class="col text-center">
+                <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i class="mt-2 mr-2"></i>Click to Start Over</button>
+                </div>`
+            $("#gameButtons").html(rowString)
+            
+            //$("#storyDiv").append(rowString)
+            $("#beginAdventure").off('click')
+            $("#beginAdventure").click(function () {
+              //$("#storyDiv").empty()
+              //$("#storyDiv").append("<p>Your Opponent is: </p>")
+              startGame()
+              //rollNPCTable()
+            })
+          }
+          if (playerCharacter.cur_hp < 1) {
+            // pc is dead!
+            console.log("PC has died")
+            $("#storyDivHead").empty()
+            $("#npcParagraph").empty()
+            $("#storyDivHead").html('<p>' + playerCharacter.name + ' has been slain by ' + aKnight.name + '!  May God speed ' + playerCharacter.name + ' on his way to his eternal reward!</p>')
+            
+            // empty the combatCommandButtons and then replace them with a single button to go to the start
+            $("#gameButtons").empty()
+            
+            let rowString = `<div class="col text-center">
+                <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i class="mt-2 mr-2"></i>Click to Start Over</button>
+                </div>`
+            $("#gameButtons").html(rowString)
+            
+            //$("#storyDiv").append(rowString)
+            $("#beginAdventure").off('click')
+              $("#beginAdventure").click(function () {
+              //$("#storyDiv").empty()
+              //$("#storyDiv").append("<p>Your Opponent is: </p>")
+              startGame()
+              //rollNPCTable()
+            })
+          }
+          updateNavbar()
+        }
+      } else {
+        console.log("your opponent missed!")
+        let rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+        rowString += `<td class="border-0 defaultText">${aKnight.name} attacked but missed!</td></tr>`
+        $("#combatTableBody").append(rowString)
+        //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
+        //$("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " attacked but missed!</td></tr>")
+      }
+    }
+    
+    function flee(aKnight) {
+      console.log("flee function")
+      $("#gameTableText").empty()
+      $("#gameTableText").append("<p>" + aKnight.name + " laughs at you as you flee like a coward!</p>")
+      $("#gameTableText").append("<p>If you're not too chicken to fight, click the button below to summon another opponent</p>")
+      let rowString = `<div class="col text-center">
+              <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i
+                  class="mt-2 mr-2"></i>Summon Opponent!</button>
+            </div>`
+      $("#gameTableText").append(rowString)
+      //initGame()
+      
+      $("#beginAdventure").click(function () {
+        $("#gameTableText").empty()
+        //$("#storyDiv").append("<p>Your Opponent is: </p>")
+        startGame() 
+      }) 
+    }
+    
+    function parlay(aKnight) {
+      console.log("parlay function")
+      let roll_1d6 = Math.floor(Math.random() * 6) + 1;
+      
+      if (roll_1d6 < 4) {
+        let pronoun = (aKnight.sex == "male") ? "He" : "She"
+        
+        console.log(aKnight.name + " is: " + aKnight.sex)
+        
+        $("#gameTableText").empty()
+        $("#gameTableText").append("<p>" + aKnight.name + " is not interested in conversation. "+ pronoun + " attacks!</p>")
+        /*let rowString = `<div class="d-flex mt-2 justify-content-between">
+  <a href="#" id="attackBtn3" class="attackBtn btn btn-dark px-4 rounded-pill">Go To Combat!</a></div>`*/
+  
+        var rowString = `<div class="col text-center">
+            <button id="attackBtn3" type="button" class="btn btn-dark px-4 rounded-pill"><i
+            class="mt-2 mr-2"></i>Go To Combat!</button>
+            </div>`
+            
+        $("#gameTableText").append(rowString)
+        $(document).off('click')
+        $(document).on('click', '#attackBtn3', function () {
+          combat()
+          //console.log(this.value);
+        });
+      } else {
+        peace = true
+        $("#gameTableText").empty()
+        $("#gameTableText").append("<p>" + aKnight.name + " agrees to live and let live... for now.</p>")
+        let rowString = `<div class="col text-center">
+              <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i
+                  class="mt-2 mr-2"></i>Summon Opponent!</button>
+            </div>`
+        $("#storyDiv").append(rowString)
+        $("#beginAdventure").off('click')
+        $("#beginAdventure").click(function () {
+          $("#gameTableText").empty()
+          //$("#storyDiv").append("<p>Your Opponent is: </p>")
+          startGame()
+        })
+      }
+    }
+    
+    
+    
+    
+    
+    
+    // -----------------------------------------------------
+    // Combat
     // -----------------------------------------------------
     
     
