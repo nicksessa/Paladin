@@ -108,6 +108,10 @@
       text-shadow: 1px 1px 2px black, 0 0 25px yellow, 0 0 5px red;
       font-size: x-large;
     }
+    .sideMenuText {
+      color: black;
+    }
+    
     .footer {
       border: 2px solid blanchedalmond;
       border-top-left-radius: 30px;
@@ -139,7 +143,6 @@
     .modal-title {
       color: blanchedalmond;
     }
-
     .defaultText {
       color: blanchedalmond;
     }
@@ -260,13 +263,13 @@
 
               <div class="bg-dark d-flex flex-wrap textBlock-bg parchment rounded">
                 <div class="btn-group-vertical">
-                  <button type="button" class="btn sideMenuBtn">Sign In/Sign Up</button>
+                  <button type="button" class="btn sideMenuBtn text-left">Sign In/Sign Up</button>
 
-                  <button type="button" class="btn sideMenuBtn">Save Game</button>
+                  <button type="button" class="btn sideMenuBtn text-left">Save Game</button>
 
-                  <button type="button" class="btn sideMenuBtn">Restart Game</button>
-                  <button id="backgroundURL1_btn" class="btn sideMenuBtn rounded">Background 1</button>
-                  <button id="backgroundURL2_btn" class="btn sideMenuBtn rounded">Background 2</button>
+                  <button type="button" class="btn sideMenuBtn text-left">Restart Game</button>
+                  <button id="backgroundURL1_btn" class="btn sideMenuBtn rounded text-left">Background 1</button>
+                  <button id="backgroundURL2_btn" class="btn sideMenuBtn rounded text-left">Background 2</button>
 
                 </div>
               </div>
@@ -295,7 +298,39 @@
         </div>
 
       </div> <!-- column 2-->
-      <div class="col-3"></div> <!-- column 3-->
+      <div class="col-3">
+
+
+<div class="d-flex flex-wrap">
+  <div class="col px-0">
+    <div class="collapse" id="npcCollapse">
+      <div class="bg-dark d-flex flex-wrap textBlock-bg parchment rounded">
+        <div id="npcPortrait" class="sideMenuText p-2">
+          <h4 id="npcDivName">Sir Blank</h4>
+          <hr>
+          <span>HP: </span>
+          <span id="npcDivCurHP" class="bg-success rounded px-1 pb-1 mr-1">999 </span>
+          <span> of </span>
+          <span id="npcDivMaxHP">999</span>
+          <br>
+          Attack: <span id="npcDivAttack">999</span>+<br>
+          Damage Modifier: <span id="npcDivDmgMod">999</span><br>
+          Armor: <span id="npcDivArmor">999</span><br><br>
+          <h4>Equipment</h4>
+          <hr>
+          <span id="npcDivWeapon1">Longsword</span><br>
+          <span id="npcDivWeapon2"></span><br>
+          <span id="npcDivArmorType">Padded Gambeson</span><br>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+      </div> <!-- column 3-->
     </div>
   </div>
 
@@ -352,8 +387,9 @@
     <div class="row">
       <!-- footer row-->
 
-      <div
-        class="footer textBlock-bg pl-3 pt-2  border-bottom-0 border-right-0 bg-dark d-flex flex-wrap d-flex justify-content-end ">
+      <div class="footer textBlock-bg pl-3 pt-2  border-bottom-0 border-right-0 bg-dark d-flex flex-wrap d-flex justify-content-end ">
+        <button type="button" class="btn btn-dark" data-toggle="collapse" data-target="#npcCollapse"
+          aria-expanded="false" aria-controls="npcCollapse">NPC</button>
         <button onclick="showInventory()" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Inventory</button>
         <button onclick="setCharacterModal()" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Character</button>
         <button onclick="showRetainersModal()" id="openRetainerModal" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Retainers</button>
@@ -370,12 +406,10 @@
 
   <script>
   
-
   
   $('#myModal').on('show.bs.modal', function () {
       $('.modal-body',this).css({width:'auto',height:'auto', 'max-height':'100%'});
 });
-
   
   
     let backgroundImageURL1 = "https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763"
@@ -568,7 +602,6 @@ let retainerNameFirst_A = [
   
   // -------------------------------------
     
-
     let adventureLog = []
     
     
@@ -580,7 +613,6 @@ let retainerNameFirst_A = [
     // get some totals for retainers
     
     $.each(retainers, function(key, value) {
-
       let retainer_name = value.name
       let retainer_profession = value.profession
       if (retainer_profession == "Mercenary") mercenary++
@@ -737,6 +769,7 @@ let retainerNameFirst_A = [
     }
     
     function rollJourneyTable() {
+      $('#npcCollapse').toggle(false)
       $("#gameTableTitle").empty()
       $("#gameTableTitle").html("Journey Table")
       $("#gameTableText").empty()
@@ -1032,7 +1065,6 @@ let retainerNameFirst_A = [
       healUp()
       rollForRumors()
       // retain/fire retainers
-
       let numRetainers = retainers.length
       let newRetainers = numAvailableRetainers()
       
@@ -1044,7 +1076,6 @@ let retainerNameFirst_A = [
         for (let i=0; i<newRetainers; i++) {
           createRetainer(i)
         }
-
       }
         rowString = `
         <div class="d-flex mt-2 justify-content-around">
@@ -1077,12 +1108,10 @@ let retainerNameFirst_A = [
       $("#gameTableText").append(`<p>Healing Roll: ${num1} + ${num2} = ${num3}</p>`)
       if ((num3 + playerCharacter.cur_hp) >= playerCharacter.max_hp) {
         playerCharacter.cur_hp = playerCharacter.max_hp
-
         $("#gameTableText").append("<p>After a good night's sleep, ALL of your wounds have healed!</p>")
       } else {
         playerCharacter.cur_hp = num3 + playerCharacter.cur_hp
         $("#gameTableText").append("<p>After a good night's sleep, some of your wounds have healed.</p>")
-
       }
       $("#gameTableText").append(`<p>Current Health: ${playerCharacter.cur_hp}</p>`)
       updateNavbar()
@@ -1128,7 +1157,6 @@ let retainerNameFirst_A = [
       `
       $("#gameButtons").html(gotoJourneyButton)
     }
-
     function numAvailableRetainers () {
       let num1 = rollDie(6)
       //alert("You rolled a: " + num1)
@@ -1142,10 +1170,8 @@ let retainerNameFirst_A = [
       availableRetainers = []
       // get name
       retainerName = createName(i)
-
       // get profession
       retainerProfession = getRetainerProfession(i)
-
       let newObj = {
         name: retainerName,
         profession: retainerProfession,
@@ -1153,9 +1179,7 @@ let retainerNameFirst_A = [
         cost: 10
       }
       // push to availableRetainers[]
-
       availableRetainers.push(newObj)
-
     }
     
   function createName(i) {
@@ -2102,12 +2126,9 @@ let retainerNameFirst_A = [
       $("#characterStatsModal").html(retainersTable)
       
       $.each(retainers, function(key, value) {
-
         let retainer_name = value.name
         let retainer_profession = value.profession
-
         let retainer_id = 0
-
         let retainerRow = `
           <tr>
             <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_name}</td>
@@ -2163,17 +2184,13 @@ let retainerNameFirst_A = [
       })*/
   
       $.each(retainers, function(key, value) {
-
         let retainer_name = value.name
         let retainer_profession = value.profession
         let retainer_cost = value.cost
-
         value.employed = false
-
         let retainer_status = value.employed
         let retainer_id = 0
         var status = retainer_status ? retainer_status = "Retained" : retainer_status = "Not Retained"
-
         let retainerRow = `
           <tr>
           <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_name}</td>
@@ -2207,13 +2224,10 @@ let retainerNameFirst_A = [
           let retainer_name = value.name
           let retainer_profession = value.profession
           let retainer_cost = value.cost
-
           value.employed = false
-
           let retainer_status = value.employed
           let retainer_id = 0
           var status = retainer_status ? retainer_status = "Retained" : retainer_status = "Not Retained"
-
         let retainerRow = `
           <tr>
           <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_name}</td>
@@ -2363,7 +2377,6 @@ let retainerNameFirst_A = [
       </div>  <!-- END row -->
       `
       $("#characterStatsModal").html(inventoryTable)
-
  
       // this is the same as the jQuery loop below
       /*Object.keys(retainers).forEach(function (item) {
@@ -2421,18 +2434,20 @@ let retainerNameFirst_A = [
     
     
     // Constructor function for NPC objects
-    function NPC(name, cur_hp, max_hp, armor, attack, att_mod, dmg_mod, sex, isAlive) {
+    function NPC(name, cur_hp, max_hp, armor, attack, att_mod, dmg_mod, wpn1, wpn2, armorType, sex, isAlive) {
       this.name = name;
-      this.cur_hp = cur_hp;
+      this.cur_hp = cur_hp + (playerCharacter.rebellionLevel * 2);
       this.max_hp = max_hp + (playerCharacter.rebellionLevel * 2);
       this.armor = armor + (playerCharacter.rebellionLevel);
       this.attack = attack;
       this.att_mod = att_mod + playerCharacter.rebellionLevelMod;
       this.dmg_mod = dmg_mod + playerCharacter.rebellionLevelMod;
+      this.wpn1 = wpn1;
+      this.wpn2 = wpn2;
+      this.armorType = armorType;
       this.sex = sex;
       this.isAlive = isAlive;
     }
-
     var round = 1
     var initiative = "pc"
     let aKnight
@@ -2442,22 +2457,54 @@ let retainerNameFirst_A = [
     
       // Create a knight object
       //alert("a challenge from: " + name)
-      aKnight = new NPC(challengerName, 35, 35, 1, 7, 2, 2, "male", "true");
+      aKnight = new NPC(challengerName, 25, 25, 1, 7, 2, 2, "Longsword", "", "Padded Gambeson", "male", "true");
       
       console.log("knight name: " + aKnight.name)
       combat()
       
     }
     
+    function updateNPC() {
+      $("#npcDivName").html(aKnight.name)
+      $("#npcDivCurHP").html(aKnight.cur_hp)
+      $("#npcDivMaxHP").html(aKnight.max_hp)
+      $("#npcDivAttack").html(aKnight.attack)
+      $("#npcDivDmgMod").html(aKnight.dmg_mod)
+      $("#npcDivArmor").html(aKnight.armor)
+      $("#npcDivWeapon1").html(aKnight.wpn1)
+      $("#npcDivWeapon2").html(aKnight.wpn2)
+      $("#npcDivArmorType").html(aKnight.armorType)
+      // set color for HP
+      // first unset all colors
+      $("#npcDivCurHP").removeClass(["bg-success", "bg-warning", "bg-danger", "bg-secondary"]);
+      let a = Math.floor(aKnight.max_hp / 3);
+      let firstThird = (aKnight.max_hp - a)
+      let secondThird = (aKnight.max_hp - (a * 2))
+      //console.log("a: " + a)
+      //console.log("firstThird: " + firstThird)
+      //console.log("secondThird: " + secondThird)
+      if (aKnight.cur_hp >= firstThird) {
+        $("#npcDivCurHP").addClass("bg-success")
+      } else if (aKnight.cur_hp < firstThird && aKnight.cur_hp >= secondThird) {
+        $("#npcDivCurHP").addClass("bg-warning")
+      } else if (aKnight.cur_hp > 0 && aKnight.cur_hp < secondThird) {
+        $("#npcDivCurHP").addClass("bg-danger")
+      } else {
+        $("#npcDivCurHP").addClass("bg-secondary")
+      }
+    }
+    
     function combat() {
+      $('#npcCollapse').toggle(true)
+      // update the NPC side menu
+      updateNPC()
+      
       console.log("combat function round: " + round)
       console.log("Knight: " + aKnight.name)
       $("#gameTableText").empty()
       //$("#attackBtn").html('Attack')
       //let round = 1
-
       //alert("A challenge from: " + aKnight.name)
-
       if (round == 1) {
         $("#gameTableText").append("<p id='npcParagraph'>Your Opponent is: <strong>" + aKnight.name + "!!!</strong></p>")
         let roll_1d6 = rollDie(6);
@@ -2469,12 +2516,10 @@ let retainerNameFirst_A = [
           $("#gameTableText").append("<p id='storyDivHead'>You have won initiative.  Attack, flee... or talk.</p>")
         }
       }
-
       //console.log("made it here")
       // add buttons to the top of the div
       // they will stay until combat is over
       //let rowString = "<p><strong>" + npc_name + "</strong> has the initiative.</p>"
-
       let rowString = `<div id="combatCommandButtons" class="d-flex my-3 justify-content-between">
       <button id="attackBtn2" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</button>
       <button id="fleeBtn2"class="innBtn btn btn-dark px-4 rounded-pill">Flee!</button>
@@ -2508,7 +2553,7 @@ let retainerNameFirst_A = [
       }
       // attach onClick events
       $("#attackBtn2").off("click")
-      $(document).off("click")
+      //$(document).off("click")
       $(document).on('click', '#attackBtn2', function () {
       //$("attackBtn").on('click', function() {
         //$(document.body).scrollTop($('#storyAnchor').offset().top);
@@ -2584,6 +2629,7 @@ let retainerNameFirst_A = [
           //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
           //$("#combatTableBody").append('<td class="border-0 text-center">You hit ' + npc_name + " for " + dmg + " points of damage!</td></tr>")
           $("#combatTableBody").append(rowString)
+          updateNPC()
         }
       } else {
         console.log("You attacked but missed!")
@@ -2742,11 +2788,7 @@ let retainerNameFirst_A = [
           </div>`
         $("#gameButtons").html(rowString)
         
-
-
-
         $("#beginAdventure").off('click')
-
         /*
         $("#beginAdventure").click(function () {
           $("#gameTableText").empty()
