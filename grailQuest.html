@@ -486,7 +486,8 @@
       wasLost: false,
       captainsSlain: 0,
       onPilgrimage: false,
-      pilgrimageModifier: 0
+      pilgrimageModifier: 0,
+      dishonor: false
     }
     
     
@@ -748,19 +749,48 @@ let retainerNameFirst_A = [
     // -----------------------------------------------------
     
     $(document).ready(function () {
-      startGame()
+      startNewGame()
     })
       
     let lastJourneyRoll = 0
     let journeyRoll = 0
     let sameAsLastRoll = false
     
-    // Start Game: Roll on the Journey Table
-    function startGame() {
+    // Start New Game: Create character then roll on the Journey Table
+    function startNewGame() {
       $("#gameTableTitle").empty()
-      $("#gameTableTitle").html("Journey Table")
+      $("#gameTableTitle").html("Start New Game")
       $("#gameButtons").empty()
-      $("#gameTableText").html("Click below to journey onward!")
+      $("#gameTableText").html("Click below to start a new journey!")
+      
+      playerCharacter.name = "Sir Percival"
+      playerCharacter.max_hp = 40
+      playerCharacter.cur_hp = 40
+      playerCharacter.armor = 1
+      playerCharacter.attack = 7
+      playerCharacter.att_mod = 0
+      playerCharacter.dmg_mod = 2
+      playerCharacter.exp = 0
+      playerCharacter.money = 40
+      playerCharacter.species = "human"
+      playerCharacter.sex = "male"
+      playerCharacter.healingPotions = 3
+      playerCharacter.alive = true
+      playerCharacter.rumors = 0
+      playerCharacter.rumorModifier = 0
+      playerCharacter.rebellionLevel = 0
+      playerCharacter.rebellionLevelMod = 0
+      playerCharacter.turn = 0
+      playerCharacter.piety = 0
+      playerCharacter.sideQuests = 0
+      playerCharacter.findRetainerModifier = 0
+      playerCharacter.wasLost = false
+      playerCharacter.captainsSlain = 0
+      playerCharacter.onPilgrimage = false
+      playerCharacter.pilgrimageModifier = 0
+      playerCharacter.dishonor = false
+
+      updateNavbar()
       
       let runJourneyButton = `
           <div class="mt-2">
@@ -1651,7 +1681,7 @@ let retainerNameFirst_A = [
       // click to go to the Journey table  -- startEncounter for now!
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
@@ -1676,7 +1706,7 @@ let retainerNameFirst_A = [
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
@@ -1688,17 +1718,67 @@ let retainerNameFirst_A = [
     function runPlagueVillage() {
       //$("#gameTableText").empty()
       $("#gameButtons").empty()
+      
+      $("#gameTableText").html("You can either bypass this village or help.  If you help, there is a chance you can earn a piety point.")
+      
+      
+      
       // click to go to the Journey table
       let gotoJourneyButton = `
-        <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
-            </button>
+        <div class="d-flex mt-2 justify-content-around">
+          <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Continue your Journey
+        </button>
+        <button onclick="rollPlague()" data-id="rollPlagueBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Continue your Journey
+        </button>
       `
       $("#gameButtons").html(gotoJourneyButton)
         
     }
+    
+    
+    function rollPlague() {
+      let roll1 = rollDie(6)
+      let roll2 = rollDie(6)
+      
+      let failedOne = false
+      let failedTwo = false
+      
+      if (roll1 < 3) {
+        failedOne = true
+      }
+      if (roll2 < 3) {
+        failedTwo = true
+      }
+      
+      if (failedOne && failedTwo) {
+        // player has died from the plague!
+        $("#gameTableText").append("Unfortunately, " + playerCharacter.name + " has died from the plague.  This selfless act will surely be remembered for all time.  May God speed you on your way.")
+        let rowString = `
+        <div class="d-flex mt-2 justify-content-around">
+          <button onclick="startNewGame()" data-id="startGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Start Over
+        </button>`
+        $("#gameButtons").html(rowString)
+      }
+      
+      if (!failedOne || !failedTwo) {
+        //test for piety
+        let num = rollDie(6)
+        if (num > playerCharacter.piety) {
+          $("#gameTableText").append("Not only did you survive the plague, you also gained a piety point!")
+          playerCharacter.piety ++
+          updateNavbar()
+        }
+      }
+        
+      $("#gameTableText").html()
+    }
+    
     
     function runGrailCastle() {
       //$("#gameTableText").empty()
@@ -1706,7 +1786,7 @@ let retainerNameFirst_A = [
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
@@ -1721,7 +1801,7 @@ let retainerNameFirst_A = [
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
@@ -1780,7 +1860,7 @@ let retainerNameFirst_A = [
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
@@ -1793,24 +1873,85 @@ let retainerNameFirst_A = [
       $("#gameTableText").empty()
       $("#gameButtons").empty()
       // click to go to the Journey table
-      let gotoJourneyButton = `
-        <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
-            </button>
+      
+      $("#gameTableText").html("You can either bypass this village or help.  If you donate at least 50 silver in items or coin, you can roll for a piety point.")
+      
+      
+      
+      let rowString = `
+        <div class="d-flex mt-2 justify-content-around">
+        <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Continue your Journey
+        </button>
+        <button onclick="donateToThePoor()" data-id="donateToThePoorBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Donate 50 Silver
+        </button>
       `
-      $("#gameButtons").html(gotoJourneyButton)
+      $("#gameButtons").html(rowString)
         
     }
+    
+    
+    function donateToThePoor() {
+      // display input box to allow the user to enter the amount to donate.
+      
+      alert("Thank you for your donation")
+    }
+    
     
     function runTestOfPiety() {
       $("#gameTableText").empty()
       $("#gameButtons").empty()
+      
+      // Test of piety: 
+      let roll = rollDie(6)
+      if (roll <= playerCharacter.piety) {
+        // test passed
+      }
+      
+      // to gain a piety point:
+      roll = rollDie(6)
+      if (roll > playerCharacter.piety) {
+        // playerCharacter.piety ++
+      }
+      
+      
+      roll = rollDie(6)
+      switch (roll) {
+        case 1: 
+          // hermit (Lancelot!)
+        break;
+        case 2:
+          // Sword of the Red Hilt
+        break;
+        case 3: 
+          // Attacked by a Succubus
+        break;
+        
+        case 4:
+          // griffins
+          // if pass, then roll on the Encounter Table 4 times and choose one
+        break;
+        
+        case 5:
+          // Ship made from the wood from the Tree of Life (treasure: Sword of the Strange Belt)
+        break;
+        
+        case 6:
+          // Nimue (Lady of the Lake) appears!
+          // select any option from this list.
+        break;
+      }
+      
+      
+      
+      
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
@@ -1822,10 +1963,21 @@ let retainerNameFirst_A = [
     function runMerlin() {
       $("#gameTableText").empty()
       $("#gameButtons").empty()
+      
+      $("#gameTableText").html("<p>Merlin heals you (and your retainers) back to full strength!</p>")
+      let num = rollDie(6) + 1
+      $("#gameTableText").html(`<p>He also gives you wise counsel.  (you gain ${num} rumors)</p>`)
+      
+      playerCharacter.rumors += num
+      playerCharacter.cur_hp = playerCharacter.max_hp
+      
+      // heal up retainers
+      
+      updateNavbar()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
@@ -2830,7 +2982,7 @@ let retainerNameFirst_A = [
             $("#beginAdventure").click(function () {
               //$("#storyDiv").empty()
               //$("#storyDiv").append("<p>Your Opponent is: </p>")
-              startGame()
+              startNewGame()
               //rollNPCTable()
             })
           }
@@ -2854,7 +3006,7 @@ let retainerNameFirst_A = [
               $("#beginAdventure").click(function () {
               //$("#storyDiv").empty()
               //$("#storyDiv").append("<p>Your Opponent is: </p>")
-              startGame()
+              startNewGame()
               //rollNPCTable()
             })
           }
