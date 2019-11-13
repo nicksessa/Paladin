@@ -164,8 +164,9 @@
       
     }
     .bodyDiv {
-      height: 80%;
       height: 375px;
+      height: 80%;
+      
       
       overflow-y: auto;
     }
@@ -1923,7 +1924,7 @@ let retainerNameFirst_A = [
       }
       let rowString = `
         <div class="d-flex mt-2">
-          <button onclick="knightChallenge(challengerName)" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <button onclick="knightChallenge()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
             <i class="mt-2"></i>
             Go to Challenge
           </button>
@@ -2434,21 +2435,23 @@ let retainerNameFirst_A = [
 
     var round = 1
     var initiative = "pc"
+    let aKnight
   
-    function knightChallenge(name) {
+    function knightChallenge() {
       
     
       // Create a knight object
       //alert("a challenge from: " + name)
-      let aKnight = new NPC(name, 35, 35, 1, 7, 2, 2, "male", "true");
+      aKnight = new NPC(challengerName, 35, 35, 1, 7, 2, 2, "male", "true");
       
       console.log("knight name: " + aKnight.name)
-      combat(aKnight)
+      combat()
       
     }
     
-    function combat(aKnight) {
+    function combat() {
       console.log("combat function round: " + round)
+      console.log("Knight: " + aKnight.name)
       $("#gameTableText").empty()
       //$("#attackBtn").html('Attack')
       //let round = 1
@@ -2552,7 +2555,8 @@ let retainerNameFirst_A = [
       });
     }
     
-    function playerAttack(round, aKnight) {
+    function playerAttack(round) {
+      let knightName = aKnight.name
       // roll to hit
       let first_d6Roll = Math.floor(Math.random() * 6) + 1;
       let second_d6Roll = Math.floor(Math.random() * 6) + 1;
@@ -2566,7 +2570,7 @@ let retainerNameFirst_A = [
           // saved by armor!
           console.log("hit but made armor save")
           rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-          rowString += `<td class="border-0 defaultText"> You hit ${aKnight.name} for 0 damage!</td></tr>`
+          rowString += `<td class="border-0 defaultText"> You hit ${knightName} for 0 damage!</td></tr>`
           //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
           //$("#combatTableBody").append('<td class="border-0 text-center"> You hit ' + npc_name + " 0 damage!</td></tr>")
           $("#combatTableBody").append(rowString)
@@ -2576,7 +2580,7 @@ let retainerNameFirst_A = [
           aKnight.cur_hp = aKnight.cur_hp - dmg
           console.log("you hit for " + dmg + " points of damage")
           rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-          rowString += `<td class="border-0 defaultText">You hit ${aKnight.name} for ${dmg} points of damage!`
+          rowString += `<td class="border-0 defaultText">You hit ${knightName} for ${dmg} points of damage!`
           //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
           //$("#combatTableBody").append('<td class="border-0 text-center">You hit ' + npc_name + " for " + dmg + " points of damage!</td></tr>")
           $("#combatTableBody").append(rowString)
@@ -2584,14 +2588,15 @@ let retainerNameFirst_A = [
       } else {
         console.log("You attacked but missed!")
         rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-        rowString += `<td class="border-0 defaultText">You attacked ${aKnight.name} but missed!</td></tr>`
+        rowString += `<td class="border-0 defaultText">You attacked ${knightName} but missed!</td></tr>`
         //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
         //$("#combatTableBody").append('<td class="border-0 text-center">You attacked ' + npc_name + " but missed!</td></tr>")
         $("#combatTableBody").append(rowString)
       }
     }
     
-    function npcAttack(round, aKnight) {
+    function npcAttack(round) {
+      let knightName = aKnight.name
       let rowString = ""
       // npc attacks first
       // if the PC is not dead the the PC can act
@@ -2607,7 +2612,7 @@ let retainerNameFirst_A = [
           // saved by armor!
           console.log("hit but made armor save")
           rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-          rowString += `<td class="border-0 defaultText">${aKnight.name} hits you for 0 damage!</td></tr>`
+          rowString += `<td class="border-0 defaultText">${knightName} hits you for 0 damage!</td></tr>`
           $("#combatTableBody").append(rowString)
           //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
           //$("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " hits you for 0 damage!</td></tr>")
@@ -2617,7 +2622,7 @@ let retainerNameFirst_A = [
           playerCharacter.cur_hp = playerCharacter.cur_hp - dmg
           console.log("you were hit for " + dmg + " point(s) of damage")
           rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-          rowString += `<td class="border-0 defaultText">${aKnight.name} hits you for ${dmg} points of damage!</td></tr>`
+          rowString += `<td class="border-0 defaultText">${knightName} hits you for ${dmg} points of damage!</td></tr>`
           $("#combatTableBody").append(rowString)
           //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
           //$("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " hits you for " + dmg + " points of damage!</td></tr>")
@@ -2676,33 +2681,30 @@ let retainerNameFirst_A = [
       } else {
         console.log("your opponent missed!")
         let rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-        rowString += `<td class="border-0 defaultText">${aKnight.name} attacked but missed!</td></tr>`
+        rowString += `<td class="border-0 defaultText">${knightName} attacked but missed!</td></tr>`
         $("#combatTableBody").append(rowString)
         //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
         //$("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " attacked but missed!</td></tr>")
       }
     }
     
-    function flee(aKnight) {
+    function flee() {
       console.log("flee function")
       $("#gameTableText").empty()
       $("#gameTableText").append("<p>" + aKnight.name + " laughs at you as you flee like a coward!</p>")
       $("#gameTableText").append("<p>If you're not too chicken to fight, click the button below to summon another opponent</p>")
-      let rowString = `<div class="col text-center">
-              <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i
-                  class="mt-2 mr-2"></i>Summon Opponent!</button>
-            </div>`
-      $("#gameTableText").append(rowString)
-      //initGame()
-      
-      $("#beginAdventure").click(function () {
-        $("#gameTableText").empty()
-        //$("#storyDiv").append("<p>Your Opponent is: </p>")
-        startGame() 
-      }) 
+      let rowString = `
+          <div class="d-flex mt-2">
+            <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Journey On
+          </button>
+          </div>`
+        $("#gameButtons").html(rowString)
+        $("#beginAdventure").off('click')
     }
     
-    function parlay(aKnight) {
+    function parlay() {
       console.log("parlay function")
       let roll_1d6 = Math.floor(Math.random() * 6) + 1;
       
@@ -2731,17 +2733,26 @@ let retainerNameFirst_A = [
         peace = true
         $("#gameTableText").empty()
         $("#gameTableText").append("<p>" + aKnight.name + " agrees to live and let live... for now.</p>")
-        let rowString = `<div class="col text-center">
-              <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i
-                  class="mt-2 mr-2"></i>Summon Opponent!</button>
-            </div>`
-        $("#storyDiv").append(rowString)
+        let rowString = `
+          <div class="d-flex mt-2">
+            <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Journey On
+          </button>
+          </div>`
+        $("#gameButtons").html(rowString)
+        
+
+
+
         $("#beginAdventure").off('click')
+
+        /*
         $("#beginAdventure").click(function () {
           $("#gameTableText").empty()
           //$("#storyDiv").append("<p>Your Opponent is: </p>")
           startGame()
-        })
+        })*/
       }
     }
     
