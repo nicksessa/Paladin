@@ -718,8 +718,8 @@ let retainerNameFirst_A = [
     // -----------------------------------------------------
         // Tables
     let journeyTable = [
-      "You have found an inn at a Crossroads. You may choose to stay at the inn or face the danger that awaits. Choose wisely.",
-      "finds an inn.  You may choose to stay at the inn or or bypass it by clicking on the Journey On button.",
+      "You have found an inn at a Crossroads. You may choose to stay at the inn (for 10 silver or the church if you don't have enough money) or face the danger that awaits. Choose wisely.",
+      "finds an inn.  You may choose to stay at the inn (for 10 silver or church if you don't have enough money) or or bypass it by clicking on the Journey On button.",
       "You are lost! If you have a Merchant retainer, he knows of a shortcut, treat as a result of 1 on this table instead. If you don not have a merchant, roll on this table again with a +1.",
       "Roll on the Encounter Table (3).",
       "If the Rebellion Level is 4, roll on the Challenge Table (7). Otherwise, roll on the Encounter Table (3).",
@@ -751,6 +751,10 @@ let retainerNameFirst_A = [
       startGame()
     })
       
+    let lastJourneyRoll = 0
+    let journeyRoll = 0
+    let sameAsLastRoll = false
+    
     // Start Game: Roll on the Journey Table
     function startGame() {
       $("#gameTableTitle").empty()
@@ -778,13 +782,26 @@ let retainerNameFirst_A = [
       playerCharacter.turn++
       updateNavbar()
       
-      let journeyRoll = rollDie(6)
+      journeyRoll = rollDie(6)
+      
+      console.log("Journey roll: " + journeyRoll)
+      console.log("previous journey roll: "+ lastJourneyRoll)
+      
+      if (journeyRoll == lastJourneyRoll) {
+        //$("#gameTableText").append("...again")
+        sameAsLastRoll = true
+      } else {
+        sameAsLastRoll = false
+      }
+      
+      lastJourneyRoll = journeyRoll
       
       if (playerCharacter.wasLost) {
         journeyRoll++
         playerCharacter.wasLost = false
       }
       
+      console.log("Journey Roll (after mods): " + journeyRoll)
       //journeyRoll = 4
       //alert("The begin adventure button was clicked. You rolled: " + d6Roll);
       // Save turn data in the log (we'll push this to MySql at some point)
@@ -826,6 +843,7 @@ let retainerNameFirst_A = [
           break;
         // Traitors or Challenge
         case 6:
+        case 7:
           if (playerCharacter.rebellionLevel > 3) {
             $("#gameTableTitle").append(" - A Challenge!")
             rollChallengeTable()
@@ -843,6 +861,9 @@ let retainerNameFirst_A = [
       //$("#gameButtons").empty()
       $("#gameTableText").empty()
       $("#gameTableText").append(journeyTable[0])
+      
+      if (sameAsLastRoll) $("#gameTableText").append("...again")
+      
       //$("#adventureLogTableBody").empty()
       // Inn or Encounter
       let rowString = `
@@ -865,6 +886,8 @@ let retainerNameFirst_A = [
     
     function journeyOrInn() {
       $("#gameTableText").append(journeyTable[1])
+      
+      if (sameAsLastRoll) $("#gameTableText").append("...again")
       
       let rowString = `
         <div class="d-flex mt-2 justify-content-around">
@@ -1273,12 +1296,13 @@ let retainerNameFirst_A = [
 // --- You are lost ---
     function youAreLost() {
       $("#gameTableText").append("<p>becomes lost!</p>")
+      if (playerCharacter.wasLost) $("#gameTableText").append("...again")
       console.log(journeyTable[2])
       let rowString = ""
       if (merchant == 0) {
         // roll again but with +1 to the roll
         // set wasLost to true which tells the journey table to add +1 to the journey roll
-        $("#gameTableText").append("<br>You have no choice but to continue on...")
+        $("#gameTableText").append("<br>Click below to continue to seek the Grail...")
         playerCharacter.wasLost = true
         rowString += `
         <div class="d-flex mt-2">
@@ -1964,10 +1988,14 @@ let retainerNameFirst_A = [
     // -----------------------------------------------------
     // Pilgrimage Table
     // -----------------------------------------------------
+    let pilgrimageTurns = 0
     
     function rollPilgrimageTable() {
-      $("#gameTableTitle").html("Pilgrimage!")
       playerCharacter.turn++
+      pilgrimageTurns++
+      
+      $("#gameTableTitle").html(`Pilgrimage! - Turn: ${pilgrimageTurns}`)
+      
       updateNavbar()
       let rowString = ""
       
@@ -1992,7 +2020,7 @@ let retainerNameFirst_A = [
         case 2:
           $("#gameTableText").html("You enter a dense forest, slowing you down.")
           if (woodsman > 0) {
-            $("#gameTableText").append("<br>Good thing you have a woodsman though!")
+            $("#gameTableText").append("<br>Good thing you have a woodsman to help you get through it!")
             playerCharacter.pilgrimageModifier = 0
           } else {
             $("#gameTableText").append("<br>Too bad you didn't have a woodsman.")
@@ -2047,19 +2075,56 @@ let retainerNameFirst_A = [
           $("#gameButtons").html(rowString)
         break
         case 5:
-          $("#gameTableText").html("You meet a physician.  He can heal you for 5 silver pieces")
-          $("#gameTableText").append("<p><br>Your pilgrimage continues...</p>")
-          rowString = `
-            <div class="d-flex mt-2">
-            <button onclick="rollPilgrimageTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-              <i class="mt-2"></i>
-              Continue Pilgrimage
-            </button>
-          </div>`
-          $("#gameButtons").html(rowString)
+          $("#gameTableText").html("On your journey, you meet a physician.")
+          //$("#gameTableText").append("<p><br>Your pilgrimage continues...</p>")
+            if (playerCharacter.money < 5 && playerCharacter.cur_hp < playerCharacter.max_hp) {
+              $("#gameTableText").append("<p>The doctor, having noticed that your purse is empty, proclaims that he can do no more for you and recomends that you get plenty of rest, drink lots of water... and pray.</p>")
+      
+            rowString = `
+              <div class="d-flex mt-2">
+              <button onclick="rollPilgrimageTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Continue Pilgrimage
+              </button>
+            </div>`
+            $("#gameButtons").html(rowString)
+          } else if (playerCharacter.money > 4 && playerCharacter.cur_hp < playerCharacter.max_hp) {
+            $("#gameTableText").append("He can heal you for 5 silver pieces.")
+            rowString = `
+              <div class="d-flex mt-2 justify-content-around">
+              <button onclick="rollPilgrimageTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Continue Pilgrimage
+              </button>
+              <button onclick="physicianHeal()" data-id="physicianHealBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Pay Doctor for Healing
+              </button>
+            </div>`
+            $("#gameButtons").html(rowString)
+          } else {
+            rowString = `
+              <div class="d-flex mt-2">
+              <button onclick="rollPilgrimageTable()" data-id="rollPilgrimageBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Continue Pilgrimage
+              </button>
+            </div>`
+            $("#gameButtons").html(rowString)
+          }
         break
         case 6:
           $("#gameTableText").html("You reach the shrine, the pilgrimage is over!")
+          if (pilgrimageTurns < 3) {
+            $("#gameTableText").append("<p>Well that was quick...<\p>")
+          }
+          if (pilgrimageTurns > 6) {
+            $("#gameTableText").append("<p>took you long enough</p>")
+          }
+          pilgrimageTurns = 0
+          
+          playerCharacter.onPilgrimage = false
+          
           rowString = `
             <div class="d-flex mt-2">
               <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -2073,6 +2138,55 @@ let retainerNameFirst_A = [
       
       
     }
+    
+    
+    
+    function physicianHeal() {
+    let rowString = ""
+      if (playerCharacter.money > 4) {
+        let roll1 = rollDie(6)
+        let roll2 = rollDie(6)
+        let total = roll1 + roll2
+        $("#gameTableText").append("<p>He heals you for " + total + " points.</p>")
+        playerCharacter.money -= 5
+        
+        $("#gameTableText").append(`<p>Healing Roll: ${roll1} + ${roll2} = ${total}</p>`)
+        
+        
+        if ((total + playerCharacter.cur_hp) >= playerCharacter.max_hp) {
+          playerCharacter.cur_hp = playerCharacter.max_hp
+          $("#gameTableText").append("<p>Under his expert care, ALL of your wounds have been healed!</p>")
+          
+          rowString = `
+              <div class="d-flex mt-2">
+              <button onclick="rollPilgrimageTable()" data-id="rollPilgrimageBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Continue Pilgrimage
+              </button>
+            </div>`
+            $("#gameButtons").html(rowString)
+          
+          
+        } else {
+          playerCharacter.cur_hp = total + playerCharacter.cur_hp
+          $("#gameTableText").append("<p>He manages to heal some of your wounds.</p>")
+        }
+        $("#gameTableText").append(`<p>Current Health: ${playerCharacter.cur_hp}</p>`)
+        
+        updateNavbar()
+      } else {
+        $("#gameTableText").append("<p>The doctor, noticing that your purse is empty, proclaims that he can do no more for you and recomends that you get plenty of rest, drink lots of water... and pray.</p>")
+        rowString = `
+              <div class="d-flex mt-2">
+              <button onclick="rollPilgrimageTable()" data-id="rollPilgrimageBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Continue Pilgrimage
+              </button>
+            </div>`
+            $("#gameButtons").html(rowString)
+      }
+    }
+    
     
     // -----------------------------------------------------
     // Pilgrimage Table
@@ -2630,6 +2744,28 @@ let retainerNameFirst_A = [
           //$("#combatTableBody").append('<td class="border-0 text-center">You hit ' + npc_name + " for " + dmg + " points of damage!</td></tr>")
           $("#combatTableBody").append(rowString)
           updateNPC()
+          
+          // Todo: check to see if the knight surrenders if below 50% health
+          
+          if (aKnight.cur_hp < 1) {
+            // npc is dead - remove him from the list of available evil captains
+            aKnight.isAlive = false
+            $("#gameTableText").append("<p>You have slain " + knightName + "!</p>")
+            // get treasure
+            knightTreasure()
+            
+            // gain exp
+            
+            rowString = `
+              <div class="d-flex mt-2">
+              <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Journey On
+              </button>
+              </div>`
+            
+            $("#gameButtons").html(rowString)
+          }
         }
       } else {
         console.log("You attacked but missed!")
@@ -2799,6 +2935,45 @@ let retainerNameFirst_A = [
     }
     
     
+    
+    function knightTreasure() {
+      let knightName = aKnight.name
+      let roll1 = 0
+      let roll2 = 0
+      let money = 0
+      
+      if (knightName == "Sir Agravain") {
+        roll1 = rollDie(6)
+        roll2 = rollDie(6)
+        money = (roll1 + roll2) * 7
+        $("#gameTableText").append("You gain: " + money + " silver")
+        //playerCharacter.money += money
+      } else if (knightName == "Sir Garlon") {
+        roll1 = rollDie(6)
+        roll2 = rollDie(6)
+        money = (roll1 + roll2) * 7
+        $("#gameTableText").append("You gain: " + money + " silver")
+      } else if (knightName == "Sir Turquine") {
+        roll1 = rollDie(6)
+        roll2 = rollDie(6)
+        money = (roll1 + roll2) * 8
+        $("#gameTableText").append("You gain: " + money + " silver")
+      } else if (knightName == "Sir Mordred") {
+        roll1 = rollDie(6)
+        roll2 = rollDie(6)
+        money = (roll1 + roll2) * 8
+        $("#gameTableText").append("You gain: " + money + " silver")
+      } else {
+        roll1 = rollDie(6)
+        roll2 = rollDie(6)
+        money = (roll1 + roll2) * 6
+        $("#gameTableText").append("You gain: " + money + " silver")
+      }
+      
+      playerCharacter.money += money
+      updateNavbar()  
+        
+    }
     
     
     
