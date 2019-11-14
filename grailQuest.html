@@ -159,6 +159,10 @@
     .table {
       color: black;
     }
+
+    .textBlack {
+      color: black;
+    }
     
     th, tr {
       border: none;
@@ -466,7 +470,7 @@
       max_hp: 40,
       cur_hp: 35,
       armor: 1,
-      attack: 7,
+      attack: 6,
       att_mod: 0,
       dmg_mod: 2,
       exp: 0,
@@ -501,7 +505,7 @@ let retainers = [
       max_hp: 20,
       weapon: "Longsword",
       armor: "Padded",
-      attack: 7,
+      attack: 6,
       damage_bonus: 2,
       armor_bonus: 1,
       morale: 1,
@@ -515,7 +519,7 @@ let retainers = [
       max_hp: 15,
       weapon: "Shortsword",
       armor: "Leather Jerkin",
-      attack: 7,
+      attack: 6,
       damage_bonus: 2,
       armor_bonus: 1,
       morale: -1,
@@ -529,7 +533,7 @@ let retainers = [
       max_hp: 20,
       weapon: "Longbow and Shortsword",
       armor: "Leather Jerkin",
-      attack: 7,
+      attack: 6,
       damage_bonus: 2,
       armor_bonus: 1,
       morale: 0,
@@ -767,7 +771,7 @@ let retainerNameFirst_A = [
       playerCharacter.max_hp = 40
       playerCharacter.cur_hp = 40
       playerCharacter.armor = 1
-      playerCharacter.attack = 7
+      playerCharacter.attack = 6
       playerCharacter.att_mod = 0
       playerCharacter.dmg_mod = 2
       playerCharacter.exp = 0
@@ -1203,7 +1207,7 @@ let retainerNameFirst_A = [
       $("#gameTableText").append("<p>The store is closed.</p>")
       let gotoJourneyButton = `
         <div class="mt-2">
-        <button onclick="startGame()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
@@ -2723,7 +2727,7 @@ let retainerNameFirst_A = [
     
       // Create a knight object
       //alert("a challenge from: " + name)
-      aKnight = new NPC(challengerName, 25, 25, 1, 7, 2, 2, "Longsword", "", "Padded Gambeson", "male", "true");
+      aKnight = new NPC(challengerName, 25, 25, 1, 6, 2, 2, "Longsword", "", "Padded Gambeson", "male", "true");
       
       console.log("knight name: " + aKnight.name)
       combat()
@@ -2795,14 +2799,14 @@ let retainerNameFirst_A = [
       // Add a table to log combat
       rowString =
           `<div class="table-responsive">
-            <table class="table" id="combatTable">
+            <table class="table-condensed" id="combatTable">
               <thead>
                 <tr>
                   <th scope="col" class="border-0 bg-light">
-                    <div class="p-1 px-3 text-uppercase">Round</div>
+                    <div class="p-1 px-3 text-uppercase textBlack">Round</div>
                   </th>
                   <th scope="col" class="border-0 bg-light">
-                    <div class="p-1 px-3 text-uppercase">Result</div>
+                    <div class="p-1 px-3 text-uppercase textBlack">Result</div>
                   </th>
                 </tr>
               </thead>
