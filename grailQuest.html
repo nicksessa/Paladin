@@ -39,6 +39,7 @@
     }
     .parchment {
       background-image: url("http://drive.google.com/uc?export=view&id=1ekfXcSNZ2xz4JmwGsq1xjx1ywGM5J7Sw");
+      background-image: url("./images/Parchment.jpg");
       /* Background image is centered vertically and horizontally at all times */
       background-position: center center;
       /* Background image doesn'=t tile */
@@ -159,7 +160,6 @@
     .table {
       color: black;
     }
-
     .textBlack {
       color: black;
     }
@@ -183,6 +183,10 @@
     
     .wideModal {
       width: 80%;
+    }
+    
+    .bgOrange {
+      background-color: orange;
     }
     
   </style>
@@ -235,7 +239,7 @@
             <td class="text-center"><span id="topDivPotions">999</span></td>
             <td class="text-center"><span id="topDivMoney">999</span></td>
             <td class="text-center"><span id="topDivRumors">999</span></td>
-            <td class="text-center"><span id="topDivRebellionLevel">999</span></td>
+            <td class="text-center"><span id="topDivRebellionLevel" class="bg-success rounded px-1 pb-1 mr-1">999</span></td>
             <td class="text-center"><span id="topDivTurnCounter">999</span></td>
           </tr>
 
@@ -271,7 +275,7 @@
 
                   <button type="button" class="btn sideMenuBtn text-left">Save Game</button>
 
-                  <button type="button" class="btn sideMenuBtn text-left">Restart Game</button>
+                  <button onclick="startNewGame()" type="button" class="btn sideMenuBtn text-left">Restart Game</button>
                   <button id="backgroundURL1_btn" class="btn sideMenuBtn rounded text-left">Background 1</button>
                   <button id="backgroundURL2_btn" class="btn sideMenuBtn rounded text-left">Background 2</button>
 
@@ -432,39 +436,38 @@
       });
     });
     
-    // import the character.js file for the character object
-    // check local storage for file.
-    // Microsoft Edge does not like this: 
-    /*
-    let playerCharacterStats = localStorage.getItem("theGrailQuest_ryu2012_character")
-    if (playerCharacterStats !== null && localStorage.playerCharacterStats !== '') {
     
+    // This is the default if local storage does not exist
+    let defaultPlayerCharacter = {
+      name: "Sir Percival",
+      max_hp: 40,
+      cur_hp: 40,
+      armor: 1,
+      attack: 6,
+      att_mod: 0,
+      dmg_mod: 2,
+      exp: 0,
+      money: 20,
+      species: "human",
+      sex: "male",
+      healingPotions: 3,
+      alive: true,
+      rumors: 0,
+      rumorModifier: 0,
+      rebellionLevel: 0,
+      rebellionLevelMod: 0,
+      turn: 0,
+      piety: 0,
+      sideQuests: 0,
+      findRetainerModifier: 0,
+      wasLost: false,
+      captainsSlain: 0,
+      onPilgrimage: false,
+      pilgrimageModifier: 0,
+      dishonor: false
     }
-    let playerCharacterEquipment = localStorage.getItem("theGrailQuest_ryu2012_equipment")
-    if (playerCharacterEquipment !== null && localStorage.playerCharacterEquipment !== '') {
     
-    }
-    let playerCharacterLog = localStorage.getItem("theGrailQuest_ryu2012_log")
-    if (playerCharacterLog !== null && localStorage.playerCharacterLog !== '') {
-    
-    }
-    */
-    // Go here for more examples: https://www.w3schools.com/jsref/obj_storage.asp
-    
-    
-  // this will close the menu on click outside the menu
-  
-  $(document).mouseup(function(e) 
-  {
-      var container = $("#collapseExample");
-      // if the target of the click isn't the container nor a descendant of the container
-      if (!container.is(e.target) && container.has(e.target).length === 0) 
-      {
-          container.collapse('hide');
-      }
-  });  
-    
-    
+    // This is the PC object we update throughout the game
     let playerCharacter = {
       name: "Sir Percival",
       max_hp: 40,
@@ -493,6 +496,106 @@
       pilgrimageModifier: 0,
       dishonor: false
     }
+    
+    // Speed up calls to hasOwnProperty
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+    function isEmpty(obj) {
+
+        // null and undefined are "empty"
+        if (obj == null) return true;
+
+        // Assume if it has a length property with a non-zero value
+        // that that property is correct.
+        if (obj.length > 0)    return false;
+        if (obj.length === 0)  return true;
+
+        // If it isn't an object at this point
+        // it is empty, but it can't be anything *but* empty
+        // Is it empty?  Depends on your application.
+        if (typeof obj !== "object") return true;
+
+        // Otherwise, does it have any properties of its own?
+        // Note that this doesn't handle
+        // toString and valueOf enumeration bugs in IE < 9
+        for (var key in obj) {
+            if (hasOwnProperty.call(obj, key)) return false;
+        }
+
+        return true;
+    }
+
+    
+    // import the character.js file for the character object
+    // check local storage for file.
+    // Microsoft Edge does not like this? 
+    
+    // define variable for local storage data
+    let pcLocalStorage = ""
+    let canUseLocalStorage = false
+    
+    // Check browser support
+    if (typeof(Storage) !== "undefined") {
+      canUseLocalStorage = true
+      // check to see if the variable exists
+      if (localStorage.getItem("theGrailQuest_ryu2012_character")) {
+        //alert("local storage item exists")
+        // next check to see if the variable is null
+        pcLocalStorage = JSON.parse(localStorage.getItem("theGrailQuest_ryu2012_character"))
+        if (isEmpty(pcLocalStorage)) {
+          alert("local storage variable is empty.  Creating a new Character")
+          // create a new local storage object using the default character
+          localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(defaultPlayerCharacter))
+          
+        } else {
+          // the local storage variable exists and is not null
+          // set it to the playerCharacter object
+          // To do: we need to test the format of the object before setting it.
+          
+          //alert("local storage variable exists and is not null.  Set playerCharacter obj")
+          let objString = JSON.stringify(pcLocalStorage)
+          console.log("obj: " + objString)
+          playerCharacter = pcLocalStorage
+          console.log("playerCharacter object is: " + objString)
+        }
+      } else {
+        // playerCharacterStats local variable is null - does not exist
+        alert("local storage variable does not exist so set the default")
+        // so create a new local storage variable using the default PC
+        // create a new local storage object using the default character
+        localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(defaultPlayerCharacter))
+      }
+    } else {
+      alert("This browser does not support Local Storage")
+      
+    }
+    
+   
+    let playerCharacterEquipment = localStorage.getItem("theGrailQuest_ryu2012_equipment")
+    if (playerCharacterEquipment !== null && localStorage.playerCharacterEquipment !== '') {
+    
+    }
+    
+    let playerCharacterLog = localStorage.getItem("theGrailQuest_ryu2012_log")
+    if (playerCharacterLog !== null && localStorage.playerCharacterLog !== '') {
+    
+    }
+    
+    // Go here for more examples: https://www.w3schools.com/jsref/obj_storage.asp
+    
+    
+  // this will close the menu on click outside the menu
+  
+  $(document).mouseup(function(e) 
+  {
+      var container = $("#collapseExample");
+      // if the target of the click isn't the container nor a descendant of the container
+      if (!container.is(e.target) && container.has(e.target).length === 0) 
+      {
+          container.collapse('hide');
+      }
+  });  
+    
     
     
     
@@ -693,7 +796,53 @@ let retainerNameFirst_A = [
       } else {
         $("#topDivCurHP").addClass("bg-secondary")
       }
+      
+      if (canUseLocalStorage) {
+        localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(playerCharacter))
+      }
+      
+      // color code the rebellion level
+      $("#topDivRebellionLevel").removeClass(["bg-success", "bg-info", "bgOrange", "bg-warning", "bg-danger", "bg-secondary"]);
+      switch(playerCharacter.rebellionLevel) {
+        case 0: 
+          $("#topDivRebellionLevel").addClass("bg-success")
+        break;
+        case 1:
+          $("#topDivRebellionLevel").addClass("bg-info")
+        break;
+        case 2:
+          $("#topDivRebellionLevel").addClass("bg-warning")
+        break;
+        case 3:
+          $("#topDivRebellionLevel").addClass("bgOrange")
+        break;
+        case 4:
+          $("#topDivRebellionLevel").addClass("bg-danger")
+        break;
+        case 5:
+          $("#topDivRebellionLevel").addClass("bg-dark")
+        break;
+        default:
+          $("#topDivRebellionLevel").addClass("bg-dark")
+        break;
+      }
     }
+    
+    
+    function onRebellionLevelChange () {
+      // set the color of the rebellion level
+      // 0 = green
+      // 1 = blue
+      // 2 = yellow
+      // 3 = orange
+      // 4 = red
+      // 5 = black
+      
+    }
+    
+    
+    
+    
     
     // -----------------------------------------------------
     // Set the Character Stats Modal
@@ -753,7 +902,11 @@ let retainerNameFirst_A = [
     // -----------------------------------------------------
     
     $(document).ready(function () {
-      startNewGame()
+      if (playerCharacter.turn > 0) {
+        continueJourney()
+      } else {
+        startNewGame()
+      }
     })
       
     let lastJourneyRoll = 0
@@ -793,9 +946,21 @@ let retainerNameFirst_A = [
       playerCharacter.onPilgrimage = false
       playerCharacter.pilgrimageModifier = 0
       playerCharacter.dishonor = false
-
       updateNavbar()
       
+      let runJourneyButton = `
+          <div class="mt-2">
+          <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Journey On
+          </button>
+        `
+      $("#gameButtons").html(runJourneyButton)
+    }
+    
+    function continueJourney() {
+      $("#gameTableTitle").html("Journey on... ")
+      $("#gameTableText").html("Click below to continue your journey!")
       let runJourneyButton = `
           <div class="mt-2">
           <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -809,7 +974,7 @@ let retainerNameFirst_A = [
     function rollJourneyTable() {
       $('#npcCollapse').toggle(false)
       $("#gameTableTitle").empty()
-      $("#gameTableTitle").html("Journey Table")
+      $("#gameTableTitle").html("Journey on... ")
       $("#gameTableText").empty()
       $("#gameTableText").html(`${playerCharacter.name} sets off on a journey and ...`)
       console.log("roll on the journey table")
@@ -1019,6 +1184,9 @@ let retainerNameFirst_A = [
             rowString += "<br>You lose " + threeD6 + " silver pieces.<br>"
             adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'You have been robbed!' });
             playerCharacter.money -= threeD6
+            if (playerCharacter.money < 0) {
+              playerCharacter.money = 0
+            }
             updateNavbar()
             $("#gameTableText").append(rowString)
           }
@@ -1390,10 +1558,10 @@ let retainerNameFirst_A = [
     
     
     let castlePerilousTable = [
-      "The White Knight. In a room you see a white shield with red cross, the Shield of Evalach. It is guarded by a white† knight, level 7 with 8 life points. No quarter is asked or given. If you defeat the white knight, you may take the shield and get one XP roll. If you already have the shield, roll on this table again.",
-      "Penance. You fall asleep. If you committed an act of Dishonor during the game, you wake up outside an abandoned church. Any armor, shield and weapon you had are stolen (except magical ones), and you are left with only a dagger (light slashing weapon). Treasures, coins and retainers remain with you. Otherwise, you heal 1 life point for a good night’s sleep.",
+      "The White Knight. In a room you see a white shield with red cross, the Shield of Evalach. It is guarded by a white knight, level 7 with 8 life points. No quarter is asked or given. If you defeat the white knight, you may take the shield and get one XP roll. If you already have the shield, roll on this table again.",
+      "Penance. You fall asleep. If you committed an act of Dishonor during the game, you wake up outside an abandoned church. Any armor, shield and weapon you had are stolen (except magical ones), and you are left with only a dagger (light slashing weapon). Treasures, coins and retainers remain with you. Otherwise, you heal 1 life point for a good night's sleep.",
       "The Wanderer. You meet an immortal, over 1,000 years old. If you are currently under Dishonor, it is removed. He takes you to a crossroads, treat as if a 1 was rolled on the Inn Table (2)",
-      "The Black Knight or the Red Knight? Opening a door you see two scenes. First: A questing paladin is about to be killed by a black† knight . Second: A maiden is about to be attacked by a red† knight . Choose who to save. If you save the maiden, roll for a piety point, but the Rebellion Level increases by 1 as the questing paladin dies. If you save the questing paladin, do not increase the Rebellion Level. You only fight one of the knights; they are both level 7 with 8 life points. You get an XP roll if you win. No quarter is asked or given. There is no treasure. ",
+      "The Black Knight or the Red Knight? Opening a door you see two scenes. First: A questing paladin is about to be killed by a black knight . Second: A maiden is about to be attacked by a red knight . Choose who to save. If you save the maiden, roll for a piety point, but the Rebellion Level increases by 1 as the questing paladin dies. If you save the questing paladin, do not increase the Rebellion Level. You only fight one of the knights; they are both level 7 with 8 life points. You get an XP roll if you win. No quarter is asked or given. There is no treasure. ",
       "The Hermit. You meet an old hermit who can sell you up to 3 rumors for 50gp each (or at least that value in treasure).",
       "The Dwarf. At the castle gate, a dwarf with a cart offers you a lift. If you pay him 50 gold pieces (or at least that value in treasure), you, along with retainers, can be taken to any quest of your choice from the Side Quest Table (9). You can also ride for free, roll a d6; on a 1-3 go to event 7, and on a 4-6 go to event 9 on the Encounter Table (3)."
     ]  
@@ -1695,27 +1863,104 @@ let retainerNameFirst_A = [
     }
     
     function runCastlePerilous() {
-    
-      //$("#gameTableText").empty()
-      //$("#gameTableText").parent().empty()
-      //$("#gameTableInfo").parent().empty()
+      let btnString = ""
       $("#gameButtons").empty()
-      
-      let castlePerilousQuest = castlePerilousTable[rollDie(6) -1]
-      //let castlePerilousQuest = ""
-      //alert("Your event is: " + castlePerilousQuest)
+      let roll = rollDie(6)
+      let castlePerilousQuest = castlePerilousTable[roll -1]
       $("#gameTableText").append(castlePerilousQuest)
       
-      
-      // click to go to the Journey table
-      let gotoJourneyButton = `
+      switch(roll) {
+        case 1: 
+          btnString = `
+            <div class="mt-2">
+              <button onclick="theWhiteKnight()" data-id="gotoCombatBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Fight the Knight
+            </button>
+          
+          `
+          $("#gameButtons").html(btnString)
+        break;
+        case 2:
+          if (playerCharacter.dishonor) {
+            // robbed
+            $("#gameTableText").html("You fall asleep.  When you awake, it's cold, rainy and you find yourself outside an old abandoned church.  Worse still, you've been robbed!")
+            let daggerObj = {
+              id: 4,
+              name: "Dagger",
+              type: "Weapon",
+              ranged: false,
+              readied: true,
+              cost: 2,
+              damage_bonus: 1
+            }
+            let myString = ""
+            let newInventory = []
+            for (let i=0; i<inventory.length; i++) {
+              myString = inventory[i].type
+              if (myString != "Armor" && myString != "Weapon") {
+                newInventory.push(inventory[i])
+              }
+            }
+            newInventory.push(daggerObj)
+            inventory = newInventory
+          } else {
+            $("#gameTableText").html("You fall asleep.  When you awake, the sun is shining and you find yourself outside of a small but beautiful church.")
+            healUp()
+          }
+        
+          btnString = `
         <div class="mt-2">
         <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
         <i class="mt-2"></i>
         Continue your Journey
             </button>
       `
-      $("#gameButtons").html(gotoJourneyButton)
+      $("#gameButtons").html(btnString)
+        break;
+        case 3:
+          btnString = `
+        <div class="mt-2">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Continue your Journey
+            </button>
+      `
+      $("#gameButtons").html(btnString)
+        break
+        case 4:
+          btnString = `
+        <div class="mt-2">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Continue your Journey
+            </button>
+      `
+      $("#gameButtons").html(btnString)
+        break;
+        case 5:
+          btnString = `
+        <div class="mt-2">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Continue your Journey
+            </button>
+      `
+      $("#gameButtons").html(btnString)
+        break;
+        case 6:
+          btnString = `
+        <div class="mt-2">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Continue your Journey
+            </button>
+      `
+      $("#gameButtons").html(btnString)
+        break;
+      }
+      // click to go to the Journey table
+      
         
     }
     
@@ -1736,7 +1981,7 @@ let retainerNameFirst_A = [
         </button>
         <button onclick="rollPlague()" data-id="rollPlagueBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
           <i class="mt-2"></i>
-          Continue your Journey
+          Go to Plague Village
         </button>
       `
       $("#gameButtons").html(gotoJourneyButton)
@@ -1745,6 +1990,8 @@ let retainerNameFirst_A = [
     
     
     function rollPlague() {
+      $("#gameTableText").html(playerCharacter.name + " selflessly risks life and limb in an effort to alleviate the pain and suffering of the villagers...<br>")
+      $("#gameTableText").append("")
       let roll1 = rollDie(6)
       let roll2 = rollDie(6)
       
@@ -1774,13 +2021,23 @@ let retainerNameFirst_A = [
         //test for piety
         let num = rollDie(6)
         if (num > playerCharacter.piety) {
-          $("#gameTableText").append("Not only did you survive the plague, you also gained a piety point!")
+          $("#gameTableText").append("Not only did you bring comfort and solace to many, but you also survived the plague! Faith without works is dead and your work here has gained you a blessing from God. (You gained a piety point!)")
           playerCharacter.piety ++
           updateNavbar()
         }
+        $("#gameTableText").html()
+        
+        let btnString = `
+        <div class="mt-2">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Continue your Journey
+            </button>
+      `
+      $("#gameButtons").html(btnString)
       }
         
-      $("#gameTableText").html()
+      
     }
     
     
@@ -1857,19 +2114,7 @@ let retainerNameFirst_A = [
       $("#gameButtons").empty()
       $("#gameButtons").html(rowString) 
       
-      
-      
-      //$("#gameTableText").empty()
-      $("#gameButtons").empty()
-      // click to go to the Journey table
-      let gotoJourneyButton = `
-        <div class="mt-2">
-        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
-            </button>
-      `
-      $("#gameButtons").html(gotoJourneyButton)
+
         
     }
     
@@ -2076,6 +2321,7 @@ let retainerNameFirst_A = [
     
     function rollChallengeTable() {
       $("#gameTableText").empty()
+      console.log("rollChallengeTable")
       // add rebellion level to this roll
       let modifier = 0
       switch (playerCharacter.rebellionLevel) {
@@ -2354,7 +2600,19 @@ let retainerNameFirst_A = [
     // -----------------------------------------------------
     
     function rollHeroicQuestTable() {
-    
+            
+      
+      $("#gameTableText").html("<p>Heroic stuff happens here</p>")
+      $("#gameButtons").empty()
+      // click to go to the Journey table
+      let gotoJourneyButton = `
+        <div class="mt-2">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <i class="mt-2"></i>
+        Continue your Journey
+            </button>
+      `
+      $("#gameButtons").html(gotoJourneyButton)
     }
     
     // -----------------------------------------------------
@@ -2577,7 +2835,7 @@ let retainerNameFirst_A = [
       {
         id: 0,
         name: "Longsword",
-        type: "Hand Weapon",
+        type: "Weapon",
         ranged: false,
         readied: true,
         cost: 6,
@@ -2586,7 +2844,7 @@ let retainerNameFirst_A = [
       {
         id: 1,
         name: "Short sword",
-        type: "Light Hand Weapon",
+        type: "Weapon",
         ranged: false,
         readied: false,
         cost: 5,
@@ -2595,7 +2853,7 @@ let retainerNameFirst_A = [
       {
         id: 2,
         name: "Leather Jerkin",
-        type: "Light Armor",
+        type: "Armor",
         ranged: false,
         readied: true,
         cost: 5,
@@ -2604,7 +2862,7 @@ let retainerNameFirst_A = [
       {
         id: 3,
         name: "Padded Armor",
-        type: "Light Armor",
+        type: "Armor",
         ranged: false,
         readied: true,
         cost: 4,
@@ -2727,12 +2985,20 @@ let retainerNameFirst_A = [
     
       // Create a knight object
       //alert("a challenge from: " + name)
-      aKnight = new NPC(challengerName, 25, 25, 1, 6, 2, 2, "Longsword", "", "Padded Gambeson", "male", "true");
+      aKnight = new NPC(challengerName, 25, 25, 1, 6, 0, 2, "Longsword", "", "Padded Gambeson", "male", "true");
       
       console.log("knight name: " + aKnight.name)
       combat()
       
     }
+    
+    function theWhiteKnight() {
+      aKnight = new NPC("The White Knight", 25, 25, 2, 6, 0, 2, "Longsword", "", "Chainmail", "male", "true");
+      
+      console.log("knight name: " + aKnight.name)
+      combat()
+    }
+    
     
     function updateNPC() {
       $("#npcDivName").html(aKnight.name)
@@ -2904,6 +3170,7 @@ let retainerNameFirst_A = [
           // Todo: check to see if the knight surrenders if below 50% health
           
           if (aKnight.cur_hp < 1) {
+            round = 0
             // npc is dead - remove him from the list of available evil captains
             aKnight.isAlive = false
             $("#gameTableText").append("<p>You have slain " + knightName + "!</p>")
@@ -2968,6 +3235,7 @@ let retainerNameFirst_A = [
           // check to see if the pc is alive, knocked out or dead
           if (playerCharacter.cur_hp < 6 && playerCharacter.cur_hp > 0) {
         	// PC is knocked out
+            round = 0
             console.log("PC is alive but knocked out")
             $("#storyDivHead").empty()
             $("#npcParagraph").empty()
@@ -2991,6 +3259,7 @@ let retainerNameFirst_A = [
             })
           }
           if (playerCharacter.cur_hp < 1) {
+            round = 0
             // pc is dead!
             console.log("PC has died")
             $("#storyDivHead").empty()
@@ -3028,9 +3297,10 @@ let retainerNameFirst_A = [
     
     function flee() {
       console.log("flee function")
+      round = 0
       $("#gameTableText").empty()
       $("#gameTableText").append("<p>" + aKnight.name + " laughs at you as you flee like a coward!</p>")
-      $("#gameTableText").append("<p>If you're not too chicken to fight, click the button below to summon another opponent</p>")
+      $("#gameTableText").append("<p>If you're not too chicken, click the button below to continue your journey.  Maybe you'll find something you can handle... like a rabbit.</p>")
       let rowString = `
           <div class="d-flex mt-2">
             <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -3056,19 +3326,30 @@ let retainerNameFirst_A = [
         /*let rowString = `<div class="d-flex mt-2 justify-content-between">
   <a href="#" id="attackBtn3" class="attackBtn btn btn-dark px-4 rounded-pill">Go To Combat!</a></div>`*/
   
-        var rowString = `<div class="col text-center">
-            <button id="attackBtn3" type="button" class="btn btn-dark px-4 rounded-pill"><i
-            class="mt-2 mr-2"></i>Go To Combat!</button>
-            </div>`
+        //var rowString = `<div class="col text-center">
+        //    <button id="attackBtn3" type="button" class="btn btn-dark px-4 rounded-pill"><i
+        //    class="mt-2 mr-2"></i>Go To Combat!</button>
+        //    </div>`
+        
+        rowString = `
+              <div class="d-flex mt-2">
+              <button onclick="combat()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Back to Combat
+              </button>
+              </div>`
             
-        $("#gameTableText").append(rowString)
-        $(document).off('click')
-        $(document).on('click', '#attackBtn3', function () {
-          combat()
+            $("#gameButtons").html(rowString)
+            
+        //$("#gameTableText").append(rowString)
+        //$(document).off('click')
+        //$(document).on('click', '#attackBtn3', function () {
+          //combat()
           //console.log(this.value);
-        });
+        //});
       } else {
         peace = true
+        round = 0
         $("#gameTableText").empty()
         $("#gameTableText").append("<p>" + aKnight.name + " agrees to live and let live... for now.</p>")
         let rowString = `
