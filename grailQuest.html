@@ -413,7 +413,13 @@
 
 
   <script>
-  
+  // -----------------------------------------
+  // Global variables
+
+  //let initiativeTarget = 3
+
+  // End Global variables
+  // -----------------------------------------
   
   $('#myModal').on('show.bs.modal', function () {
       $('.modal-body',this).css({width:'auto',height:'auto', 'max-height':'100%'});
@@ -828,22 +834,7 @@ let retainerNameFirst_A = [
       }
     }
     
-    
-    function onRebellionLevelChange () {
-      // set the color of the rebellion level
-      // 0 = green
-      // 1 = blue
-      // 2 = yellow
-      // 3 = orange
-      // 4 = red
-      // 5 = black
       
-    }
-    
-    
-    
-    
-    
     // -----------------------------------------------------
     // Set the Character Stats Modal
     // -----------------------------------------------------
@@ -1819,6 +1810,7 @@ let retainerNameFirst_A = [
       //let pcRumors = playerCharacter.rumors
       let savesFailed = 0
       let outOfRumors = false
+      let btnString = ""
       
       // make three saves
       for (i=1; i<4; i++) {
@@ -1831,35 +1823,67 @@ let retainerNameFirst_A = [
       }
       
       if (playerCharacter.rumors < 0) playerCharacter.rumors = 0
-      $("#topDivRumors").html(playerCharacter.rumors)
+      updateNavbar()
       
       if (savesFailed == 0) {
         $("#gameTableText").append("<p>You have successfully resisted Morgana's spell!</p>")
+        btnString = `
+            <div class="mt-2">
+            <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Continue your Journey
+                </button>
+            `
+          $("#gameButtons").html(btnString)
       } else {
       
         if (savesFailed > 1 && outOfRumors) {
           $("#gameTableText").append(`<p>You failed ${savesFailed} saves and face a challenger!</p>`)
+          btnString = `
+            <div class="mt-2">
+            <button onclick="rollChallengeTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Fight a Knight
+                </button>
+            `
+          $("#gameButtons").html(btnString)
         }
         if (savesFailed == 1 && outOfRumors) {
           $("#gameTableText").append(`<p>You failed ${savesFailed} save and face a challenger!</p>`)
+          btnString = `
+            <div class="mt-2">
+            <button onclick="rollChallengeTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Fight a Knight
+                </button>
+            `
+          $("#gameButtons").html(btnString)
         }
         if (savesFailed == 1  && !outOfRumors) {
           $("#gameTableText").append("<p>She causes you to forget 1 rumor.  Consider yourself lucky!</p>")
+          btnString = `
+            <div class="mt-2">
+            <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Continue your Journey
+                </button>
+            `
+          $("#gameButtons").html(btnString)
         }
         if (savesFailed > 1  && !outOfRumors) {
           $("#gameTableText").append(`<p>She causes you to forget ${savesFailed} rumors.  Consider yourself lucky!</p>`)
+          // click to go to the Journey table 
+          btnString = `
+            <div class="mt-2">
+            <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Continue your Journey
+                </button>
+            `
+          $("#gameButtons").html(btnString)
         }
       }
-      // click to go to the Journey table  -- startEncounter for now!
-      let gotoJourneyButton = `
-        <div class="mt-2">
-        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
-            </button>
-        `
-      $("#gameButtons").empty()
-      $("#gameButtons").html(gotoJourneyButton)
+
     }
     
     function runCastlePerilous() {
@@ -1910,58 +1934,183 @@ let retainerNameFirst_A = [
           }
         
           btnString = `
-        <div class="mt-2">
-        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
-            </button>
-      `
-      $("#gameButtons").html(btnString)
+            <div class="mt-2">
+            <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Continue your Journey
+                </button>
+          `
+          $("#gameButtons").html(btnString)
         break;
+
+        // Meet a priest
         case 3:
+          if (playerCharacter.dishonor) {
+            $("#gameTableText").html("You meet a traveling priest who offers to hear your confession.  If you confess your sins faithfully, not ony will honor be restored, but your soul shall be healed.")
+
+          }
           btnString = `
-        <div class="mt-2">
-        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
+            <div class="d-flex mt-2 justify-content-around">
+            <button onclick="confessSins()" data-id="gotoConfessionBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Go to Confession
             </button>
-      `
-      $("#gameButtons").html(btnString)
+            <button onclick="skipConfession()" data-id="skipConfessionBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Skip Confession
+            </button>
+            </div>
+          `
+          $("#gameButtons").html(btnString)
         break
+
+        // Black Knight or Red Knight
         case 4:
+        $("#gameTableText").html("Opening a door you see two mystical portals, each displaying a different scene. First: A questing paladin is about to be killed by a black knight. Second: A maiden is about to be attacked by a red knight. <br> You must choose who to save.")
+
           btnString = `
-        <div class="mt-2">
-        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
+            <div class="d-flex mt-2 justify-content-around">
+            <button onclick="saveThePaladin()" data-id="saveThePaladinBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Save the Paladin
             </button>
-      `
-      $("#gameButtons").html(btnString)
+            <button onclick="saveTheMaiden()" data-id="saveTheMaidenBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Save the Maiden
+            </button>
+            </div>
+          `
+          $("#gameButtons").html(btnString)
         break;
+
+        // The Hermit
         case 5:
+          hermitRumorCount = 3
           btnString = `
-        <div class="mt-2">
-        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
+          <div class="d-flex mt-2 justify-content-around">
+            <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Continue your Journey
             </button>
-      `
-      $("#gameButtons").html(btnString)
+            <button onclick="buyRumors()" data-id="buyRumorsBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Buy Rumor
+            </button>
+            </div>
+          `
+          $("#gameButtons").html(btnString)
         break;
+
+        // The Dwarf
         case 6:
+          // choose side quest
+          // or:  event 7 (challenge or pilgrimage) or event event 9 (heroic quest or pilgrimage)
           btnString = `
-        <div class="mt-2">
-        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
-            </button>
-      `
-      $("#gameButtons").html(btnString)
+            <div class="mt-2">
+            <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Continue your Journey
+                </button>
+          `
+          $("#gameButtons").html(btnString)
         break;
       }
       // click to go to the Journey table
       
         
+    }
+
+    // this is a global and should go with the other global variables
+    let hermitRumorCount = 3
+
+    function buyRumors() {
+      if (playerCharacter.money < 50) {
+        alert("You have insuffient funds to purchase any rumors.")
+      } else {
+        if (hermitRumorCount > 0) {
+          playerCharacter.money -= 50
+          playerCharacter.rumors ++
+          updateNavbar()
+        }
+      }
+    }
+
+    function saveThePaladin() {
+      $("#gameTableText").html("With the maiden's screams still echoing in your head, you leap through the portal to save the knight. ")
+      challengerName = "The Black Knight"
+      aKnight = new NPC(challengerName, 25, 25, 2, 6, 0, 2, "Longsword", "", "Chainmail", "male", "true");
+      round = 1
+      console.log("knight name: " + aKnight.name)
+      
+      btnString = `
+        <div class="mt-2">
+        <button onclick="combat()" data-id="gotoCombatBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Fight the Black Knight
+        </button>
+        </div>
+      `
+      $("#gameButtons").html(btnString)
+    }
+
+    function saveTheMaiden() {
+      $("#gameTableText").html("The Black Knight slays the paladin as you leap through the other portal.")
+      challengerName = "The Red Knight"
+      aKnight = new NPC(challengerName, 25, 25, 2, 6, 0, 2, "Longsword", "", "Chainmail", "male", "true");
+      round = 1
+      console.log("knight name: " + aKnight.name)
+      
+      btnString = `
+        <div class="mt-2">
+        <button onclick="combat()" data-id="gotoCombatBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Fight the Red Knight
+        </button>
+        </div>
+      `
+      $("#gameButtons").html(btnString)
+    }
+
+    function confessSins() {
+      $("#gameTableText").append("After making a good confession, the priest then says:<p>Deinde, ego te absolvo a peccatis tuis in nomine Patris, et Filii, et Spiritus Sancti. Amen.</p>")
+      $("#gameTableText").append("<p>If your sins were truly grave, he suggests that you go on a pilgrimage.</p>")
+      playerCharacter.dishonor = false
+      updateNavbar()
+      btnString = `
+        <div class="d-flex mt-2 justify-content-around">
+        <button onclick="rollInnTable()" data-id="rollInnBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Go to Inn
+        </button>
+        <button onclick="startEncounter()" data-id="startEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Go to an Encounter
+        </button>
+        <button onclick="rollPilgrimageTable()" data-id="pilgrimageBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Undertake Pilgrimage
+        </button>
+        </div>
+      `
+      $("#gameButtons").html(btnString)
+    }
+
+    function skipConfession() {
+      $("#gameTableText").append("<p>The priest shrugs and says: 'Suite yourself'</p>  He then directs you to a crossroads.")
+      
+      btnString = `
+        <div class="d-flex mt-2 justify-content-around">
+        <button onclick="rollInnTable()" data-id="rollInnBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Go to Inn
+        </button>
+        <button onclick="startEncounter()" data-id="startEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Go to an Encounter
+        </button>
+        </div>
+      `
+      $("#gameButtons").html(btnString)
     }
     
     function runPlagueVillage() {
@@ -2215,7 +2364,7 @@ let retainerNameFirst_A = [
       
       $("#gameTableText").html("<p>Merlin heals you (and your retainers) back to full strength!</p>")
       let num = rollDie(6) + 1
-      $("#gameTableText").html(`<p>He also gives you wise counsel.  (you gain ${num} rumors)</p>`)
+      $("#gameTableText").append(`<p>He also gives you wise counsel.  (you gain ${num} rumors)</p>`)
       
       playerCharacter.rumors += num
       playerCharacter.cur_hp = playerCharacter.max_hp
@@ -2966,7 +3115,7 @@ let retainerNameFirst_A = [
       this.name = name;
       this.cur_hp = cur_hp + (playerCharacter.rebellionLevel * 2);
       this.max_hp = max_hp + (playerCharacter.rebellionLevel * 2);
-      this.armor = armor + (playerCharacter.rebellionLevel);
+      this.armor = armor + (playerCharacter.rebellionLevelMod);
       this.attack = attack;
       this.att_mod = att_mod + playerCharacter.rebellionLevelMod;
       this.dmg_mod = dmg_mod + playerCharacter.rebellionLevelMod;
@@ -2982,10 +3131,10 @@ let retainerNameFirst_A = [
   
     function knightChallenge() {
       
-    
+      round = 1
       // Create a knight object
       //alert("a challenge from: " + name)
-      aKnight = new NPC(challengerName, 25, 25, 1, 6, 0, 2, "Longsword", "", "Padded Gambeson", "male", "true");
+      aKnight = new NPC(challengerName, 25, 25, 0, 6, 0, 2, "Longsword", "", "Padded Gambeson", "male", "true");
       
       console.log("knight name: " + aKnight.name)
       combat()
@@ -2993,8 +3142,8 @@ let retainerNameFirst_A = [
     }
     
     function theWhiteKnight() {
-      aKnight = new NPC("The White Knight", 25, 25, 2, 6, 0, 2, "Longsword", "", "Chainmail", "male", "true");
-      
+      aKnight = new NPC("The White Knight", 25, 25, 1, 6, 0, 2, "Longsword", "", "Chainmail", "male", "true");
+      round = 1
       console.log("knight name: " + aKnight.name)
       combat()
     }
@@ -3041,15 +3190,23 @@ let retainerNameFirst_A = [
       //$("#attackBtn").html('Attack')
       //let round = 1
       //alert("A challenge from: " + aKnight.name)
+      let initiativeTarget = 4
+      if (aKnight.name == "The White Knight" || aKnight.name == "The Black Knight" || aKnight.name == "The Red Knight") {
+        initiativeTarget = 3
+      } else {
+        initiativeTarget = 4
+      }
+
       if (round == 1) {
         $("#gameTableText").append("<p id='npcParagraph'>Your Opponent is: <strong>" + aKnight.name + "!!!</strong></p>")
         let roll_1d6 = rollDie(6);
-        if (roll_1d6 < 4) {
-          initiative = "npc"
-          $("#gameTableText").append("<p id='storyDivHead'>" + aKnight.name + " won initiative and has attacked first!</p>")
-        } else {
+        // if die roll > initiativeTarget (3 by default) the PC has the initiative
+        if (roll_1d6 >= initiativeTarget) {
           initiative = "pc"
           $("#gameTableText").append("<p id='storyDivHead'>You have won initiative.  Attack, flee... or talk.</p>")
+        } else {
+          initiative = "npc"
+          $("#gameTableText").append("<p id='storyDivHead'>" + aKnight.name + " won initiative and has attacked first!</p>")
         }
       }
       //console.log("made it here")
@@ -3264,24 +3421,33 @@ let retainerNameFirst_A = [
             console.log("PC has died")
             $("#storyDivHead").empty()
             $("#npcParagraph").empty()
-            $("#storyDivHead").html('<p>' + playerCharacter.name + ' has been slain by ' + aKnight.name + '!  May God speed ' + playerCharacter.name + ' on his way to his eternal reward!</p>')
+            $("#storyDivHead").html('<p>' + playerCharacter.name + ' has been slain by ' + aKnight.name + '!<br>  May God speed ' + playerCharacter.name + ' on his way to his eternal reward!</p>')
             
             // empty the combatCommandButtons and then replace them with a single button to go to the start
-            $("#gameButtons").empty()
+            //$("#gameButtons").empty()
             
-            let rowString = `<div class="col text-center">
-                <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i class="mt-2 mr-2"></i>Click to Start Over</button>
-                </div>`
+            //let rowString = `<div class="col text-center">
+            //    <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i class="mt-2 mr-2"></i>Click to Start Over</button>
+            //    </div>`
+
+            rowString = `
+              <div class="d-flex mt-2">
+              <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Start New Game
+              </button>
+              </div>`
+
             $("#gameButtons").html(rowString)
             
             //$("#storyDiv").append(rowString)
-            $("#beginAdventure").off('click')
-              $("#beginAdventure").click(function () {
+            //$("#beginAdventure").off('click')
+              //$("#beginAdventure").click(function () {
               //$("#storyDiv").empty()
               //$("#storyDiv").append("<p>Your Opponent is: </p>")
-              startNewGame()
+              //startNewGame()
               //rollNPCTable()
-            })
+            //})
           }
           updateNavbar()
         }
