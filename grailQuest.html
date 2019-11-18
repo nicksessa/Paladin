@@ -607,6 +607,7 @@
     
 let retainers = [
     {
+      id: 0,
       name: "Fred",
       profession: "Mercenary",
       employed: true,
@@ -621,6 +622,7 @@ let retainers = [
       cost: 5
     },
     {
+      id: 1,
       name: "Oliver",
       profession: "Rogue",
       employed: true,
@@ -635,6 +637,7 @@ let retainers = [
       cost: 5
     },
     {
+      id: 2,
       name: "Trogdor",
       profession: "Woodsman",
       employed: true,
@@ -2206,7 +2209,131 @@ let retainerNameFirst_A = [
     }
     
     function runMinions() {
-      //$("#gameTableText").empty()
+      // get minion type (day or night)
+      let roll = rollDie(6)
+      let dayMinions = true
+      let num = 0
+      let minionType = ""
+      
+      if (roll < 4) {
+        dayMinions = true
+      } else {
+        dayMinions = false
+      }
+      // generate minions
+      if (dayMinions) {
+        roll = rollDie(6)
+        switch(roll) {
+          case 1:
+            // angry peasants
+            minionType = "peasants"
+            num = 0
+            for (let i=0; i<4; i++) {
+              num += rollDie(6)
+            }
+            
+          break;
+          case 2:
+            // forest outlaws
+            minionType = "outlaws"
+            num = 0
+            for (let i=0; i<2; i++) {
+              num += rollDie(6)
+            }
+            num += 3
+          break;
+          case 3:
+            // da Picts!
+            minionType = "picts"
+            num = rollDie(6) + 4 
+          break;
+          case 4:
+            // redcaps
+            num = rollDie(6)
+            if (num > 1) {
+              minionType = "redcaps"
+            } else {
+              minionType = "redcap"
+            }
+          break;
+          case 5:
+            // bugbears
+            num = rollDie(3)
+            num += 2
+            minionType = "bugbears"
+          break;
+          case 6:
+            // Men-at-arms
+            num = rollDie(6)
+            num += 4
+            minionType = "men-at-arms"
+          break;
+        }
+      } else {
+        roll = rollDie(6)
+        switch(roll) {
+          case 1:
+            // wolves
+            num = rollDie(6)
+            num += 4
+            minionType = "wolves"
+          break;
+          case 2:
+            // Pagan cultists
+            num = rollDie(6)
+            num += 3
+            minionType = "cultists"
+          break;
+          case 3:
+            // wild boars
+            num = rollDie(6)
+            if (num > 1) {
+              minionType = "boars"
+            } else {
+              minionType = "boar"
+            }
+          break;
+          case 4:
+            // hellhounds
+            num = rollDie(6)
+            minionType = (num > 1) ? "hellhounds" : "hellhound"
+          break;
+          case 5:
+            // ogres
+            num = rollDie(3)
+            minionType = (num > 1) ? "ogres" : "ogre"
+          break;
+          case 6:
+            // fairy fire
+            num = 1
+            minionType = "fairyFire"
+          break;
+        }
+      }
+      //let myText = `You have encountered ${num} ${minionType}`
+      
+      
+      $("#gameTableText").html(`You have encountered ${number} ${minionType}`)
+      $("#gameTableText").append("<p>You can attack immediately which will give you the initiative or you can wait and see what they do.  Note: if you wait and see and the opponents attack, they will attack first.</p>")
+      
+      // show options
+      
+      let rowString = `
+        <div class="d-flex mt-2 justify-content-around">
+        <button onclick="fightMinions(number, minionType)" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Fight Minions!
+        </button>
+        <button onclick="waitAndSee(number, minionType)" data-id="rollInnBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Wait and see.
+        </button>
+        </div>
+        `
+      $("#gameButtons").empty()
+      $("#gameButtons").html(rowString) 
+      
+      
       $("#gameButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
@@ -3587,6 +3714,518 @@ let retainerNameFirst_A = [
     
     
     
+    // -----------------------------------------------------
+    // minion combat - multiple combatants per side
+    // -----------------------------------------------------
+    
+    // Constructor for minions
+    function Minion(name, numStart, numCur, level, armor, attack, att_mod, dmg_mod, treasureRolls, moraleMod) {
+      this.name = name;
+      this.numStart = numStart;
+      this.numCur = numCur;
+      this.level = level;
+      this.armor = armor;
+      this.attack = attack;
+      this.att_mod = att_mod;
+      this.dmg_mod = dmg_mod;
+      this.treasureRolls = treasureRolls;
+      this.moraleMod = moraleMod;
+    }
+    
+    let minions
+    
+    function fightMinions(number, minionType) {
+      round = 1
+      if (minionType == "fairyFire") {
+        fairyFire()
+      } else {
+        if (minionType == "peasants") {
+          minions = new Minion(minionType, number, number, 2, 0, 9, 0, 0, 1, -2)
+          minionCombat(minions)
+        }
+      }
+    }
+    
+    function waitAndSee(number, minionType) {
+      if (minionType == "fairyFire") {
+        fairyFire()
+      } else {
+      
+      }
+      // check minion reaction
+    }
+    
+	function fairyFire() {
+      $("#gameTableText").append("You've encountered a Will-o'-the-Wisp.  It attempts to drain your life as it draws you into it.  You can't kill it. Your only hope is to resist it.")
+      // save vs 5
+      // add piety to the paladin's roll
+      // failed roll does d6+1 damage
+      // continue until a save is passed
+      paladinSave = false
+      retainerSave = false
+      allSaved = false
+      saveMod = 0
+      
+      let pcGroup = []
+      
+      let character = {
+        id: -1,
+        name: playerCharacter.name,
+        cur_hp: playerCharacter.cur_hp,
+        isAlive: playerCharacter.isAlive,
+        saved: false
+      }
+
+      pcGroup.push(character)
+
+      for (let i = 0; i < retainers.length; i++) {
+        character = {
+          id: retainers[i].id,
+          name: retainers[i].name,
+          cur_hp: retainers[i].cur_hp,
+          isAlive: retainers[i].isAlive,
+          saved: false
+        }
+        pcGroup.push(character)
+      }
+    
+      let continueAttack = true
+
+      let numSaved = 0
+      let numDead = 0
+      let totalNum = pcGroup.length
+
+      let saveMod = 0
+
+      let counter = 0
+
+
+      while(continueAttack) {
+        counter++
+        // loop through the pc group array
+        for (let i = 0; i < pcGroup.length; i++) {
+          console.log("Name: " + pcGroup[i].name + " is alive: " + pcGroup[i].isAlive + " saved: " + pcGroup[i].saved)
+          if (!pcGroup[i].saved && pcGroup[i].isAlive) {
+            // if not saved, and is alive roll a save
+            let roll = rollDie(6)
+            console.log("Name: " + pcGroup[i].name + " rolled a: " + roll)
+            if (pcGroup[i].id == -1) {
+              saveMod += pcGroup[i].piety
+              console.log("PC piety: " + playerCharacter.piety)
+              console.log("save modifier is: " + saveMod)
+            }
+            if (roll + saveMod >= 5) {
+              // saved!
+              pcGroup[i].saved = true;
+              console.log("saved!")
+              saveMod++
+              numSaved++
+            } else {
+              let damage = rollDie(6)+1
+              pcGroup[i].cur_hp -= damage
+              console.log("damage: " + damage)
+              console.log("PC: " + pcGroup[i].name + " currently has: " + pcGroup[i].cur_hp + " HP")
+              if (pcGroup[i].cur_hp < 1) {
+                console.log(pcGroup[i].name + " has died")
+                pcGroup[i].isAlive = false
+                numDead++
+              }
+            }  
+          }
+        }
+        
+        console.log("[" + counter + "] ------------------------------")
+
+        if (numSaved == pcGroup.length) continueAttack = false
+        if (numDead == pcGroup.length) continueAttack = false
+        if (numSaved + numDead == pcGroup.length) continueAttack = false
+
+        // this is here to keep us out of an infinite loop
+        if (counter > 500) {
+          continueAttack = false
+          alert("Counter exceeded 500.  Either really bad luck or we got into an infinite loop.")
+        }
+      }
+
+      let myString = ""
+
+      for (let i = 0; i < pcGroup.length; i++) {
+        let deadOrAlive = (pcGroup[i].isAlive) ? "alive" : "dead"
+        
+        myString += pcGroup[i].name + " cur_hp: " + pcGroup[i].cur_hp + " is: " + deadOrAlive + "\n"
+        if (i == 0) {
+          playerCharacter.cur_hp = pcGroup[i].cur_hp
+          playerCharacter.isAlive = pcGroup[i].isAlive
+        }
+      }
+      $("#gameTableText").append(myString + "<br>")
+
+      console.log(myString)
+      if (!pcGroup[0].isAlive) {
+        console.log("Player Character is dead.  Have to start over now.")
+        $("#gameTableText").append("Unfortunately, the Will-o'-Wisp has killed your character.  Click below to start a new game.")
+        let rowString = `
+        <div class="d-flex mt-2 justify-content-around">
+          <button onclick="startNewGame()" data-id="startGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Start Over
+        </button>`
+        $("#gameButtons").html(rowString)
+      } else {
+        // the PC is alive so roll treasure:
+        let treasureText = rollTreasure(0)
+        treasureText = rollTreasure(0)
+        $("#gameTableText").append("<br>You have defeated the Will-o'-the-Wisp and find: " + treasureText)
+      }
+      
+    }
+
+    function createMinionSidebar(minions) {
+      
+      let minionPortraitText = `
+        <h4 id="minionName">${minions.name}</h4>
+          <hr>
+          Level: <span id="minionLevel">${minions.level}</span>
+          <span>Number: </span>
+          <span id="minionCurNum" class="bg-success rounded px-1 pb-1 mr-1">${minions.numCur} </span>
+          <span> of </span>
+          <span id="minionMaxNum">${minions.numStart}</span>
+          <br>
+          Attack: <span id="minionAttack">${minions.attack}</span>+<br>
+          Damage Modifier: <span id="minionDmgMod">${minions.dmg_mod}</span><br>
+          Armor: <span id="minionArmor">${minions.armor}</span><br>
+          Morale: <span id="minionMorale">${minions.moraleMod}</span><br><br>
+          <h4>Equipment</h4>
+          <hr>
+          <span id="minionWeapon1">Hand Weapon</span><br>
+          <span id="minionWeapon2"></span><br>
+          <span id="minionArmorType">Various</span><br>
+          <hr>
+          <h4>Notes</h4>
+          <span id="minionNotes"></span>
+      
+      `
+      $("#npcPortrait").html(minionPortraitText)
+    }
+    
+    function updateMinion() {
+      $("#minionCurNum").html(minions.numCur)
+      // set colors for numbers
+
+      // first unset all colors
+      $("#minionCurNum").removeClass(["bg-success", "bg-warning", "bg-danger", "bg-secondary"]);
+      let a = Math.floor(minions.numStart / 3);
+      let firstThird = (minions.numStart - a)
+      let secondThird = (minions.numStart - (a * 2))
+      //console.log("a: " + a)
+      //console.log("firstThird: " + firstThird)
+      //console.log("secondThird: " + secondThird)
+      if (minions.numCur >= firstThird) {
+        $("#minionCurNum").addClass("bg-success")
+      } else if (minions.numCur < firstThird && minions.numCur >= secondThird) {
+        $("#minionCurNum").addClass("bg-warning")
+      } else if (minions.numCur > 0 && minions.numCur < secondThird) {
+        $("#minionCurNum").addClass("bg-danger")
+      } else {
+        $("#minionCurNum").addClass("bg-secondary")
+      }
+    }
+    
+
+    function minionCombat(minions) {
+      let rowString = ""
+      createMinionSidebar(minions)
+      //updateMinion(minions)
+      console.log("minion combat round: " + round)
+      console.log("minion: " + minions.name)
+      
+      let initiativeTarget = 4
+      
+      if (initiative == "pc") {
+        // some minion npc tries to steal the initiative
+        if (minions.name == "outlaws" || minions.name == "bugbear") {
+          let roll = rollDie(6)
+          if (woodsman > 0) {
+            if (roll < 3) {
+              initiative = "npc"
+              $("#gameTableText").append(minions.name + " have stolen the initiative and attacked by surprise!")
+            } else {
+              initiative = "pc"
+            }
+          } else {
+            if (roll < 5) {
+              initiative = "npc"
+              $("#gameTableText").append(minions.name + " have stolen the initiative and attacked by surprise!")
+            } else {
+              initiative = "pc"
+            }
+          }
+        }
+        if (minions.name == "wolves" || minions.name == "cultists") {
+          let roll = rollDie(6)
+          if (woodsman > 0) {
+            if (roll < 2) {
+              initiative = "npc"
+              $("#gameTableText").append(minions.name + " have stolen the initiative and attacked by surprise!")
+            } else {
+              initiative = "pc"
+            }
+          } else {
+            if (roll < 4) {
+              initiative = "npc"
+              $("#gameTableText").append(minions.name + " have stolen the initiative and attacked by surprise!")
+            } else {
+              initiative = "pc"
+            }
+          }
+        }
+      }
+      
+      if (round == 1) {
+        $("#gameTableText").append("<p id='npcParagraph'>Your Opponent is: <strong>" + minions.name + "!!!</strong></p>")
+          
+      }
+      // Add a table to log combat
+      rowString = `
+        <div class="table-responsive">
+          <table class="table-condensed" id="combatTable">
+            <thead>
+            <tr>
+            <th scope="col" class="border-0 bg-light">
+              <div class="p-1 px-3 text-uppercase textBlack">Round</div>
+            </th>
+            <th scope="col" class="border-0 bg-light">
+               <div class="p-1 px-3 text-uppercase textBlack">Result</div>
+            </th>
+            </tr>
+           </thead>
+           <tbody id="combatTableBody">
+           <!-- Javascript fills in the table here -->
+           </tbody>
+          </table>
+        </div> <!-- End Table container -->`
+      $("#gameTableText").append(rowString)
+      
+      // place the buttons
+      
+      rowString = `
+        <div id="combatCommandButtons" class="d-flex my-3 justify-content-between">
+          <button onclick="fightMinions(minions)" id="attackBtn3" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</button>
+          <button onclick="flee(minions)" id="fleeBtn3"class="innBtn btn btn-dark px-4 rounded-pill">Flee!</button>
+          <button onclick="parlay(minions)" id="parlayBtn3"class="innBtn btn btn-dark px-4 rounded-pill">Parlay!</button>
+        </div>`
+      $("#gameButtons").html(rowString)
+        
+    }
+
+
+    function fightMinions(minions) {
+      // determine the order of combat
+      if (initiative == "pc") {
+        $("#combatTableBody").empty()
+          playerAttackMinions(round, minions)
+          minionsAttack(round, minions)
+      } 
+      
+      if (initiative == "npc" && round == 1) {
+        playerAttackMinions(round, minions)
+      }
+      
+      if (initiative == "npc" && round > 1) {
+        $("#combatTableBody").empty()
+        minionsAttack(round, minions)
+        playerAttackMinions(round, minions)
+      } 
+      round++
+    }
+
+    function playerAttackMinions(round, minions) {
+      // put player character and retainers into an array of objects
+      // then loop through the array
+      // get attack values and attack the minions
+      // each hit (>=0) causes a kill.  It is possible to kill multiple low level minions in a single shot.
+      // for example:
+      // Fred the Paladin is fighting 6 angry peasants (level 2)
+      // He needs a 4 to hit.  (6 is normal but Fred has an attack bonus of +2) to hit and rolls an 8 on 2d6
+
+      // add damage modifiers (+2) for a total of 10
+      // 10 - target number of 4 = 6
+      // divide 6 by the minion level = 3
+      // Fred has dispatched 3 minions in one attack!
+      
+      
+      
+    }
+    
+    function minionsAttack(round, minions) {
+      // each minion attacks a different character in the PC group
+      
+      // use a counter for the number of attacks
+      // say 5 minions and only 2 PCs:
+      // loop through PCs
+      //   first loop = 5 - 2 = 3
+      //   second loop = 3 - 2 = 1
+      //   third loop = 1 - 2 = 1
+      
+      // This way, the player character's paladin will always take the majority of the attacks, which is as it should be.
+      
+      // however, I can randomize the attacks too.  We'll see how it goes.
+      
+    }
+
+
+
+    // -----------------------------------------------------
+    // end minion combat - multiple combatants per side
+    // -----------------------------------------------------
+    
+    
+    // -----------------------------------------------------
+    // treasure tables
+    // -----------------------------------------------------
+    
+    function rollTreasure(modifier) {
+      let silver = 0
+      let treasureText = ""
+      
+      let roll = rollDie(6) + modifier
+      switch(roll) {
+        case 1: 
+          silver = rollDie(6)
+          treasureText = "silver pieces"
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+        case 2: 
+          silver = rollDie(6)
+          silver += rollDie(6)
+          treasureText = "silver pieces"
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+        case 3: 
+          silver = rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          treasureText = "silver pieces"
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+        case 4: 
+          silver = rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver = silver * 2
+          treasureText = "Silver Cutlery and Goblets worth " + silver + " silver pieces"
+          // To do: add this to the inventory.
+          // for now, just convert to silver and add to the player's total
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+        case 5: 
+          silver = rollDie(6)
+          silver += rollDie(6)
+          silver = silver * 5
+          treasureText = "Gold Jewelry worth " + silver + " silver pieces"
+          // To do: add this to the inventory.
+          // for now, just convert to silver and add to the player's total
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+        default:
+          // roll on the rare item table
+          treasureText = rollRareItems()
+        break;
+      }
+      return treasureText
+    }
+    
+    function rollRareItems() {
+      let silver = 0
+      let treasureText = ""
+      
+      let roll = rollDie(6)
+      switch(roll) {
+        case 1: 
+          // apothecary stuff
+          silver = rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver = silver * 5
+          treasureText = "Apothecary materials worth " + silver + " silver pieces"
+          // To do: add this to the inventory.
+          // for now, just convert to silver and add to the player's total
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+        case 2: 
+          silver = rollDie(6)
+          silver += rollDie(6)
+          silver = silver * 10
+          treasureText = "Rolls of silk and velvet worth " + silver + " silver pieces"
+          // To do: add this to the inventory.
+          // for now, just convert to silver and add to the player's total
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+        case 3: 
+          silver = rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver = silver * 10
+          treasureText = "Jars of Saffron spice worth " + silver + " silver pieces"
+          // To do: add this to the inventory.
+          // for now, just convert to silver and add to the player's total
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+        case 4: 
+          silver = rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver = silver * 10
+          treasureText = "Relic of a Saint worth " + silver + " silver pieces"
+          // To do: add this to the inventory.
+          // for now, just convert to silver and add to the player's total
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+        case 5: 
+          silver = rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver = silver * 10
+          treasureText = "Fragment of the True Cross worth " + silver + " silver pieces"
+          // To do: add this to the inventory.
+          // for now, just convert to silver and add to the player's total
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+        case 6: 
+          silver = rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver += rollDie(6)
+          silver = silver * 10
+          treasureText = "Spear of Longinus and " + silver + " silver pieces"
+          // To do: add this to the inventory.
+          // for now, just convert to silver and add to the player's total
+          playerCharacter.money += silver
+          updateNavbar()
+        break;
+      }
+      
+      return treasureText
+    }
+    
+    // -----------------------------------------------------
+    // end treasure tables
+    // -----------------------------------------------------
     
     
   </script>
