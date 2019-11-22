@@ -23,6 +23,7 @@
       /* this is the google drive version: */
       background-image: url("http://drive.google.com/uc?export=view&id=14muus5B7-Qj1L57aNh2vAeERkGQq9eTU");
       
+      background-image: url("./images/andreas-rocha-deepintheforest08.jpg");
       /* Background image is centered vertically and horizontally at all times */
       background-position: center center;
       /* Background image doesn't tile */
@@ -218,6 +219,7 @@
           
         </button>
             </th>
+            <th class="align-bottom">Level</th>
             <th class="align-bottom">Piety</th>
             <th class="align-bottom"><button type="button" class="btn btn-dark text-center align-bottom py-0"><strong>Healing <br> Potions</strong>
         </button></th>
@@ -235,6 +237,7 @@
               <span> of </span>
               <span id="topDivMaxHP">999</span>
             </td>
+            <td class="text-center"><span id="topDivLevel">999</span></td>
             <td class="text-center"><span id="topDivPiety">999</span></td>
             <td class="text-center"><span id="topDivPotions">999</span></td>
             <td class="text-center"><span id="topDivMoney">999</span></td>
@@ -446,6 +449,7 @@
     // This is the default if local storage does not exist
     let defaultPlayerCharacter = {
       name: "Sir Percival",
+      level: 3,
       max_hp: 40,
       cur_hp: 40,
       armor: 1,
@@ -476,6 +480,7 @@
     // This is the PC object we update throughout the game
     let playerCharacter = {
       name: "Sir Percival",
+      level: 3,
       max_hp: 40,
       cur_hp: 35,
       armor: 1,
@@ -609,6 +614,7 @@ let retainers = [
     {
       id: 0,
       name: "Fred",
+      level: 1,
       profession: "Mercenary",
       employed: true,
       cur_hp: 20,
@@ -624,6 +630,7 @@ let retainers = [
     {
       id: 1,
       name: "Oliver",
+      level: 1,
       profession: "Rogue",
       employed: true,
       cur_hp: 15,
@@ -639,6 +646,7 @@ let retainers = [
     {
       id: 2,
       name: "Trogdor",
+      level: 1,
       profession: "Woodsman",
       employed: true,
       cur_hp: 20,
@@ -781,6 +789,7 @@ let retainerNameFirst_A = [
       $("#topDivCharName").html(`<strong>${playerCharacter.name}</strong>`)
       $("#topDivCurHP").html(playerCharacter.cur_hp)
       $("#topDivMaxHP").html(playerCharacter.max_hp)
+      $("#topDivLevel").html(playerCharacter.level)
       $("#topDivPiety").html(playerCharacter.piety)
       $("#topDivPotions").html(playerCharacter.healingPotions)
       $("#topDivMoney").html(playerCharacter.money)
@@ -915,6 +924,7 @@ let retainerNameFirst_A = [
       $("#gameTableText").html("Click below to start a new journey!")
       
       playerCharacter.name = "Sir Percival"
+      playerCharacter.level = 3
       playerCharacter.max_hp = 40
       playerCharacter.cur_hp = 40
       playerCharacter.armor = 1
@@ -4040,8 +4050,10 @@ let retainerNameFirst_A = [
     }
 
     function playerAttackMinions(round, minions) {
-      // put player character and retainers into an array of objects
-      // then loop through the array
+      // If pc is alive, attack the minions.
+      // After the PC is done, loop through the retainers array
+      //   If retainer is alive, attack the remaining minions
+      
       // get attack values and attack the minions
       // each hit (>=0) causes a kill.  It is possible to kill multiple low level minions in a single shot.
       // for example:
@@ -4053,8 +4065,118 @@ let retainerNameFirst_A = [
       // divide 6 by the minion level = 3
       // Fred has dispatched 3 minions in one attack!
       
-      
-      
+      if (playerCharacter.isAlive) {
+        let roll1 = rollDie(6)
+        let roll2 = rollDie(6)
+        let twoD6 = roll1 + roll2
+        let damage = 0
+        
+        console.log("roll 1: " + roll1 + " roll 2: " + roll2 + " = " + twoD6)
+        
+        // The difference in level adjusts the "to hit" value.
+        let attackMod = playerCharacter.level - minions.level
+        console.log(playerCharacter.name + " attack mod is: " + attackMod)
+        
+        let total = (twoD6 + attackMod)
+        console.log("total: " + total)
+        
+        // "target" should default to: 6
+        let target = playerCharacter.attack
+        console.log("target number: " + target)
+        
+        if (total < target) {
+          console.log("PC missed!")
+          $("#gameTableText").append(playerCharacter.name + " missed!")
+        } else if (total == target) {
+          console.log("hit but 0 damage.  This still kills one minion")
+          minions.numCur --
+          console.log("num of minions is now: " + minions.numCur)
+          $("#gameTableText").append(playerCharacter.name + " killed one " + minions.name)
+          updateMinion()
+        } else {
+          damage = (total - target) + playerCharacter.dmg_mod
+          console.log("damage: " + damage)
+          // now check the level difference to see how many minions are killed
+          let num = damage / minions.level
+          let remain = damage % minions.level
+          let num1 = num - remain
+          console.log("num: " + num)
+          console.log("remainder: " + remain)
+          console.log("num1: " + num1)
+          if (num1 > 0) {
+            minions.numCur -= num1
+            console.log("num of minions is now: " + minions.numCur)
+            $("#gameTableText").append(playerCharacter.name + " killed " + num1 + minions.name)
+            updateMinion()
+          } else {
+            minions.numCur --
+            console.log("num of minions is now: " + minions.numCur)
+            $("#gameTableText").append(playerCharacter.name + " killed one " + minions.name)
+            updateMinion()
+          }
+        }
+
+      }
+      // now loop through the retainers
+      $.each(retainers, function(key, value) {
+        let retainer_name = value.name
+        let retainer_profession = value.profession
+        let retainer_level = value.level
+        let retainer_attack = value.attack
+        let retainer_dmg_bonus = value.damage_bonus
+        
+        if (retainers.isAlive) {
+          let roll1 = rollDie(6)
+          let roll2 = rollDie(6)
+          let twoD6 = roll1 + roll2
+          let damage = 0
+
+          console.log("roll 1: " + roll1 + " roll 2: " + roll2 + " = " + twoD6)
+
+          // The difference in level adjusts the "to hit" value.
+          let attackMod = retainer_level - minions.level
+          console.log(retainer_name + " attack mod is: " + attackMod)
+
+          let total = (twoD6 + attackMod)
+          console.log("total: " + total)
+
+          // "target" should default to: 6
+          let target = retainer_attack
+          console.log("target number: " + target)
+
+          if (total < target) {
+            console.log("PC missed!")
+            $("#gameTableText").append(retainer_name + " missed!")
+          } else if (total == target) {
+            console.log("hit but 0 damage.  This still kills one minion")
+            minions.numCur --
+            console.log("num of minions is now: " + minions.numCur)
+            $("#gameTableText").append(retainer_name + " killed one " + minions.name)
+            updateMinion()
+          } else {
+            damage = (total - target) + retainer_dmg_bonus
+            console.log("damage: " + damage)
+            // now check the level difference to see how many minions are killed
+            let num = damage / minions.level
+            let remain = damage % minions.level
+            let num1 = num - remain
+            console.log("num: " + num)
+            console.log("remainder: " + remain)
+            console.log("num1: " + num1)
+            if (num1 > 0) {
+              minions.numCur -= num1
+              console.log("num of minions is now: " + minions.numCur)
+              $("#gameTableText").append(retainer_name + " killed " + num1 + minions.name)
+              updateMinion()
+            } else {
+              minions.numCur --
+              console.log("num of minions is now: " + minions.numCur)
+              $("#gameTableText").append(retianer_name + " killed one " + minions.name)
+              updateMinion()
+            }
+          }
+        }
+      }) 
     }
     
     function minionsAttack(round, minions) {
@@ -4070,6 +4192,65 @@ let retainerNameFirst_A = [
       // This way, the player character's paladin will always take the majority of the attacks, which is as it should be.
       
       // however, I can randomize the attacks too.  We'll see how it goes.
+      
+      let numOfMinions = minions.numCur
+      let counter = 0
+      
+      let continueAttack = true
+      let numDead = 0
+      let totalNum = retainers.length + 1
+      
+      while (continueAttack) {
+        counter++
+        console.log("num of minions: " + numOfMinions)
+        if (numOfMinions < 1) {
+          console.log("all minions have gone")
+          continueAttack = false
+        }
+        
+        
+        // one minion attacks the player character
+        let roll1 = rollDie(6)
+        let roll2 = rollDie(6)
+        let twoD6 = roll1 + roll2
+        let damage = 0
+
+        console.log("Minion: " + counter + " attacks the player character --> roll 1: " + roll1 + " roll 2: " + roll2 + " = " + twoD6)
+        
+        numOfMinions--
+        
+        
+        // loop through retainers
+        if (retainers.length < 1) {
+          // no retainers to fight
+        } else {
+          $.each(retainers, function(key, value) {
+            if (retainers.length > 0) {
+              // attack retainers
+              if (numOfMinions < 1) {
+                console.log("no minions left to attack retainers")
+                continueAttack = false
+              } else {
+
+                counter++
+                roll1 = rollDie(6)
+                roll2 = rollDie(6)
+                twoD6 = roll1 + roll2
+                damage = 0
+
+                console.log("Minion: " + counter + " attacks the player character --> roll 1: " + roll1 + " roll 2: " + roll2 + " = " + twoD6)
+                numOfMinions--
+
+              }
+            }
+          })
+        }
+        
+        if (counter > 500) {
+          continueAttack = false
+          alert("infinite loop detected")
+        }
+      }
       
     }
 
