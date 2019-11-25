@@ -625,7 +625,8 @@ let retainers = [
       damage_bonus: 2,
       armor_bonus: 1,
       morale: 1,
-      cost: 5
+      cost: 5,
+      alive: true
     },
     {
       id: 1,
@@ -641,7 +642,8 @@ let retainers = [
       damage_bonus: 2,
       armor_bonus: 1,
       morale: -1,
-      cost: 5
+      cost: 5,
+      alive: true
     },
     {
       id: 2,
@@ -657,7 +659,8 @@ let retainers = [
       damage_bonus: 2,
       armor_bonus: 1,
       morale: 0,
-      cost: 5
+      cost: 5,
+      alive: true
     }
   ]
     
@@ -1005,7 +1008,7 @@ let retainerNameFirst_A = [
       }
       
       console.log("Journey Roll (after mods): " + journeyRoll)
-      //journeyRoll = 4
+      journeyRoll = 4
       //alert("The begin adventure button was clicked. You rolled: " + d6Roll);
       // Save turn data in the log (we'll push this to MySql at some point)
       adventureLog.push({ 'turn': playerCharacter.turn, 'roll': journeyRoll, 'result': journeyTable[journeyRoll - 1] });
@@ -1602,7 +1605,7 @@ let retainerNameFirst_A = [
       let secondRoll = rollDie(6)
       let totalRoll = firstRoll + secondRoll
       
-      //totalRoll = 7
+      totalRoll = 6
       
       altEncounter = false
       //alert("Roll: (" + firstRoll + " + " + secondRoll + ") = " + totalRoll)
@@ -2222,8 +2225,8 @@ let retainerNameFirst_A = [
       // get minion type (day or night)
       let roll = rollDie(6)
       let dayMinions = true
-      let num = 0
-      let minionType = ""
+      numMinions = 0
+      minionType = ""
       
       if (roll < 4) {
         dayMinions = true
@@ -2232,35 +2235,36 @@ let retainerNameFirst_A = [
       }
       // generate minions
       if (dayMinions) {
+        console.log("Day Minions")
         roll = rollDie(6)
         switch(roll) {
           case 1:
             // angry peasants
             minionType = "peasants"
-            num = 0
+            numMinions = 0
             for (let i=0; i<4; i++) {
-              num += rollDie(6)
+              numMinions += rollDie(6)
             }
             
           break;
           case 2:
             // forest outlaws
             minionType = "outlaws"
-            num = 0
+            numMinions = 0
             for (let i=0; i<2; i++) {
-              num += rollDie(6)
+              numMinions += rollDie(6)
             }
-            num += 3
+            numMinions += 3
           break;
           case 3:
             // da Picts!
             minionType = "picts"
-            num = rollDie(6) + 4 
+            numMinions = rollDie(6) + 4 
           break;
           case 4:
             // redcaps
-            num = rollDie(6)
-            if (num > 1) {
+            numMinions = rollDie(6)
+            if (numMinions > 1) {
               minionType = "redcaps"
             } else {
               minionType = "redcap"
@@ -2268,36 +2272,38 @@ let retainerNameFirst_A = [
           break;
           case 5:
             // bugbears
-            num = rollDie(3)
-            num += 2
+            numMinions = rollDie(3)
+            numMinions += 2
             minionType = "bugbears"
           break;
           case 6:
             // Men-at-arms
-            num = rollDie(6)
-            num += 4
+            numMinions = rollDie(6)
+            numMinions += 4
             minionType = "men-at-arms"
           break;
         }
+        console.log("minion type: " + minionType)
       } else {
+        console.log("Night Minions")
         roll = rollDie(6)
         switch(roll) {
           case 1:
             // wolves
-            num = rollDie(6)
-            num += 4
+            numMinions = rollDie(6)
+            numMinions += 4
             minionType = "wolves"
           break;
           case 2:
             // Pagan cultists
-            num = rollDie(6)
-            num += 3
+            numMinions = rollDie(6)
+            numMinions += 3
             minionType = "cultists"
           break;
           case 3:
             // wild boars
-            num = rollDie(6)
-            if (num > 1) {
+            numMinions = rollDie(6)
+            if (numMinions > 1) {
               minionType = "boars"
             } else {
               minionType = "boar"
@@ -2305,46 +2311,47 @@ let retainerNameFirst_A = [
           break;
           case 4:
             // hellhounds
-            num = rollDie(6)
-            minionType = (num > 1) ? "hellhounds" : "hellhound"
+            numMinions = rollDie(6)
+            minionType = (numMinions > 1) ? "hellhounds" : "hellhound"
           break;
           case 5:
             // ogres
-            num = rollDie(3)
-            minionType = (num > 1) ? "ogres" : "ogre"
+            numMinions = rollDie(3)
+            minionType = (numMinions > 1) ? "ogres" : "ogre"
           break;
           case 6:
             // fairy fire
-            num = 1
+            numMinions = 1
             minionType = "fairyFire"
           break;
         }
+        console.log("minion type: " + minionType)
       }
-      //let myText = `You have encountered ${num} ${minionType}`
+      //let myText = `You have encountered ${numMinions} ${minionType}`
       
       
-      $("#gameTableText").html(`You have encountered ${number} ${minionType}`)
-      $("#gameTableText").append("<p>You can attack immediately which will give you the initiative or you can wait and see what they do.  Note: if you wait and see and the opponents attack, they will attack first.</p>")
+      $("#gameTableText").html(`You have encountered ${numMinions} ${minionType}<br>`)
+      $("#gameTableText").append("<p>You can attack immediately which will give you the initiative or you can wait and see what they do. <br>Note: if you wait and see and the opponents attack, they will attack first.</p>")
       
       // show options
       
       let rowString = `
         <div class="d-flex mt-2 justify-content-around">
-        <button onclick="fightMinions(number, minionType)" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="fightMinions()" data-id="fightMinionBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
             <i class="mt-2"></i>
             Fight Minions!
         </button>
-        <button onclick="waitAndSee(number, minionType)" data-id="rollInnBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="waitAndSee()" data-id="waitAndSeeBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
             <i class="mt-2"></i>
             Wait and see.
         </button>
         </div>
         `
-      $("#gameButtons").empty()
+      //$("#gameButtons").empty()
       $("#gameButtons").html(rowString) 
       
       
-      $("#gameButtons").empty()
+      //$("#gameButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
         <div class="mt-2">
@@ -2353,7 +2360,7 @@ let retainerNameFirst_A = [
         Continue your Journey
             </button>
       `
-      $("#gameButtons").html(gotoJourneyButton)
+      //$("#gameButtons").html(gotoJourneyButton)
         
     }
     
@@ -3742,21 +3749,75 @@ let retainerNameFirst_A = [
       this.moraleMod = moraleMod;
     }
     
-    let minions
-    
-    function fightMinions(number, minionType) {
+    let minions = {}
+    let numMinions = 0
+    let minionType = ""
+
+    function fightMinions() {
       round = 1
+      console.log("Num of minions: " + numMinions + " " + minionType)
+      
       if (minionType == "fairyFire") {
         fairyFire()
-      } else {
-        if (minionType == "peasants") {
-          minions = new Minion(minionType, number, number, 2, 0, 9, 0, 0, 1, -2)
-          minionCombat(minions)
-        }
+      }
+      if (minionType == "peasants") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
+      }
+      if (minionType == "outlaws") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
+      }
+      if (minionType == "picts") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
+      }
+      if (minionType == "redcaps" || minionType == "redcap") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
+      }
+      if (minionType == "bugbears") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
+      }
+      if (minionType == "men-at-arms") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
+      }
+      if (minionType == "wolves") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
+      }
+      if (minionType == "cultists") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
+      }
+      if (minionType == "boars" || minionType == "boar") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
+      }
+      if (minionType == "hellhounds" || minionType == "hellhound") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
+      }
+      if (minionType == "ogres" || minionType == "ogre") {
+        minions = new Minion(minionType, numMinions, numMinions, 2, 0, 9, 0, 0, 1, -2)
+        console.log("minion: " + minions.name)
+        minionCombat()
       }
     }
     
-    function waitAndSee(number, minionType) {
+    function waitAndSee() {
       if (minionType == "fairyFire") {
         fairyFire()
       } else {
@@ -3765,16 +3826,16 @@ let retainerNameFirst_A = [
       // check minion reaction
     }
     
-	function fairyFire() {
+    function fairyFire() {
       $("#gameTableText").append("You've encountered a Will-o'-the-Wisp.  It attempts to drain your life as it draws you into it.  You can't kill it. Your only hope is to resist it.")
       // save vs 5
       // add piety to the paladin's roll
       // failed roll does d6+1 damage
       // continue until a save is passed
-      paladinSave = false
-      retainerSave = false
-      allSaved = false
-      saveMod = 0
+      let paladinSave = false
+      let retainerSave = false
+      let allSaved = false
+      let saveMod = 0
       
       let pcGroup = []
       
@@ -3782,7 +3843,7 @@ let retainerNameFirst_A = [
         id: -1,
         name: playerCharacter.name,
         cur_hp: playerCharacter.cur_hp,
-        isAlive: playerCharacter.isAlive,
+        isAlive: playerCharacter.alive,
         saved: false
       }
 
@@ -3793,7 +3854,7 @@ let retainerNameFirst_A = [
           id: retainers[i].id,
           name: retainers[i].name,
           cur_hp: retainers[i].cur_hp,
-          isAlive: retainers[i].isAlive,
+          isAlive: retainers[i].alive,
           saved: false
         }
         pcGroup.push(character)
@@ -3805,7 +3866,7 @@ let retainerNameFirst_A = [
       let numDead = 0
       let totalNum = pcGroup.length
 
-      let saveMod = 0
+      //let saveMod = 0
 
       let counter = 0
 
@@ -3890,7 +3951,7 @@ let retainerNameFirst_A = [
       
     }
 
-    function createMinionSidebar(minions) {
+    function createMinionSidebar() {
       
       let minionPortraitText = `
         <h4 id="minionName">${minions.name}</h4>
@@ -3942,9 +4003,9 @@ let retainerNameFirst_A = [
     }
     
 
-    function minionCombat(minions) {
+    function minionCombat() {
       let rowString = ""
-      createMinionSidebar(minions)
+      createMinionSidebar()
       //updateMinion(minions)
       console.log("minion combat round: " + round)
       console.log("minion: " + minions.name)
@@ -3952,7 +4013,7 @@ let retainerNameFirst_A = [
       let initiativeTarget = 4
       
       if (initiative == "pc") {
-        // some minion npc tries to steal the initiative
+        // some minions attempt to steal the initiative
         if (minions.name == "outlaws" || minions.name == "bugbear") {
           let roll = rollDie(6)
           if (woodsman > 0) {
@@ -3992,8 +4053,10 @@ let retainerNameFirst_A = [
       }
       
       if (round == 1) {
+        //$("#gameTableText").()
         $("#gameTableText").append("<p id='npcParagraph'>Your Opponent is: <strong>" + minions.name + "!!!</strong></p>")
-          
+      } else {
+        $("#gameTableText").html("<p id='npcParagraph'>Your Opponent is: <strong>" + minions.name + "!!!</strong></p>")
       }
       // Add a table to log combat
       rowString = `
@@ -4020,36 +4083,37 @@ let retainerNameFirst_A = [
       
       rowString = `
         <div id="combatCommandButtons" class="d-flex my-3 justify-content-between">
-          <button onclick="fightMinions(minions)" id="attackBtn3" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</button>
-          <button onclick="flee(minions)" id="fleeBtn3"class="innBtn btn btn-dark px-4 rounded-pill">Flee!</button>
-          <button onclick="parlay(minions)" id="parlayBtn3"class="innBtn btn btn-dark px-4 rounded-pill">Parlay!</button>
+          <button onclick="attackMinions()" id="attackBtn3" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</button>
+          <button onclick="flee()" id="fleeBtn3"class="innBtn btn btn-dark px-4 rounded-pill">Flee!</button>
+          <button onclick="parlay()" id="parlayBtn3"class="innBtn btn btn-dark px-4 rounded-pill">Parlay!</button>
         </div>`
       $("#gameButtons").html(rowString)
         
     }
 
 
-    function fightMinions(minions) {
+    function attackMinions() {
       // determine the order of combat
+      console.log("initiative: " + initiative)
       if (initiative == "pc") {
         $("#combatTableBody").empty()
-          playerAttackMinions(round, minions)
-          minionsAttack(round, minions)
+          playerAttackMinions(round)
+          minionsAttack(round)
       } 
       
       if (initiative == "npc" && round == 1) {
-        playerAttackMinions(round, minions)
+        playerAttackMinions(round)
       }
       
       if (initiative == "npc" && round > 1) {
         $("#combatTableBody").empty()
-        minionsAttack(round, minions)
-        playerAttackMinions(round, minions)
+        minionsAttack(round)
+        playerAttackMinions(round)
       } 
       round++
     }
 
-    function playerAttackMinions(round, minions) {
+    function playerAttackMinions(round) {
       // If pc is alive, attack the minions.
       // After the PC is done, loop through the retainers array
       //   If retainer is alive, attack the remaining minions
@@ -4065,7 +4129,10 @@ let retainerNameFirst_A = [
       // divide 6 by the minion level = 3
       // Fred has dispatched 3 minions in one attack!
       
-      if (playerCharacter.isAlive) {
+      console.log("Player Attacks")
+      console.log("player is alive: " + playerCharacter.isAlive)
+
+      if (playerCharacter.alive) {
         let roll1 = rollDie(6)
         let roll2 = rollDie(6)
         let twoD6 = roll1 + roll2
@@ -4074,6 +4141,15 @@ let retainerNameFirst_A = [
         console.log("roll 1: " + roll1 + " roll 2: " + roll2 + " = " + twoD6)
         
         // The difference in level adjusts the "to hit" value.
+        let pcLevel = playerCharacter.level
+        let minionLevel = minions.level
+
+        console.log("player character level: " + playerCharacter.level)
+        console.log("minion level: " + minions.level)
+
+        let pcAttackMod = pcLevel - minionLevel
+        console.log("pc attack mod: " + pcAttackMod)
+
         let attackMod = playerCharacter.level - minions.level
         console.log(playerCharacter.name + " attack mod is: " + attackMod)
         
@@ -4179,7 +4255,7 @@ let retainerNameFirst_A = [
       }) 
     }
     
-    function minionsAttack(round, minions) {
+    function minionsAttack(round) {
       // each minion attacks a different character in the PC group
       
       // use a counter for the number of attacks
@@ -4193,6 +4269,10 @@ let retainerNameFirst_A = [
       
       // however, I can randomize the attacks too.  We'll see how it goes.
       
+      console.log("global var: numMinions = " + numMinions)
+      console.log("num of minions: " + minions.numCur)
+
+
       let numOfMinions = minions.numCur
       let counter = 0
       
@@ -4206,6 +4286,7 @@ let retainerNameFirst_A = [
         if (numOfMinions < 1) {
           console.log("all minions have gone")
           continueAttack = false
+          //break
         }
         
         
@@ -4230,6 +4311,7 @@ let retainerNameFirst_A = [
               if (numOfMinions < 1) {
                 console.log("no minions left to attack retainers")
                 continueAttack = false
+                //break
               } else {
 
                 counter++
