@@ -3956,7 +3956,7 @@ let retainerNameFirst_A = [
       let minionPortraitText = `
         <h4 id="minionName">${minions.name}</h4>
           <hr>
-          Level: <span id="minionLevel">${minions.level}</span>
+          Level: <span id="minionLevel">${minions.level}</span><br>
           <span>Number: </span>
           <span id="minionCurNum" class="bg-success rounded px-1 pb-1 mr-1">${minions.numCur} </span>
           <span> of </span>
@@ -4006,6 +4006,9 @@ let retainerNameFirst_A = [
     function minionCombat() {
       let rowString = ""
       createMinionSidebar()
+
+      $('#npcCollapse').toggle(true)
+
       //updateMinion(minions)
       console.log("minion combat round: " + round)
       console.log("minion: " + minions.name)
@@ -4054,9 +4057,9 @@ let retainerNameFirst_A = [
       
       if (round == 1) {
         //$("#gameTableText").()
-        $("#gameTableText").append("<p id='npcParagraph'>Your Opponent is: <strong>" + minions.name + "!!!</strong></p>")
+        $("#gameTableText").html("<p id='npcParagraph'>Your Opponent: <strong>" + minions.numCur + " " + minions.name + "!!!</strong></p>")
       } else {
-        $("#gameTableText").html("<p id='npcParagraph'>Your Opponent is: <strong>" + minions.name + "!!!</strong></p>")
+        $("#gameTableText").html("<p id='npcParagraph'>Your Opponent: <strong>" + minions.name + "!!!</strong></p>")
       }
       // Add a table to log combat
       rowString = `
@@ -4129,8 +4132,13 @@ let retainerNameFirst_A = [
       // divide 6 by the minion level = 3
       // Fred has dispatched 3 minions in one attack!
       
+      let rowString = ""
+      console.log("------------------------------")
+      console.log("Round: " + round)
+      
       console.log("Player Attacks")
-      console.log("player is alive: " + playerCharacter.isAlive)
+      console.log("player is alive: " + playerCharacter.alive)
+      
 
       if (playerCharacter.alive) {
         let roll1 = rollDie(6)
@@ -4138,7 +4146,7 @@ let retainerNameFirst_A = [
         let twoD6 = roll1 + roll2
         let damage = 0
         
-        console.log("roll 1: " + roll1 + " roll 2: " + roll2 + " = " + twoD6)
+        console.log("PC rolls 2d6: " + roll1 + " + " + roll2 + " = " + twoD6)
         
         // The difference in level adjusts the "to hit" value.
         let pcLevel = playerCharacter.level
@@ -4147,14 +4155,11 @@ let retainerNameFirst_A = [
         console.log("player character level: " + playerCharacter.level)
         console.log("minion level: " + minions.level)
 
-        let pcAttackMod = pcLevel - minionLevel
-        console.log("pc attack mod: " + pcAttackMod)
-
         let attackMod = playerCharacter.level - minions.level
         console.log(playerCharacter.name + " attack mod is: " + attackMod)
         
         let total = (twoD6 + attackMod)
-        console.log("total: " + total)
+        console.log("total (2d6 + attack modifier): " + total)
         
         // "target" should default to: 6
         let target = playerCharacter.attack
@@ -4162,52 +4167,110 @@ let retainerNameFirst_A = [
         
         if (total < target) {
           console.log("PC missed!")
-          $("#gameTableText").append(playerCharacter.name + " missed!")
+          //$("#gameTableText").append(playerCharacter.name + " missed!")
+          rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+          rowString += `<td class="border-0 defaultText"> ${playerCharacter.name} missed!</td></tr>`
+          $("#combatTableBody").append(rowString)
         } else if (total == target) {
+          rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+          rowString += `<td class="border-0 defaultText"> ${playerCharacter.name} killed one ${minions.name}</td></tr>`
+          $("#combatTableBody").append(rowString)
           console.log("hit but 0 damage.  This still kills one minion")
           minions.numCur --
+          
+          $("#npcParagraph").html("Your Opponent: <strong>" + minions.numCur + " " + minions.name + "!!!</strong>")
+          
+          
           console.log("num of minions is now: " + minions.numCur)
-          $("#gameTableText").append(playerCharacter.name + " killed one " + minions.name)
+          //$("#gameTableText").append(playerCharacter.name + " killed one " + minions.name)
           updateMinion()
         } else {
           damage = (total - target) + playerCharacter.dmg_mod
           console.log("damage: " + damage)
           // now check the level difference to see how many minions are killed
-          let num = damage / minions.level
-          let remain = damage % minions.level
-          let num1 = num - remain
-          console.log("num: " + num)
-          console.log("remainder: " + remain)
-          console.log("num1: " + num1)
-          if (num1 > 0) {
-            minions.numCur -= num1
+          let num = Math.floor(damage / minions.level)
+          console.log("num killed: " + num)
+          if (num > 0) {
+            if (num > minions.numCur) {
+              num = minions.numCur
+            }
+            minions.numCur -= num
             console.log("num of minions is now: " + minions.numCur)
-            $("#gameTableText").append(playerCharacter.name + " killed " + num1 + minions.name)
+
+            rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+            rowString += `<td class="border-0 defaultText"> ${playerCharacter.name} killed ${num} ${minions.name}</td></tr>`
+            $("#combatTableBody").append(rowString)
+            
+            
+            $("#npcParagraph").html("Your Opponent: <strong>" + minions.numCur + " " + minions.name + "!!!</strong>")
+            
+            
             updateMinion()
           } else {
             minions.numCur --
             console.log("num of minions is now: " + minions.numCur)
-            $("#gameTableText").append(playerCharacter.name + " killed one " + minions.name)
+            //$("#gameTableText").append(playerCharacter.name + " killed one " + minions.name)
+            rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+            rowString += `<td class="border-0 defaultText"> ${playerCharacter.name} killed one ${minions.name}</td></tr>`
+            $("#combatTableBody").append(rowString)
+            
+            
+            $("#npcParagraph").html("Your Opponent: <strong>" + minions.numCur + " " + minions.name + "!!!</strong>")
+            
+            
             updateMinion()
           }
         }
 
       }
+      
+      if (minions.numCur < 1) {
+        console.log("no more minions")
+        $("#npcParagraph").html("You have defeated: <strong>" + minions.numStart + " " + minions.name + "!!!</strong>")
+        let treasureText = rollTreasure(0)
+        $("#gameTableText").append("<br>You find: " + treasureText)
+        let rowString = `
+          <div class="d-flex mt-2">
+            <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Journey On
+          </button>
+          </div>`
+        $("#gameButtons").html(rowString)
+        return
+      }
+      
       // now loop through the retainers
-      $.each(retainers, function(key, value) {
-        let retainer_name = value.name
-        let retainer_profession = value.profession
-        let retainer_level = value.level
-        let retainer_attack = value.attack
-        let retainer_dmg_bonus = value.damage_bonus
+      retainers.forEach(function(key, value) {
+        if (minions.numCur < 1) {
+          console.log("no more minions")
+          $("#npcParagraph").html("You have defeated: <strong>" + minions.numStart + " " + minions.name + "!!!</strong>")
+          let treasureText = rollTreasure(0)
+          $("#gameTableText").append("<br>You find: " + treasureText)
+          let rowString = `
+            <div class="d-flex mt-2">
+              <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+            </button>
+            </div>`
+          $("#gameButtons").html(rowString)
+          return
+        }
+        let retainer_name = key.name
+        let retainer_profession = key.profession
+        let retainer_level = key.level
+        let retainer_attack = key.attack
+        let retainer_dmg_bonus = key.damage_bonus
+        console.log("Retainer: " + retainer_name)
         
-        if (retainers.isAlive) {
+        if (key.alive) {
           let roll1 = rollDie(6)
           let roll2 = rollDie(6)
           let twoD6 = roll1 + roll2
           let damage = 0
 
-          console.log("roll 1: " + roll1 + " roll 2: " + roll2 + " = " + twoD6)
+          console.log(retainer_name + " rolls 2d6: " + roll1 + " + " + roll2 + " = " + twoD6)
 
           // The difference in level adjusts the "to hit" value.
           let attackMod = retainer_level - minions.level
@@ -4221,33 +4284,60 @@ let retainerNameFirst_A = [
           console.log("target number: " + target)
 
           if (total < target) {
-            console.log("PC missed!")
-            $("#gameTableText").append(retainer_name + " missed!")
+            console.log("Retainer missed!")
+            //$("#gameTableText").append(retainer_name + " missed!")
+            rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+            rowString += `<td class="border-0 defaultText"> ${retainer_name} missed!</td></tr>`
+            $("#combatTableBody").append(rowString)
           } else if (total == target) {
             console.log("hit but 0 damage.  This still kills one minion")
             minions.numCur --
             console.log("num of minions is now: " + minions.numCur)
-            $("#gameTableText").append(retainer_name + " killed one " + minions.name)
+            //$("#gameTableText").append(retainer_name + " killed one " + minions.name)
+            rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+            rowString += `<td class="border-0 defaultText"> ${retainer_name} killed one ${minions.name}</td></tr>`
+            $("#combatTableBody").append(rowString)
+            
+            
+            $("#npcParagraph").html("Your Opponent: <strong>" + minions.numCur + " " + minions.name + "!!!</strong>")
+            
             updateMinion()
           } else {
             damage = (total - target) + retainer_dmg_bonus
             console.log("damage: " + damage)
             // now check the level difference to see how many minions are killed
-            let num = damage / minions.level
-            let remain = damage % minions.level
-            let num1 = num - remain
-            console.log("num: " + num)
-            console.log("remainder: " + remain)
-            console.log("num1: " + num1)
-            if (num1 > 0) {
-              minions.numCur -= num1
+            let num = Math.floor(damage / minions.level)
+            //let remain = damage % minions.level
+            //let num1 = num - remain
+            console.log("number killed: " + num)
+            //console.log("remainder: " + remain)
+            //console.log("num1: " + num1)
+            if (num > 0) {
+              if (num > minions.numCur) {
+                num = minions.numCur
+              }
+              minions.numCur -= num
               console.log("num of minions is now: " + minions.numCur)
-              $("#gameTableText").append(retainer_name + " killed " + num1 + minions.name)
+              //$("#gameTableText").append(retainer_name + " killed " + num + minions.name)
+              rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+              rowString += `<td class="border-0 defaultText"> ${retainer_name} killed ${num} ${minions.name}</td></tr>`
+              $("#combatTableBody").append(rowString)
+              
+              $("#npcParagraph").html("Your Opponent: <strong>" + minions.numCur + " " + minions.name + "!!!</strong>")
+              
+              
               updateMinion()
             } else {
               minions.numCur --
               console.log("num of minions is now: " + minions.numCur)
-              $("#gameTableText").append(retianer_name + " killed one " + minions.name)
+              //$("#gameTableText").append(retianer_name + " killed one " + minions.name)
+              rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
+              rowString += `<td class="border-0 defaultText"> ${retainer_name} killed ${num} ${minions.name}</td></tr>`
+              $("#combatTableBody").append(rowString)
+              
+              $("#npcParagraph").html("Your Opponent: <strong>" + minions.numCur + " " + minions.name + "!!!</strong>")
+              
+              
               updateMinion()
             }
           }
@@ -4279,7 +4369,9 @@ let retainerNameFirst_A = [
       let continueAttack = true
       let numDead = 0
       let totalNum = retainers.length + 1
-      
+      if (numOfMinions < 1) {
+        return
+      }
       while (continueAttack) {
         counter++
         console.log("num of minions: " + numOfMinions)
@@ -4296,7 +4388,7 @@ let retainerNameFirst_A = [
         let twoD6 = roll1 + roll2
         let damage = 0
 
-        console.log("Minion: " + counter + " attacks the player character --> roll 1: " + roll1 + " roll 2: " + roll2 + " = " + twoD6)
+        console.log("Minion: " + counter + " attacks the player character --> roll 2d6: " + roll1 + " + " + roll2 + " = " + twoD6)
         
         numOfMinions--
         
@@ -4304,8 +4396,9 @@ let retainerNameFirst_A = [
         // loop through retainers
         if (retainers.length < 1) {
           // no retainers to fight
+          console.log("no retainers")
         } else {
-          $.each(retainers, function(key, value) {
+          retainers.forEach(function(key, value) {
             if (retainers.length > 0) {
               // attack retainers
               if (numOfMinions < 1) {
@@ -4320,7 +4413,7 @@ let retainerNameFirst_A = [
                 twoD6 = roll1 + roll2
                 damage = 0
 
-                console.log("Minion: " + counter + " attacks the player character --> roll 1: " + roll1 + " roll 2: " + roll2 + " = " + twoD6)
+                console.log(`Minion: ${counter} attacks ${key.name} --> roll 2d6 (${roll1} +   ${roll2} = ${twoD6}`)
                 numOfMinions--
 
               }
@@ -4355,14 +4448,14 @@ let retainerNameFirst_A = [
       switch(roll) {
         case 1: 
           silver = rollDie(6)
-          treasureText = "silver pieces"
+          treasureText = silver + "silver pieces"
           playerCharacter.money += silver
           updateNavbar()
         break;
         case 2: 
           silver = rollDie(6)
           silver += rollDie(6)
-          treasureText = "silver pieces"
+          treasureText = silver + "silver pieces"
           playerCharacter.money += silver
           updateNavbar()
         break;
@@ -4371,7 +4464,7 @@ let retainerNameFirst_A = [
           silver += rollDie(6)
           silver += rollDie(6)
           silver += rollDie(6)
-          treasureText = "silver pieces"
+          treasureText = silver + "silver pieces"
           playerCharacter.money += silver
           updateNavbar()
         break;
