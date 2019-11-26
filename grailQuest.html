@@ -4227,6 +4227,7 @@ let retainerNameFirst_A = [
       if (minions.numCur < 1) {
         console.log("no more minions")
         $("#npcParagraph").html("You have defeated: <strong>" + minions.numStart + " " + minions.name + "!!!</strong>")
+        console.log("PC get treasure")
         let treasureText = rollTreasure(0)
         $("#gameTableText").append("<br>You find: " + treasureText)
         let rowString = `
@@ -4243,10 +4244,11 @@ let retainerNameFirst_A = [
       // now loop through the retainers
       retainers.forEach(function(key, value) {
         if (minions.numCur < 1) {
-          console.log("no more minions")
+          console.log("at start of retainer loop there are no more minions")
           $("#npcParagraph").html("You have defeated: <strong>" + minions.numStart + " " + minions.name + "!!!</strong>")
-          let treasureText = rollTreasure(0)
-          $("#gameTableText").append("<br>You find: " + treasureText)
+          console.log("should have gotten treasure already")
+          //let treasureText = rollTreasure(0)
+          //$("#gameTableText").append("<br>You find: " + treasureText)
           let rowString = `
             <div class="d-flex mt-2">
               <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -4341,6 +4343,22 @@ let retainerNameFirst_A = [
               updateMinion()
             }
           }
+        }
+        if (minions.numCur < 1) {
+          console.log("At the end of the retainer loop there are no more minions")
+          $("#npcParagraph").html("You have defeated: <strong>" + minions.numStart + " " + minions.name + "!!!</strong>")
+          console.log("get treasure")
+          let treasureText = rollTreasure(0)
+          $("#gameTableText").append("<br>You find: " + treasureText)
+          let rowString = `
+            <div class="d-flex mt-2">
+              <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+            </button>
+            </div>`
+          $("#gameButtons").html(rowString)
+          return
         }
       }) 
     }
@@ -4448,14 +4466,14 @@ let retainerNameFirst_A = [
       switch(roll) {
         case 1: 
           silver = rollDie(6)
-          treasureText = silver + "silver pieces"
+          treasureText = silver + " silver pieces"
           playerCharacter.money += silver
           updateNavbar()
         break;
         case 2: 
           silver = rollDie(6)
           silver += rollDie(6)
-          treasureText = silver + "silver pieces"
+          treasureText = silver + " silver pieces"
           playerCharacter.money += silver
           updateNavbar()
         break;
@@ -4464,7 +4482,7 @@ let retainerNameFirst_A = [
           silver += rollDie(6)
           silver += rollDie(6)
           silver += rollDie(6)
-          treasureText = silver + "silver pieces"
+          treasureText = silver + " silver pieces"
           playerCharacter.money += silver
           updateNavbar()
         break;
