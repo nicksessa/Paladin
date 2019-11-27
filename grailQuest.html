@@ -1317,7 +1317,7 @@ let retainerNameFirst_A = [
       healUp()
       rollForRumors()
       // retain/fire retainers
-      let numRetainers = retainers.length
+      //let numRetainers = retainers.length
       let newRetainers = numAvailableRetainers()
       
       if (newRetainers > 0 ) {
@@ -1437,6 +1437,7 @@ let retainerNameFirst_A = [
       `
       $("#gameButtons").html(gotoJourneyButton)
     }
+
     function numAvailableRetainers () {
       let num1 = rollDie(6)
       //alert("You rolled a: " + num1)
@@ -1447,16 +1448,28 @@ let retainerNameFirst_A = [
     }
     
     function createRetainer (i) {
+      let newId = retainers.length +1
       availableRetainers = []
       // get name
       retainerName = createName(i)
       // get profession
       retainerProfession = getRetainerProfession(i)
       let newObj = {
+        id: newId,
         name: retainerName,
+        level: 1,
         profession: retainerProfession,
         employed: false,
-        cost: 10
+        cur_hp: 20,
+        max_hp: 20,
+        weapon: "Sword",
+        armor: "Padded",
+        attack: 6,
+        damage_bonus: 2,
+        armor_bonus: 1,
+        morale: 1,
+        cost: 10,
+        alive: true
       }
       // push to availableRetainers[]
       availableRetainers.push(newObj)
@@ -2237,9 +2250,9 @@ let retainerNameFirst_A = [
           
           if (playerCharacter.piety < 6) {
             playerCharacter.piety ++
-            $("#gameTableText").append("Not only did you bring comfort and solace to many, but you also survived the plague! Faith without works is dead and your work here has gained you a blessing from God. (You gained a piety point!)")
+            $("#gameTableText").append("<br>Not only did you bring comfort and solace to many, but you also survived the plague! Faith without works is dead and your work here has gained you a blessing from God. (You gained a piety point!)")
           } else {
-            $("#gameTableText").append("Not only did you bring comfort and solace to many, but you also survived the plague! Faith without works is dead and your work here has gained you continued blessings from God.")
+            $("#gameTableText").append("<br>Not only did you bring comfort and solace to many, but you also survived the plague! Faith without works is dead and your work here has gained you continued blessings from God.")
           }
           updateNavbar()
         }
@@ -3151,7 +3164,7 @@ let retainerNameFirst_A = [
           <td id="${retainer_name}_cost"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_cost}</td>
           <td class="border-0 align-center text-left text-dark p-2 px-3 justify"> 
             <div class="d-flex justify-content-center px-2">
-            <button data-id="${retainer_name}" type="button" class="re-employBtn btn btn-dark rounded-pill mx-2 btn-sm">
+            <button onclick="hireNew(this)" data-id="${retainer_name}" type="button" class="re-employBtn btn btn-dark rounded-pill mx-2 btn-sm">
               <i class="mt-2"></i>
               Hire
             </button>
@@ -3165,14 +3178,48 @@ let retainerNameFirst_A = [
     }
   }
   
+  function hireNew(button) {
+    var id = $(button).attr('data-id');
+    console.log("new retainer id: " + id)
+    //alert("You clicked: " + id)
+    let statusId = "#"+ id + "_status"
+    $(statusId).text("Retained")
+    // get a handle on the correct object
+    var obj = $.grep(availableRetainers, function(obj){return obj.name === id;})[0];
+    console.log("obj name: " + obj.name)
+    console.log("obj is: " + obj)
+
+    console.log("obj stringify is: " + JSON.stringify(obj))
+
+    // set the object value to: true
+    obj.employed = true
+    //alert("the value of employed: " + obj.employed)
+
+    // remove 10 silver from the character's money total
+    let cost = obj.cost
+    console.log("new retainer costs: " + obj.cost)
+    playerCharacter.money -= cost
+    console.log("pc money is now: " + playerCharacter.money)
+
+    // after hire, the retainer now costs 5 to keep
+    obj.cost = 5
+    updateNavbar()
+    retainers.push(obj)
+  }
   
   $(document).on('click', '.re-employBtn', function () {
     var id = $(this).attr('data-id');
+    console.log("id: " + id)
     //alert("You clicked: " + id)
     let statusId = "#"+ id + "_status"
     $(statusId).text("Retained")
     // get a handle on the correct object
     var obj = $.grep(retainers, function(obj){return obj.name === id;})[0];
+    console.log("obj name: " + obj.name)
+console.log("obj is: " + obj)
+
+console.log("obj stringify is: " + JSON.stringify(obj))
+
     // set the object value to: true
     obj.employed = true
     //alert("the value of employed: " + obj.employed)
@@ -3363,6 +3410,7 @@ let retainerNameFirst_A = [
       this.sex = sex;
       this.isAlive = isAlive;
     }
+
     var round = 1
     var initiative = "pc"
     let aKnight
@@ -3386,9 +3434,33 @@ let retainerNameFirst_A = [
       combat()
     }
     
+function createNPCSidebar() {
+  let minionPortraitText = `
+        <h4 id="npcDivName">${aKnight.name}</h4>
+          <hr>
+          Level: <span id="npcLevel">${aKnight.level}</span><br>
+          <span>HP: </span>
+          <span id="npcDivCurHP" class="bg-success rounded px-1 pb-1 mr-1">999 </span>
+          <span> of </span>
+          <span id="npcDivMaxHP">999</span>
+          <br>
+          Attack: <span id="npcDivAttack">999</span>+<br>
+          Damage Modifier: <span id="npcDivDmgMod">999</span><br>
+          Armor: <span id="npcDivArmor">999</span><br><br>
+          <h4>Equipment</h4>
+          <hr>
+          <span id="npcDivWeapon1">Longsword</span><br>
+          <span id="npcDivWeapon2"></span><br>
+          <span id="npcDivArmorType">Padded Gambeson</span><br>
+      
+      `
+      $("#npcPortrait").html(minionPortraitText)
+
+}
     
     function updateNPC() {
       $("#npcDivName").html(aKnight.name)
+      $("#npcLevel").html("???")
       $("#npcDivCurHP").html(aKnight.cur_hp)
       $("#npcDivMaxHP").html(aKnight.max_hp)
       $("#npcDivAttack").html(aKnight.attack)
@@ -3420,6 +3492,7 @@ let retainerNameFirst_A = [
     function combat() {
       $('#npcCollapse').toggle(true)
       // update the NPC side menu
+      createNPCSidebar()
       updateNPC()
       
       console.log("combat function round: " + round)
@@ -3998,7 +4071,7 @@ let retainerNameFirst_A = [
           Damage Modifier: <span id="minionDmgMod">${minions.dmg_mod}</span><br>
           Armor: <span id="minionArmor">${minions.armor}</span><br>
           Morale: <span id="minionMorale">${minions.moraleMod}</span><br>
-          Treasure: <span id="minionTreasure">${minions.moraleMod}</span><br><br>
+          Treasure: <span id="minionTreasure">${minions.treasureRolls}</span><br><br>
           <h5>Equipment</h5>
           <hr>
           <span id="minionWeapon1">Hand Weapon</span><br>
@@ -4462,7 +4535,7 @@ let retainerNameFirst_A = [
         console.log("player character level: " + playerCharacter.level)
         console.log("minion level: " + minions.level)
 
-        let attackMod = playerCharacter.level - minions.level
+        let attackMod = minions.level - playerCharacter.level
         console.log(minions.name + " attack mod is: " + attackMod)
         
         let roll1 = rollDie(6)
