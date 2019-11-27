@@ -621,12 +621,14 @@ let retainers = [
       max_hp: 20,
       weapon: "Longsword",
       armor: "Padded",
+      armorType: "light",
       attack: 6,
       damage_bonus: 2,
       armor_bonus: 1,
       morale: 1,
       cost: 5,
-      alive: true
+      alive: true,
+      outOfAction: false
     },
     {
       id: 1,
@@ -638,12 +640,14 @@ let retainers = [
       max_hp: 15,
       weapon: "Shortsword",
       armor: "Leather Jerkin",
+      armorType: "light",
       attack: 6,
       damage_bonus: 2,
       armor_bonus: 1,
       morale: -1,
       cost: 5,
-      alive: true
+      alive: true,
+      outOfAction: false
     },
     {
       id: 2,
@@ -655,12 +659,14 @@ let retainers = [
       max_hp: 20,
       weapon: "Longbow and Shortsword",
       armor: "Leather Jerkin",
+      armorType: "light",
       attack: 6,
       damage_bonus: 2,
       armor_bonus: 1,
       morale: 0,
       cost: 5,
-      alive: true
+      alive: true,
+      outOfAction: false
     }
   ]
     
@@ -847,6 +853,19 @@ let retainerNameFirst_A = [
           $("#topDivRebellionLevel").addClass("bg-dark")
         break;
       }
+      if (playerCharacter.rebellionLevel > 4) {
+        $("#gameTableText").html("The realm descends into complete chaos as the rebels continue to wreck havoc on all that is good and holy. Rumors abound saying that the king is dead.  All is lost.  But wait.... is there another?<br>")
+        $("#gameTableText").append("<br>If you feel up to the task, you may try again by starting over.")
+
+        let rowString = `
+          <div class="d-flex mt-2 justify-content-around">
+            <button onclick="startNewGame()" data-id="startGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Start Over
+          </button>`
+        $("#gameButtons").html(rowString)
+
+      }
     }
     
       
@@ -897,8 +916,8 @@ let retainerNameFirst_A = [
     ]
     
     let traitorsTable = [
-      "hears that a questing paladin has been killed by the traitors in a distant location. The Rebellion Level has increased!",
-      "finds a questing paladin, mortally wounded by the traitors. Before he dies, he gives you some information. You have gained one rumor but the Rebellion Level has also increased!",
+      "hears that a questing paladin has been killed by the traitors in a distant location. <br><span class='rounded' style='padding: 2px; background-color: red'>The Rebellion Level has increased!</span>",
+      "finds a questing paladin, mortally wounded by the traitors. Before he dies, he gives you some information. You have gained one rumor but the <span class='rounded' style='padding: 2px; background-color: red'>Rebellion Level has also increased!</span>",
       "finds signs of a brave fight, but no dead questing paladin. This was a lucky escape, the traitors did not get their kill."
     ]
     
@@ -921,6 +940,7 @@ let retainerNameFirst_A = [
     
     // Start New Game: Create character then roll on the Journey Table
     function startNewGame() {
+      $('#npcCollapse').toggle(false)
       $("#gameTableTitle").empty()
       $("#gameTableTitle").html("Start New Game")
       $("#gameButtons").empty()
@@ -930,7 +950,7 @@ let retainerNameFirst_A = [
       playerCharacter.level = 3
       playerCharacter.max_hp = 40
       playerCharacter.cur_hp = 40
-      playerCharacter.armor = 1
+      playerCharacter.armor = 2
       playerCharacter.attack = 6
       playerCharacter.att_mod = 0
       playerCharacter.dmg_mod = 2
@@ -1337,15 +1357,15 @@ let retainerNameFirst_A = [
       let num1 = rollDie(6)
       let num2 = rollDie(6)
       let num3 = num1 + num2
-      $("#gameTableText").append(`<p>Healing Roll: ${num1} + ${num2} = ${num3}</p>`)
+      //$("#gameTableText").append(`<p>Healing Roll: ${num1} + ${num2} = ${num3}</p>`)
       if ((num3 + playerCharacter.cur_hp) >= playerCharacter.max_hp) {
         playerCharacter.cur_hp = playerCharacter.max_hp
         $("#gameTableText").append("<p>After a good night's sleep, ALL of your wounds have healed!</p>")
       } else {
         playerCharacter.cur_hp = num3 + playerCharacter.cur_hp
-        $("#gameTableText").append("<p>After a good night's sleep, some of your wounds have healed.</p>")
+        $("#gameTableText").append("<p>After a good night's sleep, some of your wounds (" + num3 +") have healed.</p>")
       }
-      $("#gameTableText").append(`<p>Current Health: ${playerCharacter.cur_hp}</p>`)
+      //$("#gameTableText").append(`<p>Current Health: ${playerCharacter.cur_hp}</p>`)
       updateNavbar()
     }
   }
@@ -1407,7 +1427,7 @@ let retainerNameFirst_A = [
     
     
     function generalStore() {
-      $("#gameTableText").append("<p>The store is closed.</p>")
+      $("#gameTableText").append("<p>The store is currently closed.</p>")
       let gotoJourneyButton = `
         <div class="mt-2">
         <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -2214,8 +2234,13 @@ let retainerNameFirst_A = [
         //test for piety
         let num = rollDie(6)
         if (num > playerCharacter.piety) {
-          $("#gameTableText").append("Not only did you bring comfort and solace to many, but you also survived the plague! Faith without works is dead and your work here has gained you a blessing from God. (You gained a piety point!)")
-          playerCharacter.piety ++
+          
+          if (playerCharacter.piety < 6) {
+            playerCharacter.piety ++
+            $("#gameTableText").append("Not only did you bring comfort and solace to many, but you also survived the plague! Faith without works is dead and your work here has gained you a blessing from God. (You gained a piety point!)")
+          } else {
+            $("#gameTableText").append("Not only did you bring comfort and solace to many, but you also survived the plague! Faith without works is dead and your work here has gained you continued blessings from God.")
+          }
           updateNavbar()
         }
         $("#gameTableText").html()
@@ -3961,7 +3986,7 @@ let retainerNameFirst_A = [
     function createMinionSidebar() {
       
       let minionPortraitText = `
-        <h4 id="minionName">${minions.name}</h4>
+        <h5 id="minionName">${minions.name}</h5>
           <hr>
           Level: <span id="minionLevel">${minions.level}</span><br>
           <span>Number: </span>
@@ -3972,17 +3997,26 @@ let retainerNameFirst_A = [
           Attack: <span id="minionAttack">${minions.attack}</span>+<br>
           Damage Modifier: <span id="minionDmgMod">${minions.dmg_mod}</span><br>
           Armor: <span id="minionArmor">${minions.armor}</span><br>
-          Morale: <span id="minionMorale">${minions.moraleMod}</span><br><br>
-          <h4>Equipment</h4>
+          Morale: <span id="minionMorale">${minions.moraleMod}</span><br>
+          Treasure: <span id="minionTreasure">${minions.moraleMod}</span><br><br>
+          <h5>Equipment</h5>
           <hr>
           <span id="minionWeapon1">Hand Weapon</span><br>
-          <span id="minionWeapon2"></span><br>
           <span id="minionArmorType">Various</span><br>
           <hr>
-          <h4>Notes</h4>
+          <h5>Notes</h5>
           <span id="minionNotes">${minions.description}</span>
       
       `
+
+      if (minions.name == "hellhounds" || minions.name == "hellhound") {
+        $("#minionTreasure").html(none)
+        $("#minionWeapon1").html("Sharp teeth")
+        $("#minionArmorType").html("tough hide")
+        $("#minionNotes").append("Retainers must save vs level 4 or flee in terror. Reactions: fight to the death")
+      }
+
+
       $("#npcPortrait").html(minionPortraitText)
     }
     
@@ -4335,7 +4369,7 @@ let retainerNameFirst_A = [
               minions.numCur --
               console.log("num of minions is now: " + minions.numCur)
 
-              rowString = `<tr><td class="border-0 defaultText text-left"> ${retainer_name} killed ${num} </td></tr>`
+              rowString = `<tr><td class="border-0 defaultText text-left"> ${retainer_name} killed 1 </td></tr>`
               $("#combatTableBody").append(rowString)
               
               $("#npcParagraph").html("Your Opponent: <strong>" + minions.numCur + " " + minions.name + "!!!</strong>")
@@ -4348,9 +4382,19 @@ let retainerNameFirst_A = [
         if (minions.numCur < 1) {
           console.log("At the end of the retainer loop there are no more minions")
           $("#npcParagraph").html("You have defeated: <strong>" + minions.numStart + " " + minions.name + "!!!</strong>")
-          console.log("get treasure")
-          let treasureText = rollTreasure(0)
-          $("#gameTableText").append("<br>You find: " + treasureText)
+
+
+          if (minions.treasureRolls < 1) {
+            $("#gameTableText").append("<br>Unfortunatly these minions have no treasure.")
+          } else {
+            console.log("get treasure")
+            $("#gameTableText").append("<br>You find: <br>")
+            for (let i = 0; i < minions.treasureRolls; i++) {
+              let treasureText = rollTreasure(0)
+              $("#gameTableText").append(treasureText + "<br>")
+            }
+          }
+
           let rowString = `
             <div class="d-flex mt-2">
               <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -4720,9 +4764,10 @@ let retainerNameFirst_A = [
           silver += rollDie(6)
           silver += rollDie(6)
           silver = silver * 5
-          treasureText = "Apothecary materials worth " + silver + " silver pieces"
+          treasureText = "Apothecary materials worth " + silver + " silver pieces AND a potion of healing!"
           // To do: add this to the inventory.
           // for now, just convert to silver and add to the player's total
+          playerCharacter.healingPotions++
           playerCharacter.money += silver
           updateNavbar()
         break;
