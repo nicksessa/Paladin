@@ -2194,7 +2194,7 @@ let retainerNameFirst_A = [
       //$("#gameTableText").empty()
       $("#gameButtons").empty()
       
-      $("#gameTableText").html("You can either bypass this village or help.  If you help, there is a chance you can earn a piety point.")
+      $("#gameTableText").html("You can either bypass this village or help.  If you help, there is a chance you can earn a piety point. You also may die from the plague... just sayin.")
       
       
       
@@ -2273,7 +2273,7 @@ let retainerNameFirst_A = [
     
     
     function runGrailCastle() {
-      //$("#gameTableText").empty()
+      $("#gameTableText").empty("The Grail Castle is currently closed")
       $("#gameButtons").empty()
       // click to go to the Journey table
       let gotoJourneyButton = `
@@ -3072,6 +3072,9 @@ let retainerNameFirst_A = [
       $("#modalTitle").html("Manage Retainers")
       let retainerHireFireTable = `
         <div class='row'>
+          Money: <span id="pcMoney"> ${playerCharacter.money}</span>
+        </div>
+        <div class='row'>
         <div class="col-lg-12 bg-white rounded shadow-sm mb-5">
             <div class="table-responsive">
               <table class="table" id="manageRetainersTable">
@@ -3198,9 +3201,9 @@ let retainerNameFirst_A = [
     // remove 10 silver from the character's money total
     let cost = obj.cost
     console.log("new retainer costs: " + obj.cost)
-    playerCharacter.money -= cost
+    playerCharacter.money -= obj.cost
     console.log("pc money is now: " + playerCharacter.money)
-
+    $("#pcMoney").html(playerCharacter.money)
     // after hire, the retainer now costs 5 to keep
     obj.cost = 5
     updateNavbar()
@@ -3224,8 +3227,10 @@ console.log("obj stringify is: " + JSON.stringify(obj))
     obj.employed = true
     //alert("the value of employed: " + obj.employed)
     // remove 5 silver from the character's money total
-    let cost = "#"+ id + "_cost"
-    playerCharacter.money -= cost
+    let cost = obj.cost
+    console.log("npc cost: " + cost)
+    playerCharacter.money -= obj.cost
+    $("#pcMoney").html(playerCharacter.money)
     updateNavbar()
   })
   
@@ -4233,8 +4238,9 @@ function createNPCSidebar() {
         minionsAttack(round)
         playerAttackMinions(round)
       } 
-      round++
       $("#combatRound").html(`${round}`)
+      round++
+      
     }
 
     function playerAttackMinions(round) {
