@@ -1296,6 +1296,7 @@ let retainerNameFirst_A = [
 // Stay at Inn    
   function stayAtInn() {
     let rowString = ""
+    availableRetainers = []
     if (playerCharacter.money < 10) {
       // charity
       $("#gameTableText").append(`<p>Since you don't have enough money, the local church, having heard of your daring exploits, puts you up for the night for free. </p>`)
@@ -4088,7 +4089,7 @@ function createNPCSidebar() {
       `
 
       if (minions.name == "hellhounds" || minions.name == "hellhound") {
-        $("#minionTreasure").html(none)
+        $("#minionTreasure").html("none")
         $("#minionWeapon1").html("Sharp teeth")
         $("#minionArmorType").html("tough hide")
         $("#minionNotes").append("Retainers must save vs level 4 or flee in terror. Reactions: fight to the death")
@@ -4521,14 +4522,15 @@ function createNPCSidebar() {
         return
       }
       while (continueAttack) {
-        counter++
-        console.log("num of minions: " + numOfMinions)
-        console.log("minion counter: " +  counter)
+        
         if (numOfMinions < 1) {
           console.log("all minions have gone")
           continueAttack = false
-          //break
+          return
         }
+        counter++
+        console.log("num of minions: " + numOfMinions)
+        console.log("minion counter: " +  counter)
 
         // one minion attacks the player character
         numOfMinions--
@@ -4655,14 +4657,15 @@ function createNPCSidebar() {
           } 
         }
         
-        counter++
-        console.log("  -- now retainers --")
-        console.log("counter is now: " + counter)
 
         
         
         if (!continueAttack) return
-        
+        if (numOfMinions < 1) {
+          console.log("all minions have gone")
+          continueAttack = false
+          return
+        }
         
         
         
@@ -4682,6 +4685,11 @@ function createNPCSidebar() {
                 //break
               } else {
                 if (key.alive) {
+                  counter++
+                  numOfMinions--
+                  console.log("  -- now retainers --")
+                  console.log("counter is now: " + counter)
+
                   // The difference in level adjusts the "to hit" value.
                   let retainerLevel = key.level
                   let minionLevel = minions.level
@@ -4750,8 +4758,8 @@ function createNPCSidebar() {
                 }
               }
             }
-            numOfMinions--
-            counter++
+            
+            //counter++
           })
         }
         
