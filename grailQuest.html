@@ -418,9 +418,7 @@
   <script>
   // -----------------------------------------
   // Global variables
-
   //let initiativeTarget = 3
-
   // End Global variables
   // -----------------------------------------
   
@@ -510,32 +508,25 @@
     
     // Speed up calls to hasOwnProperty
     var hasOwnProperty = Object.prototype.hasOwnProperty;
-
     function isEmpty(obj) {
-
         // null and undefined are "empty"
         if (obj == null) return true;
-
         // Assume if it has a length property with a non-zero value
         // that that property is correct.
         if (obj.length > 0)    return false;
         if (obj.length === 0)  return true;
-
         // If it isn't an object at this point
         // it is empty, but it can't be anything *but* empty
         // Is it empty?  Depends on your application.
         if (typeof obj !== "object") return true;
-
         // Otherwise, does it have any properties of its own?
         // Note that this doesn't handle
         // toString and valueOf enumeration bugs in IE < 9
         for (var key in obj) {
             if (hasOwnProperty.call(obj, key)) return false;
         }
-
         return true;
     }
-
     
     // import the character.js file for the character object
     // check local storage for file.
@@ -856,7 +847,6 @@ let retainerNameFirst_A = [
       if (playerCharacter.rebellionLevel > 4) {
         $("#gameTableText").html("The realm descends into complete chaos as the rebels continue to wreck havoc on all that is good and holy. Rumors abound saying that the king is dead.  All is lost.  But wait.... is there another?<br>")
         $("#gameTableText").append("<br>If you feel up to the task, you may try again by starting over.")
-
         let rowString = `
           <div class="d-flex mt-2 justify-content-around">
             <button onclick="startNewGame()" data-id="startGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -864,7 +854,6 @@ let retainerNameFirst_A = [
             Start Over
           </button>`
         $("#gameButtons").html(rowString)
-
       }
     }
     
@@ -1370,7 +1359,6 @@ let retainerNameFirst_A = [
       updateNavbar()
     }
   }
-
   function useHealingPotion() {
     if (playerCharacter.healingPotions < 1) {
       alert("Sorry, you don't have any healing potions.")
@@ -1380,10 +1368,8 @@ let retainerNameFirst_A = [
       let num1 = rollDie(6)
       let num2 = rollDie(6)
       let num3 = num1 + num2
-
       let drinkPotion = false
       let txt = ""
-
       drinkPotion = confirm("Drink healing potion?")
       if (drinkPotion) {
         playerCharacter.healingPotions--
@@ -1438,7 +1424,6 @@ let retainerNameFirst_A = [
       `
       $("#gameButtons").html(gotoJourneyButton)
     }
-
     function numAvailableRetainers () {
       let num1 = rollDie(6)
       //alert("You rolled a: " + num1)
@@ -1961,7 +1946,6 @@ let retainerNameFirst_A = [
           $("#gameButtons").html(btnString)
         }
       }
-
     }
     
     function runCastlePerilous() {
@@ -2020,12 +2004,10 @@ let retainerNameFirst_A = [
           `
           $("#gameButtons").html(btnString)
         break;
-
         // Meet a priest
         case 3:
           if (playerCharacter.dishonor) {
             $("#gameTableText").html("You meet a traveling priest who offers to hear your confession.  If you confess your sins faithfully, not ony will honor be restored, but your soul shall be healed.")
-
           }
           btnString = `
             <div class="d-flex mt-2 justify-content-around">
@@ -2041,11 +2023,9 @@ let retainerNameFirst_A = [
           `
           $("#gameButtons").html(btnString)
         break
-
         // Black Knight or Red Knight
         case 4:
         $("#gameTableText").html("Opening a door you see two mystical portals, each displaying a different scene. First: A questing paladin is about to be killed by a black knight. Second: A maiden is about to be attacked by a red knight. <br> You must choose who to save.")
-
           btnString = `
             <div class="d-flex mt-2 justify-content-around">
             <button onclick="saveThePaladin()" data-id="saveThePaladinBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -2060,7 +2040,6 @@ let retainerNameFirst_A = [
           `
           $("#gameButtons").html(btnString)
         break;
-
         // The Hermit
         case 5:
           hermitRumorCount = 3
@@ -2078,7 +2057,6 @@ let retainerNameFirst_A = [
           `
           $("#gameButtons").html(btnString)
         break;
-
         // The Dwarf
         case 6:
           // choose side quest
@@ -2097,10 +2075,8 @@ let retainerNameFirst_A = [
       
         
     }
-
     // this is a global and should go with the other global variables
     let hermitRumorCount = 3
-
     function buyRumors() {
       if (playerCharacter.money < 50) {
         alert("You have insuffient funds to purchase any rumors.")
@@ -2112,7 +2088,6 @@ let retainerNameFirst_A = [
         }
       }
     }
-
     function saveThePaladin() {
       $("#gameTableText").html("With the maiden's screams still echoing in your head, you leap through the portal to save the knight. ")
       challengerName = "The Black Knight"
@@ -2130,7 +2105,6 @@ let retainerNameFirst_A = [
       `
       $("#gameButtons").html(btnString)
     }
-
     function saveTheMaiden() {
       $("#gameTableText").html("The Black Knight slays the paladin as you leap through the other portal.")
       challengerName = "The Red Knight"
@@ -2148,7 +2122,6 @@ let retainerNameFirst_A = [
       `
       $("#gameButtons").html(btnString)
     }
-
     function confessSins() {
       $("#gameTableText").append("After making a good confession, the priest then says:<p>Deinde, ego te absolvo a peccatis tuis in nomine Patris, et Filii, et Spiritus Sancti. Amen.</p>")
       $("#gameTableText").append("<p>If your sins were truly grave, he suggests that you go on a pilgrimage.</p>")
@@ -2172,7 +2145,6 @@ let retainerNameFirst_A = [
       `
       $("#gameButtons").html(btnString)
     }
-
     function skipConfession() {
       $("#gameTableText").append("<p>The priest shrugs and says: 'Suite yourself'</p>  He then directs you to a crossroads.")
       
@@ -2240,7 +2212,8 @@ let retainerNameFirst_A = [
           <button onclick="startNewGame()" data-id="startGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
           <i class="mt-2"></i>
           Start Over
-        </button>`
+        </button>
+        </div>`
         $("#gameButtons").html(rowString)
       }
       
@@ -2262,11 +2235,12 @@ let retainerNameFirst_A = [
         let btnString = `
         <div class="mt-2">
         <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
-            </button>
-      `
-      $("#gameButtons").html(btnString)
+          <i class="mt-2"></i>
+          Continue your Journey
+        </button>
+        </div>
+        `
+        $("#gameButtons").html(btnString)
       }
         
       
@@ -2274,20 +2248,119 @@ let retainerNameFirst_A = [
     
     
     function runGrailCastle() {
-      $("#gameTableText").empty("The Grail Castle is currently closed")
-      $("#gameButtons").empty()
+
       // click to go to the Journey table
-      let gotoJourneyButton = `
-        <div class="mt-2">
-        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
+
+      if (playerCharacter.piety < 1) {
+        $("#gameTableText").html("For one so lacking in faith (piety points), the Grail Castle proves to be elusive.<br>")
+        $("#gameTableText").append("<br>However, a knight has found you and issued a challenge!")
+        let btnString = `
+          <div class="mt-2">
+          <button onclick="rollChallengeTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Fight a Knight!
+          </button>
+        </div>
+        `
+        $("#gameButtons").html(btnString)
+      } else {
+
+        $("#gameTableText").html("You see the castle shrouded in heavenly lights and hear angelic music! The old and maimed Fisher King asks you two questions, each requiring a piety test to answer.<br>")
+
+        let roll1 = rollDie(6)
+        let roll2 = rollDie(6)
+
+        if (roll1 <= playerCharacter.piety) {
+          $("#gameTableText").append(`<p>${roll1} <= ${playerCharacter.piety} = passed!</p>`)
+        } else {
+          $("#gameTableText").append(`<p>${roll1} <= ${playerCharacter.piety} = failed!</p>`)
+        }
+
+        if (roll2 <= playerCharacter.piety) {
+          $("#gameTableText").append(`<p>${roll2} <= ${playerCharacter.piety} = passed!</p>`)
+        } else {
+          $("#gameTableText").append(`<p>${roll1} <= ${playerCharacter.piety} = failed!</p>`)
+        }
+
+        if (roll1 <= playerCharacter.piety && roll2 <= playerCharacter.piety) {
+          // passed!
+          $("#gameTableText").append(`<p>${playerCharacter.name} has answered both questions successfully! The Holy Grail appears in your hands!</p>`)
+          $("#gameTableText").append("<br>Click to return to Camelot!")
+
+          let btnString = `
+            <div class="mt-2">
+            <button onclick="returnToCamelot()" data-id="gotoCamelotBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Return to Camelot
             </button>
-      `
-      $("#gameButtons").html(gotoJourneyButton)
+          </div>
+          `
+          $("#gameButtons").html(btnString)
+
+
+
+        } else {
+          // failed!
+          $("#gameTableText").append(`<p>${playerCharacter.name} has failed! </p> The quest continues...`)
+
+          let btnString = `
+            <div class="mt-2">
+            <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Continue your Journey
+            </button>
+          </div>
+          `
+          $("#gameButtons").html(btnString)
+
+
+        }
+
         
+      }       
     }
     
+
+    function returnToCamelot() {
+      // if Lancelot has returned, add 2 to the roll
+      // global variable: lancelotHasReturned  (defaults to false)
+      // global variable: returnToCamelot  (defaults to false)
+      // -> need to check 'returnToCamelot' when the game starts.  IF true, THEN go to returnToCamelot ELSE continue as normal.
+
+      let roll1 = rollDie(6)
+
+      if (roll1 < 4) {
+        $("gameTableText").html(`Word spreads that you have found the Holy Grail!  However, on the road to Camelot ${playerCharacter.name} is intercepted by a knight!`)
+
+        let btnString = `
+          <div class="mt-2">
+          <button onclick="rollChallengeTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Fight a Knight!
+          </button>
+        </div>
+        `
+        $("#gameButtons").html(btnString)
+
+
+
+      } else {
+        $("gameTableText").html(`As ${playerCharacter.name} returns to Camelot, he finds King Arthur drained of all energy and near death. But when he drinks from the Holy Grail, life flows back! <br>He stands, unsheathes Excalibur and declares ${playerCharacter.name} to be the greatest of his paladins!<br><br>King Arthur now raises his war standard, summons the rest of his remaining nobels and engages Morgana and her brood on the field of battle... and he wins! <br><br> Peace reigns... for a time.`)
+        $("gameTableText").append("<br><br>Would you like to play again?")
+
+        btnString = `
+          <div class="d-flex mt-2">
+          <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Start New Game
+          </button>
+          </div>`
+        $("#gameButtons").html(btnString)
+
+
+      }
+    }
+
 
     function runMinions() {
       // get minion type (day or night)
@@ -2423,9 +2496,7 @@ let retainerNameFirst_A = [
         $("#gameTableText").html(`You have encountered <span class="rounded" style="color:black; background-color:blanchedalmond; padding: 2px;">${numMinions} ${minionType}</span><br>`)
         $("#gameTableText").append("<br>" + minions.description + "<br><br>")
         $("#gameTableText").append("<p>You can attack immediately which will give you the initiative or you can wait and see what they do. <br><br>Note: if you wait and see and the opponents attack, they will attack first.</p>")
-
         // show options
-
         let rowString = `
           <div class="d-flex mt-2 justify-content-around">
           <button onclick="fightMinions()" data-id="fightMinionBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -2440,7 +2511,6 @@ let retainerNameFirst_A = [
           `
         //$("#gameButtons").empty()
         $("#gameButtons").html(rowString) 
-
       }
     }
     
@@ -2487,7 +2557,6 @@ let retainerNameFirst_A = [
       $("#gameButtons").empty()
       $("#gameButtons").html(rowString) 
       
-
         
     }
     
@@ -3192,13 +3261,10 @@ let retainerNameFirst_A = [
     var obj = $.grep(availableRetainers, function(obj){return obj.name === id;})[0];
     console.log("obj name: " + obj.name)
     console.log("obj is: " + obj)
-
     console.log("obj stringify is: " + JSON.stringify(obj))
-
     // set the object value to: true
     obj.employed = true
     //alert("the value of employed: " + obj.employed)
-
     // remove 10 silver from the character's money total
     let cost = obj.cost
     console.log("new retainer costs: " + obj.cost)
@@ -3221,9 +3287,7 @@ let retainerNameFirst_A = [
     var obj = $.grep(retainers, function(obj){return obj.name === id;})[0];
     console.log("obj name: " + obj.name)
 console.log("obj is: " + obj)
-
 console.log("obj stringify is: " + JSON.stringify(obj))
-
     // set the object value to: true
     obj.employed = true
     //alert("the value of employed: " + obj.employed)
@@ -3416,7 +3480,6 @@ console.log("obj stringify is: " + JSON.stringify(obj))
       this.sex = sex;
       this.isAlive = isAlive;
     }
-
     var round = 1
     var initiative = "pc"
     let aKnight
@@ -3461,7 +3524,6 @@ function createNPCSidebar() {
       
       `
       $("#npcPortrait").html(minionPortraitText)
-
 }
     
     function updateNPC() {
@@ -3513,7 +3575,6 @@ function createNPCSidebar() {
       } else {
         initiativeTarget = 4
       }
-
       if (round == 1) {
         $("#gameTableText").append("<p id='npcParagraph'>Your Opponent is: <strong>" + aKnight.name + "!!!</strong></p>")
         let roll_1d6 = rollDie(6);
@@ -3746,7 +3807,6 @@ function createNPCSidebar() {
             //let rowString = `<div class="col text-center">
             //    <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i class="mt-2 mr-2"></i>Click to Start Over</button>
             //    </div>`
-
             rowString = `
               <div class="d-flex mt-2">
               <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -3754,7 +3814,6 @@ function createNPCSidebar() {
                 Start New Game
               </button>
               </div>`
-
             $("#gameButtons").html(rowString)
             
             //$("#storyDiv").append(rowString)
@@ -3926,7 +3985,6 @@ function createNPCSidebar() {
     let minions = {}
     let numMinions = 0
     let minionType = ""
-
     
     function waitAndSee() {
       if (minionType == "fairyFire") {
@@ -3957,9 +4015,7 @@ function createNPCSidebar() {
         isAlive: playerCharacter.alive,
         saved: false
       }
-
       pcGroup.push(character)
-
       for (let i = 0; i < retainers.length; i++) {
         character = {
           id: retainers[i].id,
@@ -3972,16 +4028,11 @@ function createNPCSidebar() {
       }
     
       let continueAttack = true
-
       let numSaved = 0
       let numDead = 0
       let totalNum = pcGroup.length
-
       //let saveMod = 0
-
       let counter = 0
-
-
       while(continueAttack) {
         counter++
         // loop through the pc group array
@@ -4017,20 +4068,16 @@ function createNPCSidebar() {
         }
         
         console.log("[" + counter + "] ------------------------------")
-
         if (numSaved == pcGroup.length) continueAttack = false
         if (numDead == pcGroup.length) continueAttack = false
         if (numSaved + numDead == pcGroup.length) continueAttack = false
-
         // this is here to keep us out of an infinite loop
         if (counter > 500) {
           continueAttack = false
           alert("Counter exceeded 500.  Either really bad luck or we got into an infinite loop.")
         }
       }
-
       let myString = ""
-
       for (let i = 0; i < pcGroup.length; i++) {
         let deadOrAlive = (pcGroup[i].isAlive) ? "alive" : "dead"
         
@@ -4041,7 +4088,6 @@ function createNPCSidebar() {
         }
       }
       $("#gameTableText").append(myString + "<br>")
-
       console.log(myString)
       if (!pcGroup[0].isAlive) {
         console.log("Player Character is dead.  Have to start over now.")
@@ -4061,7 +4107,6 @@ function createNPCSidebar() {
       }
       
     }
-
     function createMinionSidebar() {
       
       let minionPortraitText = `
@@ -4087,22 +4132,18 @@ function createNPCSidebar() {
           <span id="minionNotes">${minions.description}</span>
       
       `
-
       if (minions.name == "hellhounds" || minions.name == "hellhound") {
         $("#minionTreasure").html("none")
         $("#minionWeapon1").html("Sharp teeth")
         $("#minionArmorType").html("tough hide")
         $("#minionNotes").append("Retainers must save vs level 4 or flee in terror. Reactions: fight to the death")
       }
-
-
       $("#npcPortrait").html(minionPortraitText)
     }
     
     function updateMinion() {
       $("#minionCurNum").html(minions.numCur)
       // set colors for numbers
-
       // first unset all colors
       $("#minionCurNum").removeClass(["bg-success", "bg-warning", "bg-danger", "bg-secondary"]);
       let a = Math.floor(minions.numStart / 3);
@@ -4122,14 +4163,11 @@ function createNPCSidebar() {
       }
     }
     
-
     function fightMinions() {
       round = 1
       let rowString = ""
       createMinionSidebar()
-
       $('#npcCollapse').toggle(true)
-
       //updateMinion(minions)
       console.log("minion combat round: " + round)
       console.log("minion: " + minions.name)
@@ -4207,7 +4245,6 @@ function createNPCSidebar() {
       if (initiative == "npc" && round == 1) {
         minionsAttack(round)
       }
-
       // place the buttons
       
       rowString = `
@@ -4219,8 +4256,6 @@ function createNPCSidebar() {
       $("#gameButtons").html(rowString)
         
     }
-
-
     function attackMinions() {
       // determine the order of combat
       console.log("initiative: " + initiative)
@@ -4243,7 +4278,6 @@ function createNPCSidebar() {
       round++
       
     }
-
     function playerAttackMinions(round) {
       // If pc is alive, attack the minions.
       // After the PC is done, loop through the retainers array
@@ -4254,7 +4288,6 @@ function createNPCSidebar() {
       // for example:
       // Fred the Paladin is fighting 6 angry peasants (level 2)
       // He needs a 4 to hit.  (6 is normal but Fred has an attack bonus of +2) to hit and rolls an 8 on 2d6
-
       // add damage modifiers (+2) for a total of 10
       // 10 - target number of 4 = 6
       // divide 6 by the minion level = 3
@@ -4267,7 +4300,6 @@ function createNPCSidebar() {
       console.log("Player Attacks")
       console.log("player is alive: " + playerCharacter.alive)
       
-
       if (playerCharacter.alive) {
         let roll1 = rollDie(6)
         let roll2 = rollDie(6)
@@ -4279,10 +4311,8 @@ function createNPCSidebar() {
         // The difference in level adjusts the "to hit" value.
         let pcLevel = playerCharacter.level
         let minionLevel = minions.level
-
         console.log("player character level: " + playerCharacter.level)
         console.log("minion level: " + minions.level)
-
         let attackMod = playerCharacter.level - minions.level
         console.log(playerCharacter.name + " attack mod is: " + attackMod)
         
@@ -4320,7 +4350,6 @@ function createNPCSidebar() {
             }
             minions.numCur -= num
             console.log("num of minions is now: " + minions.numCur)
-
             rowString = `<tr><td class="border-0 defaultText text-left"> ${playerCharacter.name} killed ${num}</td></tr>`
             $("#combatTableBody").append(rowString)
             
@@ -4332,7 +4361,6 @@ function createNPCSidebar() {
           } else {
             minions.numCur --
             console.log("num of minions is now: " + minions.numCur)
-
             rowString = `<tr><td class="border-0 defaultText text-left"> ${playerCharacter.name} killed 1</td></tr>`
             $("#combatTableBody").append(rowString)
             
@@ -4343,7 +4371,6 @@ function createNPCSidebar() {
             updateMinion()
           }
         }
-
       }
       
       if (minions.numCur < 1) {
@@ -4369,7 +4396,6 @@ function createNPCSidebar() {
           console.log("at start of retainer loop there are no more minions")
           $("#npcParagraph").html("You have defeated: <strong>" + minions.numStart + " " + minions.name + "!!!</strong>")
           console.log("should have gotten treasure already")
-
           let rowString = `
             <div class="d-flex mt-2">
               <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -4392,20 +4418,15 @@ function createNPCSidebar() {
           let roll2 = rollDie(6)
           let twoD6 = roll1 + roll2
           let damage = 0
-
           console.log(retainer_name + " rolls 2d6: " + roll1 + " + " + roll2 + " = " + twoD6)
-
           // The difference in level adjusts the "to hit" value.
           let attackMod = retainer_level - minions.level
           console.log(retainer_name + " attack mod is: " + attackMod)
-
           let total = (twoD6 + attackMod)
           console.log("total: " + total)
-
           // "target" should default to: 6
           let target = retainer_attack
           console.log("target number: " + target)
-
           if (total < target) {
             console.log("Retainer missed!")
             //$("#gameTableText").append(retainer_name + " missed!")
@@ -4415,7 +4436,6 @@ function createNPCSidebar() {
             console.log("hit but 0 damage.  This still kills one minion")
             minions.numCur --
             console.log("num of minions is now: " + minions.numCur)
-
             rowString = `<tr><td class="border-0 defaultText text-left"> ${retainer_name} killed 1</td></tr>`
             $("#combatTableBody").append(rowString)
             
@@ -4428,16 +4448,13 @@ function createNPCSidebar() {
             console.log("damage: " + damage)
             // now check the level difference to see how many minions are killed
             let num = Math.floor(damage / minions.level)
-
             console.log("number killed: " + num)
-
             if (num > 0) {
               if (num > minions.numCur) {
                 num = minions.numCur
               }
               minions.numCur -= num
               console.log("num of minions is now: " + minions.numCur)
-
               rowString = `<tr><td class="border-0 defaultText text-left"> ${retainer_name} killed ${num} </td></tr>`
               $("#combatTableBody").append(rowString)
               
@@ -4448,7 +4465,6 @@ function createNPCSidebar() {
             } else {
               minions.numCur --
               console.log("num of minions is now: " + minions.numCur)
-
               rowString = `<tr><td class="border-0 defaultText text-left"> ${retainer_name} killed 1 </td></tr>`
               $("#combatTableBody").append(rowString)
               
@@ -4462,8 +4478,6 @@ function createNPCSidebar() {
         if (minions.numCur < 1) {
           console.log("At the end of the retainer loop there are no more minions")
           $("#npcParagraph").html("You have defeated: <strong>" + minions.numStart + " " + minions.name + "!!!</strong>")
-
-
           if (minions.treasureRolls < 1) {
             $("#gameTableText").append("<br>Unfortunatly these minions have no treasure.")
           } else {
@@ -4474,7 +4488,6 @@ function createNPCSidebar() {
               $("#gameTableText").append(treasureText + "<br>")
             }
           }
-
           let rowString = `
             <div class="d-flex mt-2">
               <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -4504,8 +4517,6 @@ function createNPCSidebar() {
       
       console.log("global var: numMinions = " + numMinions)
       console.log("num of minions: " + minions.numCur)
-
-
       let numOfMinions = minions.numCur
       let counter = 0
       
@@ -4531,7 +4542,6 @@ function createNPCSidebar() {
         counter++
         console.log("num of minions: " + numOfMinions)
         console.log("minion counter: " +  counter)
-
         // one minion attacks the player character
         numOfMinions--
         console.log("num of minions to attack is now: " + numOfMinions)
@@ -4539,10 +4549,8 @@ function createNPCSidebar() {
         // The difference in level adjusts the "to hit" value.
         let pcLevel = playerCharacter.level
         let minionLevel = minions.level
-
         console.log("player character level: " + playerCharacter.level)
         console.log("minion level: " + minions.level)
-
         let attackMod = minions.level - playerCharacter.level
         console.log(minions.name + " attack mod is: " + attackMod)
         
@@ -4550,7 +4558,6 @@ function createNPCSidebar() {
         let roll2 = rollDie(6)
         let twoD6 = roll1 + roll2
         let damage = 0
-
         console.log("Minion: " + counter + " attacks the player character --> roll 2d6: " + roll1 + " + " + roll2 + " = " + twoD6)
         
         let total = (twoD6 + attackMod)
@@ -4566,7 +4573,6 @@ function createNPCSidebar() {
         
         if (total < target) {
           console.log("minion missed!")
-
           rowString = `<tr><td class="border-0 defaultText text-left"> * ${minions.name} #${counter} attacked ${playerCharacter.name} but missed!</td></tr>`
           $("#combatTableBody").append(rowString)
         } else {
@@ -4596,7 +4602,6 @@ function createNPCSidebar() {
               // PC is knocked out
               round = 0
               console.log("PC is alive but knocked out")
-
               $("#npcParagraph").append('<p>' + playerCharacter.name + ' has been knocked out! You had best start praying!</p>')
               // it is possible that the PCs minions can save the day
               // but if there are no retainers, roll to see if the PC has to start over
@@ -4619,7 +4624,6 @@ function createNPCSidebar() {
                   playerCharacter.alive = false
                   $("#npcParagraph").empty()
                   $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God speed ' + playerCharacter.name + ' on his way to his eternal reward!</p>')
-
                   rowString = `
                     <div class="d-flex mt-2">
                     <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -4627,11 +4631,9 @@ function createNPCSidebar() {
                       Start New Game
                     </button>
                     </div>`
-
                   $("#gameButtons").html(rowString)
                 }
               }
-
             }
             if (playerCharacter.cur_hp < 1) {
               continueAttack = false
@@ -4642,7 +4644,6 @@ function createNPCSidebar() {
               $("#storyDivHead").empty()
               $("#npcParagraph").empty()
               $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God speed ' + playerCharacter.name + ' on his way to his eternal reward!</p>')
-
               rowString = `
                 <div class="d-flex mt-2">
                 <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -4650,14 +4651,12 @@ function createNPCSidebar() {
                   Start New Game
                 </button>
                 </div>`
-
               $("#gameButtons").html(rowString)
             }
             updateNavbar()
           } 
         }
         
-
         
         
         if (!continueAttack) return
@@ -4689,35 +4688,25 @@ function createNPCSidebar() {
                   numOfMinions--
                   console.log("  -- now retainers --")
                   console.log("counter is now: " + counter)
-
                   // The difference in level adjusts the "to hit" value.
                   let retainerLevel = key.level
                   let minionLevel = minions.level
-
                   console.log("Retainer (" + key.name + ") level: " + retainerLevel)
                   console.log("minion level: " + minions.level)
-
                   let attackMod = retainerLevel - minions.level
                   console.log(key.name + " attack mod is: " + attackMod)
-
                   let roll1 = rollDie(6)
                   let roll2 = rollDie(6)
                   let twoD6 = roll1 + roll2
                   let damage = 0
-
                   console.log("Minion: " + counter + " attacks " + key.name + " --> roll 2d6: " + roll1 + " + " + roll2 + " = " + twoD6)
-
                   let total = (twoD6 + attackMod)
                   console.log("total (2d6 + attack modifier): " + total)
-
                   // "target" should default to: 7
                   let target = minions.attack
                   console.log("minion target number: " + target)
-
-
                   if (total < target) {
                     console.log("minion missed!")
-
                     rowString = `<tr><td class="border-0 defaultText text-left">* ${minions.name} #${counter} attacked ${key.name} but missed!</td></tr>`
                     $("#combatTableBody").append(rowString)
                   } else {
@@ -4727,19 +4716,16 @@ function createNPCSidebar() {
                     console.log("dmg = " + total + " - " + target + " = " + dmg)
                     dmg += minions.dmg_mod
                     console.log("dmg + minions.dmg_mod = " + dmg)
-
                     // subtract PC's armor (if any)
                     console.log("Retainer armor: " + key.armor_bonus)
                     dmg = dmg - key.armor_bonus
                     console.log("dmg is now: " + dmg)
-
                     if (dmg < 1) {
                       rowString = `<tr><td class="border-0 defaultText text-left">* ${minions.name} #${counter} hits ${key.name} for 0 damage!</td></tr>`
                       $("#combatTableBody").append(rowString)
                     } else {
                       console.log(key.name +" was hit for " + dmg)
                       key.cur_hp = key.cur_hp - dmg
-
                       rowString = `<tr><td class="border-0 defaultText text-left">* ${minions.name} #${counter} hits ${key.name} for ${dmg} damage!</td></tr>`
                       $("#combatTableBody").append(rowString)
                       // check to see if the retainer is alive or dead
@@ -4752,7 +4738,6 @@ function createNPCSidebar() {
                           return e.name != key.name
                         })
                       }
-
                     }
                   }
                 }
@@ -4770,9 +4755,6 @@ function createNPCSidebar() {
       }
       
     }
-
-
-
     // -----------------------------------------------------
     // end minion combat - multiple combatants per side
     // -----------------------------------------------------
