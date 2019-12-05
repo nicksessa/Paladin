@@ -989,7 +989,7 @@ let retainerNameFirst_A = [
     
     let traitorsTable = [
       "hears that a questing paladin has been killed by the traitors in a distant location. <br><span class='rounded' style='padding: 2px; background-color: red'>The Rebellion Level has increased!</span>",
-      "finds a questing paladin, mortally wounded by the traitors. Before he dies, he gives you some information. <br><br>You have gained one rumor! However... <br>The <span class='rounded' style='padding: 2px; background-color: red'>Rebellion Level has increased!</span>",
+      "finds a questing paladin, mortally wounded by the traitors. Before he dies, he gives you some information. <br><br>You have gained one rumor! However... <br><span class='rounded' style='padding: 2px; background-color: red'>The Rebellion Level has increased!</span>",
       "finds signs of a brave fight, but no dead questing paladin. This was a lucky escape, the traitors did not get their kill."
     ]
     
@@ -2323,8 +2323,10 @@ let retainerNameFirst_A = [
             $("#gameTableText").append("<br>Not only did you bring comfort and solace to many, but you also survived the plague! Faith without works is dead and your work here has gained you continued blessings from God.")
           }
           updateNavbar()
+        } else {
+          $("#gameTableText").append("<br>Not only did you bring comfort and solace to many, but you also survived the plague! Faith without works is dead and your work here has gained you continued blessings from God.")
         }
-        $("#gameTableText").html()
+        //$("#gameTableText").html()
         
         let btnString = `
         <div class="mt-2">
@@ -2694,12 +2696,24 @@ let retainerNameFirst_A = [
           // roll for piety
           let roll1 = rollDie(6)
           if (roll1 > playerCharacter.piety) {
-          $("#gameTableText").html("Your donation: " + donation)
-          $("#gameTableText").append("<br>Thank you for your donation!")
-            $("#gameTableText").append("<br>You gained a piety point!")
+            
+            if (donation == 50) {
+              $("#gameTableText").html(`50 silver huh? Really? Just remember, it's not really charity if you expect to gain something in return.`)
+            } else {
+              $("#gameTableText").html(`Thank you for donating ${donation} silver pieces!<br>`)
+            }
+ 
+
+            $("#gameTableText").append("<br><br>You gained a piety point!")
             playerCharacter.piety++
             updateNavbar()
             $("#topDivPiety").html(playerCharacter.piety)
+          } else {
+            $("#gameTableText").html(`Thank you for donating ${donation} silver pieces!<br>`)
+            if (donation == 50) $("#gameTableText").append(`<br>50 silver huh? Really? Just remember, it's not really charity if you expect to gain something in return.`)
+
+            $("#gameTableText").append("<br>Thank you for your donation!")
+            $("#gameTableText").append("<br>Pius yes, but apparently not enough to gain a piety point. The Fates can be fickle.  Anway, giving is it's own reward so stop complaining.")
           }
 
           // after making a donation display the journey button
