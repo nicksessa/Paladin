@@ -483,7 +483,7 @@
       name: "Sir Percival",
       level: 3,
       max_hp: 40,
-      cur_hp: 35,
+      cur_hp: 40,
       armor: 2,
       attack: 6,
       att_mod: 0,
@@ -492,13 +492,13 @@
       money: 20,
       species: "human",
       sex: "male",
-      healingPotions: 2,
+      healingPotions: 3,
       alive: true,
       rumors: 5,
       rumorModifier: 0,
       rebellionLevel: 0,
       rebellionLevelMod: 0,
-      turn: 5,
+      turn: 0,
       piety: 2,
       sideQuests: 0,
       findRetainerModifier: 0,
@@ -509,6 +509,9 @@
       dishonor: false
     }
     
+    let retainers = []
+
+
     // Speed up calls to hasOwnProperty
     var hasOwnProperty = Object.prototype.hasOwnProperty;
     function isEmpty(obj) {
@@ -532,8 +535,8 @@
     }
     
     // import the character.js file for the character object
-    // check local storage for file.
-    // Microsoft Edge does not like this? 
+    // check local storage for file. 
+    // To do: Need to be able to handle browsers that do not have Local Storage enabled
     
     // define variable for local storage data
     let pcLocalStorage = ""
@@ -542,40 +545,113 @@
     // Check browser support
     if (typeof(Storage) !== "undefined") {
       canUseLocalStorage = true
+
+
+      setupLocalStorage("theGrailQuest_ryu2012_character", "character")
+      setupLocalStorage("theGrailQuest_ryu2012_retainer", "retainer")
+      //setupLocalStorage("theGrailQuest_ryu2012_equipment", "equipment")
+      //setupLocalStorage("", "log")
+
+
+
       // check to see if the variable exists
-      if (localStorage.getItem("theGrailQuest_ryu2012_character")) {
+      //if (localStorage.getItem("theGrailQuest_ryu2012_character")) {
         //alert("local storage item exists")
         // next check to see if the variable is null
-        pcLocalStorage = JSON.parse(localStorage.getItem("theGrailQuest_ryu2012_character"))
-        if (isEmpty(pcLocalStorage)) {
-          alert("local storage variable is empty.  Creating a new Character")
+      //  pcLocalStorage = JSON.parse(localStorage.getItem("theGrailQuest_ryu2012_character"))
+      //  if (isEmpty(pcLocalStorage)) {
+          //alert("local storage variable is empty.  Creating a new Character")
+      //    console.log("local storage character variable is empty.  Creating a new Character")
           // create a new local storage object using the default character
-          localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(defaultPlayerCharacter))
+      //    localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(defaultPlayerCharacter))
           
-        } else {
+      //  } else {
           // the local storage variable exists and is not null
           // set it to the playerCharacter object
           // To do: we need to test the format of the object before setting it.
           
           //alert("local storage variable exists and is not null.  Set playerCharacter obj")
-          let objString = JSON.stringify(pcLocalStorage)
-          console.log("obj: " + objString)
-          playerCharacter = pcLocalStorage
-          console.log("playerCharacter object is: " + objString)
+      //    console.log("Local storage variable for the character exists and is not null.  Set the playerCharacter object.")
+      //    let objString = JSON.stringify(pcLocalStorage)
+          //console.log("obj: " + objString)
+      //    playerCharacter = pcLocalStorage
+          //console.log("playerCharacter object is: " + objString)
+      //  }
+      //} else {
+        // playerCharacterStats local variable is null - does not exist
+        // alert("local storage variable does not exist so set the default")
+      //  console.log("local storage variable for character does not exist so set the default")
+        // so create a new local storage variable using the default PC
+        // create a new local storage object using the default character
+      //  localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(defaultPlayerCharacter))
+      //}
+    } else {
+      //alert("This browser does not support Local Storage")
+      console.log("This browser does not support Local Storage")
+      
+    }
+
+    function setupLocalStorage(varName, objType) {
+      // check to see if the variable exists
+      if (localStorage.getItem(varName)) {
+        //alert("local storage item exists")
+        // next check to see if the variable is null
+        pcLocalStorage = JSON.parse(localStorage.getItem(varName))
+        if (isEmpty(pcLocalStorage)) {
+          //alert("local storage variable is empty.  Creating a new obj")
+          console.log(`local storage for ${varName} variable is empty.  Creating a new obj`)
+          // create a new local storage object using the default character
+          if (objType == "character") {
+            localStorage.setItem(varName, JSON.stringify(defaultPlayerCharacter))
+          }
+          if (objType == "retainer") {
+            localStorage.setItem(varName, JSON.stringify(retainers))
+          }
+          if (objType == "equipment") {
+            localStorage.setItem(varName, equipment)
+          }
+        } else {
+          // The local storage variable exists and is not null
+          // Next, set it to the playerCharacter object
+          // To do: we need to test the format of the object before setting it.
+          
+          //alert("local storage variable exists and is not null.  Set the obj")
+          console.log(`Local storage variable for ${varName} exists and is not null.  Set the object.`)
+
+          if (objType == "character") {
+            let objString = JSON.stringify(pcLocalStorage)
+            //console.log("obj: " + objString)
+            playerCharacter = pcLocalStorage
+            //console.log("playerCharacter object is: " + objString)
+          }
+
+          if (objType == "retainer") {
+            let objString = JSON.stringify(pcLocalStorage)
+            //console.log("obj: " + objString)
+            retainers = pcLocalStorage
+            //console.log("playerCharacter object is: " + objString)
+          }
+
         }
       } else {
         // playerCharacterStats local variable is null - does not exist
-        alert("local storage variable does not exist so set the default")
-        // so create a new local storage variable using the default PC
-        // create a new local storage object using the default character
-        localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(defaultPlayerCharacter))
+        // alert("local storage variable does not exist so set the default")
+        console.log(`The local storage variable for ${varName} does not exist so set the default`)
+        if (objType == "character") {
+          // Create a new local storage variable using the default PC
+          localStorage.setItem(varName, JSON.stringify(defaultPlayerCharacter))
+        }
+
+        if (objType == "retainer") {
+          // Create a new local storage variable
+
+          localStorage.setItem(varName, JSON.stringify(retainers))
+        }
+
       }
-    } else {
-      alert("This browser does not support Local Storage")
-      
     }
-    
-   
+
+
     let playerCharacterEquipment = localStorage.getItem("theGrailQuest_ryu2012_equipment")
     if (playerCharacterEquipment !== null && localStorage.playerCharacterEquipment !== '') {
     
@@ -604,7 +680,7 @@
     
     
     
-let retainers = [
+let retainers2 = [
     {
       id: 0,
       name: "Fred",
@@ -820,6 +896,7 @@ let retainerNameFirst_A = [
       
       if (canUseLocalStorage) {
         localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(playerCharacter))
+        localStorage.setItem('theGrailQuest_ryu2012_retainer', JSON.stringify(retainers))
       }
       
       // color code the rebellion level
@@ -1022,6 +1099,7 @@ let retainerNameFirst_A = [
       if (playerCharacter.wasLost) {
         journeyRoll++
         playerCharacter.wasLost = false
+        updateNavbar()
       }
       
       console.log("Journey Roll (after mods): " + journeyRoll)
@@ -1158,6 +1236,7 @@ let retainerNameFirst_A = [
       // clear the story div
       $("#gameTableText").empty()
       playerCharacter.findRetainerModifier = 0
+      updateNavbar()
       
       console.log("roll on the inn table")
       adventureLog.push({ 'turn': playerCharacter.turn, 'roll': 'Player Choice', 'result': 'Stay at the Inn' });
@@ -1241,6 +1320,7 @@ let retainerNameFirst_A = [
             $("#gameTableText").append("<p>Abundant Retainers looking for work.  +1 to the Find Retainer Roll</p>")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Add +1 to the Find Retainer roll.' });
             playerCharacter.findRetainerModifier++
+            updateNavbar()
           } else {
             $("#gameTableText").append("<p>Nothing special happens this time.</p>")
           }
@@ -1252,6 +1332,7 @@ let retainerNameFirst_A = [
             $("#gameTableText").append("<p>Abundant Retainers looking for work.  +1 to the Find Retainer Roll</p>")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Add +1 to the Find Retainer roll.' });
             playerCharacter.findRetainerModifier++
+            updateNavbar()
           }
           $("#gameTableText").append("<br>Free food and lodging!<br>")
           console.log("[7] Free food and lodging!")
@@ -1311,6 +1392,7 @@ let retainerNameFirst_A = [
       $("#gameButtons").html(rowString)
     } else {
       playerCharacter.money -= 10
+      updateNavbar()
       $("#gameTableText").append(`<p>You pay the innkeeper 10 silver pieces for food and lodging for the night. </p>`)
       healUp()
       rollForRumors()
@@ -1414,6 +1496,7 @@ let retainerNameFirst_A = [
     }
     if (total > 3) {
       playerCharacter.rumors++
+      updateNavbar()
       $("#gameTableText").append("You gain 1 rumor!")
     } else {
       $("#gameTableText").append("Sorry pal, no new rumors for you.")
@@ -1568,6 +1651,7 @@ let retainerNameFirst_A = [
         // set wasLost to true which tells the journey table to add +1 to the journey roll
         $("#gameTableText").append("<br>Click 'Journey On' to continue to seek the Grail.")
         playerCharacter.wasLost = true
+        updateNavbar()
         rowString += `
         <div class="d-flex mt-2">
         <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -1791,6 +1875,7 @@ let retainerNameFirst_A = [
     
     function enableEncounters () {
       playerCharacter.rumors = playerCharacter.rumors -3
+      updateNavbar()
       $("#topDivRumors").html(playerCharacter.rumors)
       
       
@@ -2279,15 +2364,15 @@ let retainerNameFirst_A = [
         let roll2 = rollDie(6)
 
         if (roll1 <= playerCharacter.piety) {
-          $("#gameTableText").append(`<p>${roll1} <= ${playerCharacter.piety} = passed!</p>`)
+          $("#gameTableText").append(`<br>First roll: ${roll1} Needed to roll ${playerCharacter.piety} or less ---> passed!<br>`)
         } else {
-          $("#gameTableText").append(`<p>${roll1} <= ${playerCharacter.piety} = failed!</p>`)
+          $("#gameTableText").append(`<br>First roll: ${roll1} Needed to roll ${playerCharacter.piety} or less ---> failed!<br>`)
         }
 
         if (roll2 <= playerCharacter.piety) {
-          $("#gameTableText").append(`<p>${roll2} <= ${playerCharacter.piety} = passed!</p>`)
+          $("#gameTableText").append(`<br>Second roll: ${roll2} needed to roll ${playerCharacter.piety} or less ---> passed!<br><br>`)
         } else {
-          $("#gameTableText").append(`<p>${roll2} <= ${playerCharacter.piety} = failed!</p>`)
+          $("#gameTableText").append(`<br>Second roll: ${roll2} needed to roll ${playerCharacter.piety} or less ---> failed!<br><br>`)
         }
 
         if (roll1 <= playerCharacter.piety && roll2 <= playerCharacter.piety) {
@@ -2574,7 +2659,7 @@ let retainerNameFirst_A = [
       
       $("#gameTableText").html("You can either bypass this village or help.  If you donate at least 50 silver in items or coin, you can roll for a piety point.<br><br>")
       
-      $("#gameTableText").("Remember, giving alms is a corporal work of mercy.<br>")
+      $("#gameTableText").append("Remember, giving alms is a corporal work of mercy.<br>")
 
       let inputBox = `<input type="text" id="donationInputBox" value="0">`
       $("#gameTableText").append(inputBox)
@@ -2612,6 +2697,7 @@ let retainerNameFirst_A = [
           $("#gameTableText").append("<br>Thank you for your donation!")
             $("#gameTableText").append("<br>You gained a piety point!")
             playerCharacter.piety++
+            updateNavbar()
             $("#topDivPiety").html(playerCharacter.piety)
           }
 
@@ -2909,15 +2995,13 @@ let retainerNameFirst_A = [
       modifier = playerCharacter.pilgrimageModifier
       console.log("Pilgrimage mod: " + modifier)
       playerCharacter.onPilgrimage = true
+      updateNavbar()
       roll == roll + modifier
       switch (roll) {
         case 1: 
           playerCharacter.pilgrimageModifier = (merchant > 0) ? 2 : 1;
-          /*if (merchant > 0) {
-            playerCharacter.pilgrimageModifier = 2
-          } else {
-            playerCharacter.pilgrimageModifier = 1
-          }*/
+          updateNavbar()
+
           console.log("Pilgrimage mod is now: " + playerCharacter.pilgrimageModifier)
           $("#gameTableText").html("<p>This is taking too long!  Time is running out and traitors have attacked!</p>")
           rollTraitorsTable()
@@ -2927,9 +3011,11 @@ let retainerNameFirst_A = [
           if (woodsman > 0) {
             $("#gameTableText").append("<br>Good thing you have a woodsman to help you get through it!")
             playerCharacter.pilgrimageModifier = 0
+            updateNavbar()
           } else {
             $("#gameTableText").append("<br>Too bad you didn't have a woodsman.")
             playerCharacter.pilgrimageModifier = -1
+            updateNavbar()
           }
           $("#gameTableText").append("<p><br>Your pilgrimage continues...</p>")
           rowString = `
@@ -2946,9 +3032,11 @@ let retainerNameFirst_A = [
           if (mercenary > 0) {
             $("#gameTableText").append("<br>Which are dispatched in no time due to the help of your man-at-arms!")
             playerCharacter.pilgrimageModifier = 0
+            updateNavbar()
           } else {
             $("#gameTableText").append("<br>Too bad you didn't have any men-at-arms.")
             playerCharacter.pilgrimageModifier = -1
+            updateNavbar()
           }
           $("#gameTableText").append("<p><br>Your pilgrimage continues...</p>")
           rowString = `
@@ -2965,9 +3053,11 @@ let retainerNameFirst_A = [
           if (rogue > 0) {
             $("#gameTableText").append("<br>Thankfully, your rogue friend is very entertaining!")
             playerCharacter.pilgrimageModifier = 0
+            updateNavbar()
           } else {
             $("#gameTableText").append("<br>Too bad you didn't have any rogues in your group of retainers.")
             playerCharacter.pilgrimageModifier = -1
+            updateNavbar()
           }
           $("#gameTableText").append("<p><br>Your pilgrimage continues...</p>")
           rowString = `
@@ -3029,6 +3119,7 @@ let retainerNameFirst_A = [
           pilgrimageTurns = 0
           
           playerCharacter.onPilgrimage = false
+          updateNavbar()
 
 
           if (rebellionLevelIncreased) {
@@ -3036,7 +3127,8 @@ let retainerNameFirst_A = [
             if (rollPiety > playerCharacter.piety) {
               $("#gameTableText").append("<p>You gained a piety point!<\p>")
               playerCharacter.piety++
-              $("#topDivPiety").html(playerCharacter.piety)
+              updateNavbar()
+              //$("#topDivPiety").html(playerCharacter.piety)
             }
           }
           // set this switch back to false
@@ -3346,8 +3438,13 @@ let retainerNameFirst_A = [
     $("#pcMoney").html(playerCharacter.money)
     // after hire, the retainer now costs 5 to keep
     obj.cost = 5
-    updateNavbar()
+
+    // push new retainer to retainers obj
     retainers.push(obj)
+
+    // update the nav bar which also updates the local storage objects
+    updateNavbar()
+    
   }
   
   $(document).on('click', '.re-employBtn', function () {
@@ -3767,12 +3864,19 @@ function createNPCSidebar() {
             // npc is dead - remove him from the list of available evil captains
             aKnight.isAlive = false
             playerCharacter.captainsSlain++
+            updateNavbar()
 
             $("#gameTableText").append("<p>You have slain " + knightName + "!</p>")
             // get treasure
             knightTreasure()
             
             // gain exp
+            let expRoll = rollDie(6)
+            if (expRoll > playerCharacter.level) {
+              playerCharacter.level++
+              updateNavbar()
+              $("gameTableText").append(`<br>${playerCharacter.name} has gained a level!`)
+            }
             
             rowString = `
               <div class="d-flex mt-2">
@@ -4150,6 +4254,7 @@ function createNPCSidebar() {
         if (i == 0) {
           playerCharacter.cur_hp = pcGroup[i].cur_hp
           playerCharacter.isAlive = pcGroup[i].isAlive
+          updateNavbar()
         }
       }
       $("#gameTableText").append(myString + "<br>")
@@ -4670,7 +4775,8 @@ function createNPCSidebar() {
           } else {
             console.log("PC was hit for " + dmg)
             playerCharacter.cur_hp = playerCharacter.cur_hp - dmg
-            
+            updateNavbar()
+
             rowString = `<tr><td class="border-0 defaultText text-left">* ${minions.name} #${counter} hits ${playerCharacter.name} for <span class="rounded" style="padding: 2px; background-color: red">${dmg}</span> damage!</td></tr>`
             $("#combatTableBody").append(rowString)
             
@@ -4699,6 +4805,7 @@ function createNPCSidebar() {
                 } else {
                   // The evil minions kill the helpless PC.  Game over man...
                   playerCharacter.alive = false
+                  updateNavbar()
                   $("#npcParagraph").empty()
                   $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God speed ' + playerCharacter.name + ' on his way to his eternal reward!</p>')
                   rowString = `
