@@ -685,7 +685,7 @@ let retainers2 = [
       id: 0,
       name: "Fred",
       level: 1,
-      profession: "Mercenary",
+      profession: "Soldier",
       employed: true,
       cur_hp: 20,
       max_hp: 20,
@@ -811,7 +811,7 @@ let retainerNameFirst_A = [
     
     let merchant = 0
     let woodsman = 0
-    let mercenary = 0
+    let soldier = 0
     let rogue = 0
     
     // get some totals for retainers
@@ -819,7 +819,7 @@ let retainerNameFirst_A = [
     $.each(retainers, function(key, value) {
       let retainer_name = value.name
       let retainer_profession = value.profession
-      if (retainer_profession == "Mercenary") mercenary++
+      if (retainer_profession == "Soldier") soldier++
       if (retainer_profession == "Rogue") rogue++
       if (retainer_profession == "Woodsman") woodsman++
       if (retainer_profession == "Merchant") merchant++
@@ -1013,6 +1013,7 @@ let retainerNameFirst_A = [
     // Start New Game: Create character then roll on the Journey Table
     function startNewGame() {
       rebellionLevelIncreased = false
+      retainers = []
 
       $('#npcCollapse').toggle(false)
       $("#gameTableTitle").empty()
@@ -1615,7 +1616,7 @@ let retainerNameFirst_A = [
       case 1:
       case 2:
       case 3:
-        return "Mercenary"
+        return "Soldier"
       break;
       case 4:
         return "Woodsman"
@@ -3029,8 +3030,8 @@ let retainerNameFirst_A = [
         break
         case 3:
           $("#gameTableText").html("You enter lawless area with many bandits.")
-          if (mercenary > 0) {
-            $("#gameTableText").append("<br>Which are dispatched in no time due to the help of your man-at-arms!")
+          if (soldier > 0) {
+            $("#gameTableText").append("<br>Which are dispatched in no time due to the help of your hired soldier(s)!")
             playerCharacter.pilgrimageModifier = 0
             updateNavbar()
           } else {
@@ -3359,13 +3360,13 @@ let retainerNameFirst_A = [
         var status = retainer_status ? retainer_status = "Retained" : retainer_status = "Not Retained"
         let retainerRow = `
           <tr>
-          <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_name}</td>
-          <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_profession}</td>
-          <td id="${retainer_name}_status"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_status}</td>
-          <td id="${retainer_name}_cost"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_cost}</td>
+          <td class="border-0 align-center text-left text-dark p-2 px-3">${retainer_name}</td>
+          <td class="border-0 align-center text-left text-dark p-2 px-3">${retainer_profession}</td>
+          <td id="${retainer_name}_status"class="border-0 align-center text-left text-dark p-2 px-3">${retainer_status}</td>
+          <td id="${retainer_name}_cost"class="border-0 align-center text-left text-dark p-2 px-3">${retainer_cost}</td>
           <td class="border-0 align-center text-left text-dark p-2 px-3 justify"> 
             <div class="d-flex justify-content-center px-2">
-            <button data-id="${retainer_name}" type="button" class="re-employBtn btn btn-dark rounded-pill mx-2 btn-sm">
+            <button onclick="reEmploy(this)" data-id="${retainer_name}" type="button" class="re-employBtn btn btn-dark rounded-pill mx-2 btn-sm">
               <i class="mt-2"></i>
               Re-Employ
             </button>
@@ -3396,10 +3397,10 @@ let retainerNameFirst_A = [
           var status = retainer_status ? retainer_status = "Retained" : retainer_status = "Not Retained"
         let retainerRow = `
           <tr>
-          <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_name}</td>
-          <td class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_profession}</td>
-          <td id="${retainer_name}_status"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_status}</td>
-          <td id="${retainer_name}_cost"class="border-0 align-center text-left text-dark p-2 px-3"> ${retainer_cost}</td>
+          <td class="border-0 align-center text-left text-dark p-2 px-3">${retainer_name}</td>
+          <td class="border-0 align-center text-left text-dark p-2 px-3">${retainer_profession}</td>
+          <td id="${retainer_name}_status" class="border-0 align-center text-left text-dark p-2 px-3">${retainer_status}</td>
+          <td id="${retainer_name}_cost" class="border-0 align-center text-left text-dark p-2 px-3">${retainer_cost}</td>
           <td class="border-0 align-center text-left text-dark p-2 px-3 justify"> 
             <div class="d-flex justify-content-center px-2">
             <button onclick="hireNew(this)" data-id="${retainer_name}" type="button" class="re-employBtn btn btn-dark rounded-pill mx-2 btn-sm">
@@ -3421,53 +3422,81 @@ let retainerNameFirst_A = [
     console.log("new retainer id: " + id)
     //alert("You clicked: " + id)
     let statusId = "#"+ id + "_status"
-    $(statusId).text("Retained")
-    // get a handle on the correct object
-    var obj = $.grep(availableRetainers, function(obj){return obj.name === id;})[0];
-    console.log("obj name: " + obj.name)
-    console.log("obj is: " + obj)
-    console.log("obj stringify is: " + JSON.stringify(obj))
-    // set the object value to: true
-    obj.employed = true
-    //alert("the value of employed: " + obj.employed)
-    // remove 10 silver from the character's money total
-    let cost = obj.cost
-    console.log("new retainer costs: " + obj.cost)
-    playerCharacter.money -= obj.cost
-    console.log("pc money is now: " + playerCharacter.money)
-    $("#pcMoney").html(playerCharacter.money)
-    // after hire, the retainer now costs 5 to keep
-    obj.cost = 5
+    console.log("new hire status id: '" + statusId + "'")
 
-    // push new retainer to retainers obj
-    retainers.push(obj)
+    let statusText = $(statusId).text()
 
-    // update the nav bar which also updates the local storage objects
-    updateNavbar()
-    
+    console.log("new hire status text: '" + statusText + "'")
+
+    // if "not retained" then complete transaction, else do nothing
+    //  To do: remove the hire button entirely if already hired
+
+    if ( statusText == "Not Retained"   ) {
+      console.log("not retained, so retain the guy")
+      $(statusId).text("Retained")
+      // get a handle on the correct object
+      var obj = $.grep(availableRetainers, function(obj){return obj.name === id;})[0];
+
+      console.log("obj name: " + obj.name)
+      //console.log("obj is: " + obj)
+      console.log("obj stringify is: " + JSON.stringify(obj))
+
+      // set the object value to: true
+      obj.employed = true
+
+      //alert("the value of employed: " + obj.employed)
+      // remove 10 silver from the character's money total
+      let cost = obj.cost
+
+      console.log("new retainer costs: " + obj.cost)
+
+      playerCharacter.money -= obj.cost
+      console.log("pc money is now: " + playerCharacter.money)
+
+      $("#pcMoney").html(playerCharacter.money)
+      // after hire, the retainer now costs 5 to keep
+      obj.cost = 5
+
+      // push new retainer to retainers obj
+      retainers.push(obj)
+
+      // update the nav bar which also updates the local storage objects
+      updateNavbar()
+    }
   }
   
-  $(document).on('click', '.re-employBtn', function () {
-    var id = $(this).attr('data-id');
+  function reEmploy(button) { 
+  //$(document).on('click', '.re-employBtn', function () {
+
+    //var id = $(this).attr('data-id');
+    var id = $(button).attr('data-id');
     console.log("id: " + id)
     //alert("You clicked: " + id)
     let statusId = "#"+ id + "_status"
-    $(statusId).text("Retained")
-    // get a handle on the correct object
-    var obj = $.grep(retainers, function(obj){return obj.name === id;})[0];
-    console.log("obj name: " + obj.name)
-console.log("obj is: " + obj)
-console.log("obj stringify is: " + JSON.stringify(obj))
-    // set the object value to: true
-    obj.employed = true
-    //alert("the value of employed: " + obj.employed)
-    // remove 5 silver from the character's money total
-    let cost = obj.cost
-    console.log("npc cost: " + cost)
-    playerCharacter.money -= obj.cost
-    $("#pcMoney").html(playerCharacter.money)
-    updateNavbar()
-  })
+    console.log("status id: " + statusId)
+
+    let statusText = $(statusId).text()
+    console.log("status text: '" + statusText + "'")
+
+    if ( statusText == "Not Retained" ) {
+      console.log("not retained, so retain the guy")
+      $(statusId).text("Retained")
+      // get a handle on the correct object
+      var obj = $.grep(retainers, function(obj){return obj.name === id;})[0];
+      console.log("obj name: " + obj.name)
+      //console.log("obj is: " + obj)
+      console.log("obj stringify is: " + JSON.stringify(obj))
+      // set the object value to: true
+      obj.employed = true
+      //alert("the value of employed: " + obj.employed)
+      // remove 5 silver from the character's money total
+      let cost = obj.cost
+      console.log("npc cost: " + cost)
+      playerCharacter.money -= obj.cost
+      $("#pcMoney").html(playerCharacter.money)
+      updateNavbar()
+    }
+  }
   
   $(document).on('click', '.fireBtn', function () {
     var id = $(this).attr('data-id');
