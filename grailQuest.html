@@ -899,6 +899,27 @@ let retainerNameFirst_A = [
         localStorage.setItem('theGrailQuest_ryu2012_retainer', JSON.stringify(retainers))
       }
       
+
+      // update totals of retainers
+      merchant = 0
+      woodsman = 0
+      soldier = 0
+      rogue = 0
+    
+      // get some totals for retainers
+    
+      $.each(retainers, function(key, value) {
+        let retainer_name = value.name
+        let retainer_profession = value.profession
+        if (retainer_profession == "Soldier") soldier++
+        if (retainer_profession == "Rogue") rogue++
+        if (retainer_profession == "Woodsman") woodsman++
+        if (retainer_profession == "Merchant") merchant++
+      
+      })
+
+
+
       // color code the rebellion level
       $("#topDivRebellionLevel").removeClass(["bg-success", "bg-info", "bgOrange", "bg-warning", "bg-danger", "bg-secondary", "bg-dark"]);
       switch(playerCharacter.rebellionLevel) {
@@ -1745,7 +1766,7 @@ let retainerNameFirst_A = [
       let secondRoll = rollDie(6)
       let totalRoll = firstRoll + secondRoll
       
-      //totalRoll = 6
+      totalRoll = 9
       
       altEncounter = false
       //alert("Roll: (" + firstRoll + " + " + secondRoll + ") = " + totalRoll)
@@ -3221,24 +3242,261 @@ let retainerNameFirst_A = [
     // Heroic Quest Table
     // -----------------------------------------------------
     
+    let sideQuests = 
+      [
+        "Taulurd the Giant",
+        "A Dragon",
+        "The Green Knight",
+        "The Questing Beast",
+        "Three Blind Old Hags",
+        "Laamorz the Wizard"
+      ]
+
+    let taulurdObj = {
+      name: "Taulurd the Giant",
+      level: 6,
+      cur_hp: 45,
+      max_hp: 45,
+      armor: 1,
+      attack: 7,
+      att_mod: 0,
+      dmg_mod: 5,
+      wpn1: "Large Iron Club",
+      wpn2: "",
+      aromr: "Animal Skins",
+      isAlive: true,
+      treasureRolls: 4,
+      morale: -1
+    }
+
+    let dragonObj = {
+      name: "Dragon",
+      level: 6,
+      cur_hp: 40,
+      max_hp: 40,
+      armor: 3,
+      attack: 7,
+      att_mod: 0,
+      dmg_mod: 3,
+      wpn1: "Teeth and Claws",
+      wpn2: "",
+      aromr: "Dragon Scale",
+      isAlive: true,
+      treasureRolls: 4,
+      morale: 0
+    }
+
+    let greenKnightObj = {
+      name: "The Green Knight",
+      level: 7,
+      cur_hp: 40,
+      max_hp: 40,
+      armor: 4,
+      attack: 7,
+      att_mod: 0,
+      dmg_mod: 3,
+      wpn1: "Teeth and Claws",
+      wpn2: "",
+      aromr: "Double Chainmail",
+      isAlive: true,
+      treasureRolls: 1,
+      morale: -2
+    }
+
+    let questingBeastObj = {
+      name: "The Questing Beast",
+      level: 6,
+      cur_hp: 30,
+      max_hp: 30,
+      armor: 1,
+      attack: 7,
+      att_mod: 0,
+      dmg_mod: 1,
+      wpn1: "Teeth and Claws",
+      wpn2: "",
+      aromr: "Tough Hide",
+      isAlive: true,
+      treasureRolls: 2,
+      morale: -2
+    }
+
+    let laamorzObj = {
+      name: "Laamorz the Wizard",
+      level: 5,
+      cur_hp: 30,
+      max_hp: 30,
+      armor: 0,
+      attack: 7,
+      att_mod: 0,
+      dmg_mod: 1,
+      wpn1: "Staff or The Dark Arts",
+      wpn2: "",
+      aromr: "None",
+      isAlive: true,
+      treasureRolls: 3,
+      morale: -2
+    }
+
     function rollHeroicQuestTable() {
-            
-      
-      $("#gameTableText").html("<p>Heroic stuff happens here</p>")
-      $("#gameButtons").empty()
-      // click to go to the Journey table
-      let gotoJourneyButton = `
-        <div class="mt-2">
-        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
+
+      // As sidequest monsters are defeated, they are removed from the table 
+      // therefore, use the length of the array to generate a random number.
+
+      let dieRoll = rollDie(sideQuests.length)
+      console.log("side quest rolled: [" + dieRoll + "] - " + sideQuests[dieRoll -1])
+
+// Giant
+      if (sideQuests[dieRoll -1] == "Taulurd the Giant") {
+        $("#gameTableText").html(sideQuests[dieRoll -1] + " is ravaging the lands. In other words, he's killing things and taking their stuff.  We can't have that, now can we?<br><br>Do you dare to put a stop to this menace... and take his stuff?")
+
+          let btnString = `
+            <div class="d-flex mt-2">
+            <button onclick="combat()" data-id="fightSideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Fight The Giant!
             </button>
-      `
-      $("#gameButtons").html(gotoJourneyButton)
+            </div>`
+          $("#gameButtons").html(btnString)
+
+      }
+
+// dragon
+      if (sideQuests[dieRoll -1] == "A Dragon") {
+        $("#gameTableText").html(sideQuests[dieRoll -1] + " is buring villages and eating fair maidens.  There is always a shortage of fair maidens and so this dragon is making things even worse.  <br><br>Will you follow in St George's footsteps and put a stop to this or will you become food for worms?")
+
+          let btnString = `
+            <div class="d-flex mt-2">
+            <button onclick="combat()" data-id="fightSideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Fight The Dragon!
+            </button>
+            </div>`
+          $("#gameButtons").html(btnString)
+
+
+      }
+
+// The Green Knight
+      if (sideQuests[dieRoll -1] == "The Green Knight") {
+        $("#gameTableText").html(`${playerCharacter.name} has encountered The Green Knight!  He offers you a magic Belt of Protection but only if you can pass a test of piety AND beat him in combat.`)
+
+        // piety test
+        let pietyRoll = rollDie(6)
+        if (pietyRoll <= playerCharacter.piety) {
+          $("#gameTableText").append("<br><br>You have passed the test, now it is time to see if you can defeat the Green Knight in combat!")
+
+          let btnString = `
+            <div class="d-flex mt-2">
+            <button onclick="combat()" data-id="fightsideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Fight The Green Knight!
+            </button>
+            </div>`
+          $("#gameButtons").html(btnString) 
+        } else {
+          $("#gameTableText").html("The Green Knight finds your lack of faith disturbing.  Before he leaves you, he hands you a bible, a Rosary and tells you to go to church you filthy heathen.")
+
+          // click to go to the Journey table
+          let gotoJourneyButton = `
+            <div class="mt-2">
+            <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Continue your Journey
+            </button>
+            </div>`
+          $("#gameButtons").html(gotoJourneyButton)
+        }
+      }
+
+// The Questing Beast
+      if (sideQuests[dieRoll -1] == "The Questing Beast") {
+        $("#gameTableText").html("The Questing Beast is heard crashing through the trees nearby.")
+
+        // roll to see if it eludes the player
+        let beastRoll = rollDie(6)
+        if (beastRoll < 5) {
+          // beast is not found
+          // roll again if the player has a hunter/woodsman in the group
+          if (woodsman > 0) {
+            beastRoll = rollDie(6)
+            if (beastRoll < 5) {
+              // not found so journey on
+
+              $("#gameTableText").append("<br>Unfortunately, the Questing Beast got away.")
+
+              let gotoJourneyButton = `
+                <div class="mt-2">
+                <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                  <i class="mt-2"></i>
+                  Continue your Journey
+                </button>
+                </div>`
+              $("#gameButtons").html(gotoJourneyButton)
+            } else {
+              $("#gameTableText").append("<br>With the help of your woodsman, you have cornered the Questing Beast!")
+              let btnString = `
+                <div class="d-flex mt-2">
+                <button onclick="combat()" data-id="fightsideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                  <i class="mt-2"></i>
+                  Fight The Questing Beast!
+              </button>
+              </div>`
+              $("#gameButtons").html(btnString) 
+            }
+          } else {
+            // not found so journey on
+            $("#gameTableText").append("<br>Unfortunately, the Questing Beast got away.")
+            let gotoJourneyButton = `
+              <div class="mt-2">
+              <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Continue your Journey
+              </button>
+              </div>`
+            $("#gameButtons").html(gotoJourneyButton)
+          }
+        } else {
+          // found it!
+          $("#gameTableText").append("<br>You have cornered the Questing Beast!")
+          let btnString = `
+            <div class="d-flex mt-2">
+            <button onclick="combat()" data-id="fightsideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Fight The Questing Beast!
+            </button>
+            </div>`
+          $("#gameButtons").html(btnString) 
+        }
+      }
+
+      if (sideQuests[dieRoll -1] == "Three Blind Old Hags") {
+        // click to go to the Journey table
+        let gotoJourneyButton = `
+          <div class="mt-2">
+          <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Continue your Journey
+          </button>
+          </div>`
+        $("#gameButtons").html(gotoJourneyButton)
+      }
+
+
+      if (sideQuests[dieRoll -1] == "Laamorz the Wizard") {
+        // click to go to the Journey table
+        let gotoJourneyButton = `
+          <div class="mt-2">
+          <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Continue your Journey
+          </button>
+          </div>`
+        $("#gameButtons").html(gotoJourneyButton)
+      }
     }
     
     // -----------------------------------------------------
-    // Heroic Quest Table
+    // End Heroic Quest Table
     // -----------------------------------------------------
     
     
