@@ -3386,6 +3386,7 @@ let retainerNameFirst_A = [
         // piety test
         let pietyRoll = rollDie(6)
         if (pietyRoll <= playerCharacter.piety) {
+          $("#gameTableText").append("<br>Piety Roll: " + pietyRoll + " Needed: " + playerCharacter.piety + " or less --> Passed!<br>")
           $("#gameTableText").append("<br><br>You have passed the test, now it is time to see if you can defeat the Green Knight in combat!")
 
           let btnString = `
@@ -3397,6 +3398,7 @@ let retainerNameFirst_A = [
             </div>`
           $("#gameButtons").html(btnString) 
         } else {
+          $("#gameTableText").append("<br>Piety Roll: " + pietyRoll + " Needed: " + playerCharacter.piety + " or less --> Failed!<br>")
           $("#gameTableText").append("<br>The Green Knight finds your lack of faith disturbing.  Before he leaves you, he hands you a bible, a Rosary and tells you to go to church you filthy heathen.")
 
           // click to go to the Journey table
@@ -3483,92 +3485,21 @@ let retainerNameFirst_A = [
         }
         money = money * 2
 
-        $("#gameTableText").html(`The hags demand that you pay them ${money} silver!`)
+        $("#gameTableText").html(`You encounter three blind old hags who demand that you pay them ${money} silver!`)
 
-        let answer = window.confirm(`The hags demand that you pay them ${money} silver! Do you pay?`)
-
-        if (answer) {
-          $("#gameTableText").append(`The hags laugh at you as they take your money and disapear into the night!`)
-          // click to go to the Journey table
-          let gotoJourneyButton = `
-            <div class="mt-2">
-            <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        let textString = `
+          <div class="mt-2 justify-content-around">
+            <button onclick="payHags(money)" data-id="payHagsBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
               <i class="mt-2"></i>
-              Continue your Journey
+              Pay Hags
+            </button>
+            <button onclick="dontPayHags()" data-id="dontPayHagsBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Don't Pay Hags
             </button>
             </div>`
-          $("#gameButtons").html(gotoJourneyButton)
-        } else {
-          $("#gameTableText").append(`<br>A strange battle ensues with the hags mocking and belittling you and throwing things!  They are so annoying that you need to make three saves!`)
-          let saves = 0
-          for (let i=0; i<3; i++) {
-            let roll = rollDie(6)
-            let saved = false
-            saved = (roll >= 5) ? true : false
-            $("#gameTableText").append(`<br>Roll ${i} --> ${roll} Need: 5 --> ${saved}`)
-            if (saved) saves++
-          }
-          if (saved == 0) {
-            $("#gameTableText").append("You fly into a mad rage killing and destroying everything in sight... including the Eye of True Seeing!  To say the least, this is a very dishonorable act.")
 
-            playerCharacter.dishonor = true
-            updateNavbar()
-
-            // click to go to the Journey table
-            let gotoJourneyButton = `
-              <div class="mt-2">
-              <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-                <i class="mt-2"></i>
-                Continue your Journey
-              </button>
-              </div>`
-            $("#gameButtons").html(gotoJourneyButton)
-
-
-          } else {
-
-            $("#gameTableText").append(`<br>In the chaos ${playerCharacter.name} manages to refrain from hacking the hags to bits, but also snatched the hag's Eye of True Seeing!`)
-            answer = window.confirm("Do you want to trade the Eye of True Seeing back to the hags in exchange for rumors?")
-            if (answer) {
-              let rumors = rollDie(6)
-              rumors ++
-              $("#gameTableText").append("You trade the Eye of True Seeing for " + rumors)
-              playerCharacter.rumors = playerCharacter.rumors + rumors
-              updateNavbar()
-            } else {
-              // add the eye to the player's inventory
-              $("#gameTableText").append("The hags hurl insults at you as you leave.")
-              let eyeOfTrueSeeing = {
-                id: 5,
-                name: "The Eye of True Seeing",
-                type: "Magic Item",
-                ranged: false,
-                readied: false,
-                cost: 0,
-                damage_bonus: 0
-              }
-              inventory.push(eyeOfTrueSeeing)
-
-            }
-
-            // click to go to the Journey table
-            let gotoJourneyButton = `
-              <div class="mt-2">
-              <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-                <i class="mt-2"></i>
-                Continue your Journey
-              </button>
-              </div>`
-            $("#gameButtons").html(gotoJourneyButton)
-
-
-
-          }
-        }
-
-        //$("#gameTableText").html("The hags attack you by mocking you!")
-
-
+         $("#gameButtons").html(textString)
       }
 
 
@@ -3589,6 +3520,134 @@ let retainerNameFirst_A = [
       }
     }
     
+
+    function payHags(money) {
+
+      if (money < playerCharacter.money) {
+        dontPayHags()
+      } else {
+        playerCharacter.money -= money
+        updateNavbar()
+
+        $("#gameTableText").append(`The hags laugh at you as they take your money and disapear into the night!`)
+
+        // click to go to the Journey table
+        let gotoJourneyButton = `
+          <div class="mt-2">
+          <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Continue your Journey
+          </button>
+          </div>`
+        $("#gameButtons").html(gotoJourneyButton)
+      }
+    }
+
+
+    function dontPayHags() {
+      $("#gameTableText").append(`<br>At your refusal to pay their extortion fee, a strange battle ensues with the hags mocking, belittling and throwing things!  They are so annoying that you need to make three saves!`)
+      $("#gameTableText").append("<br>(You only need to save one of the three rolls in order to succeed.)")
+      let saves = 0
+      let saved = ""
+      for (let i=0; i<3; i++) {
+        let roll = rollDie(6)
+        saved = (roll >= 5) ? "Passed" : "Failed"
+        $("#gameTableText").append(`<br>Roll ${i+1} --> ${roll} Need: 5 --> ${saved}!`)
+        if (saved == "Passed") saves++
+      }
+      if (saves == 0) {
+        $("#gameTableText").append("You fly into a mad rage killing and destroying everything in sight... including the Eye of True Seeing!  To say the least, this is a very dishonorable act.")
+
+        playerCharacter.dishonor = true
+        updateNavbar()
+
+        // click to go to the Journey table
+        let gotoJourneyButton = `
+          <div class="mt-2">
+          <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Continue your Journey
+          </button>
+          </div>`
+        $("#gameButtons").html(gotoJourneyButton)
+
+
+      } else {
+        $("#gameTableText").append(`<br>In the chaos ${playerCharacter.name} manages to refrain from hacking the hags to bits, but also snatched the hag's Eye of True Seeing!`)
+
+        $("#gameTableText").append("<br><br>Do you want to trade the Eye of True Seeing back to the hags in exchange for rumors?")
+
+
+        let textString = `
+          <div class="mt-2 justify-content-around">
+            <button onclick="tradeEyeForRumors()" data-id="tradeEyeForRumorsBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Trade the Eye
+            </button>
+            <button onclick="dontTradeEye()" data-id="dontTradeEyeBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Don't Trade the Eye
+            </button>
+            </div>`
+
+         $("#gameButtons").html(textString)
+
+      }
+
+        // remove them from the sideQuest array
+        sideQuests = $.grep(sideQuests, function(e){ 
+          return e.name != "Three Blind Old Hags"; 
+        });
+
+    }
+
+
+    function tradeEyeForRumors() {
+      let rumors = rollDie(6)
+      rumors ++
+      $("#gameTableText").append("You trade the Eye of True Seeing for " + rumors)
+      playerCharacter.rumors = playerCharacter.rumors + rumors
+      updateNavbar()
+
+      // click to go to the Journey table
+      let gotoJourneyButton = `
+        <div class="mt-2">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Continue your Journey
+        </button>
+        </div>`
+      $("#gameButtons").html(gotoJourneyButton)
+
+    }
+
+    function dontTradeEye() {
+      // add the eye to the player's inventory
+      $("#gameTableText").append("<br><br>The hags hurl insults at you as you leave.")
+      let eyeOfTrueSeeing = {
+        id: 5,
+        name: "The Eye of True Seeing",
+        type: "Magic Item",
+        ranged: false,
+        readied: false,
+        cost: 0,
+        damage_bonus: 0
+      }
+      inventory.push(eyeOfTrueSeeing)
+
+      // click to go to the Journey table
+      let gotoJourneyButton = `
+        <div class="mt-2">
+        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+          <i class="mt-2"></i>
+          Continue your Journey
+        </button>
+        </div>`
+      $("#gameButtons").html(gotoJourneyButton)
+
+    }
+
+
     // -----------------------------------------------------
     // End Heroic Quest Table
     // -----------------------------------------------------
