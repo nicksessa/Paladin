@@ -1195,7 +1195,7 @@ let retainerNameFirst_A = [
             <i class="mt-2"></i>
             Go to Inn
         </button>
-        <button onclick="startEncounter()" data-id="startEncounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollEncounterTable()" data-id="encounterBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
             <i class="mt-2"></i>
             Go To Encounter!
         </button>
@@ -2661,11 +2661,11 @@ let retainerNameFirst_A = [
       
       let rowString = `
         <div class="d-flex mt-2 justify-content-around">
-        <button onclick="rollHeroicQuestTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollHeroicQuestTable()" data-id="rollHeroicBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
             <i class="mt-2"></i>
             Heroic Quest!
         </button>
-        <button onclick="rollPilgrimageTable()" data-id="rollInnBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        <button onclick="rollPilgrimageTable()" data-id="rollPilgrimageBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
             <i class="mt-2"></i>
             Go to a Shrine!
         </button>
@@ -3347,6 +3347,7 @@ let retainerNameFirst_A = [
 
 // Giant
       if (sideQuests[dieRoll -1] == "Taulurd the Giant") {
+        $("#gameTableTitle").append(" - Taulurd the Giant")
         $("#gameTableText").html(sideQuests[dieRoll -1] + " is ravaging the lands. In other words, he's killing things and taking their stuff.  We can't have that, now can we?<br><br>Do you dare to put a stop to this menace... and take his stuff?")
 
           let btnString = `
@@ -3362,7 +3363,8 @@ let retainerNameFirst_A = [
 
 // dragon
       if (sideQuests[dieRoll -1] == "A Dragon") {
-        $("#gameTableText").html(sideQuests[dieRoll -1] + " is buring villages and eating fair maidens.  There is always a shortage of fair maidens and so this dragon is making things even worse.  <br><br>Will you follow in St George's footsteps and put a stop to this or will you become food for worms?")
+        $("#gameTableTitle").append(" - A Dragon")
+        $("#gameTableText").html("Frantic villagers come to you begging you to save them from a nasty dragon who has been buring homes and eating fair maidens.  <br><br>Will you follow in St George's footsteps and put a stop to this or will you become food for worms?")
 
           let btnString = `
             <div class="d-flex mt-2">
@@ -3378,7 +3380,8 @@ let retainerNameFirst_A = [
 
 // The Green Knight
       if (sideQuests[dieRoll -1] == "The Green Knight") {
-        $("#gameTableText").html(`${playerCharacter.name} has encountered The Green Knight!  He offers you a magic Belt of Protection but only if you can pass a test of piety AND beat him in combat.`)
+        $("#gameTableTitle").append(" - The Green Knight")
+        $("#gameTableText").html(`${playerCharacter.name} has encountered The Green Knight!  He offers you a magic Belt of Protection but only if you can pass a test of piety AND beat him in combat.<br>`)
 
         // piety test
         let pietyRoll = rollDie(6)
@@ -3394,7 +3397,7 @@ let retainerNameFirst_A = [
             </div>`
           $("#gameButtons").html(btnString) 
         } else {
-          $("#gameTableText").html("The Green Knight finds your lack of faith disturbing.  Before he leaves you, he hands you a bible, a Rosary and tells you to go to church you filthy heathen.")
+          $("#gameTableText").append("<br>The Green Knight finds your lack of faith disturbing.  Before he leaves you, he hands you a bible, a Rosary and tells you to go to church you filthy heathen.")
 
           // click to go to the Journey table
           let gotoJourneyButton = `
@@ -3410,6 +3413,7 @@ let retainerNameFirst_A = [
 
 // The Questing Beast
       if (sideQuests[dieRoll -1] == "The Questing Beast") {
+        $("#gameTableTitle").append(" - The Questing Beast")
         $("#gameTableText").html("The Questing Beast is heard crashing through the trees nearby.")
 
         // roll to see if it eludes the player
@@ -3445,7 +3449,7 @@ let retainerNameFirst_A = [
             }
           } else {
             // not found so journey on
-            $("#gameTableText").append("<br>Unfortunately, the Questing Beast got away.")
+            $("#gameTableText").append("<br>Unfortunately, it got away.")
             let gotoJourneyButton = `
               <div class="mt-2">
               <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -3470,19 +3474,109 @@ let retainerNameFirst_A = [
       }
 
       if (sideQuests[dieRoll -1] == "Three Blind Old Hags") {
-        // click to go to the Journey table
-        let gotoJourneyButton = `
-          <div class="mt-2">
-          <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-            <i class="mt-2"></i>
-            Continue your Journey
-          </button>
-          </div>`
-        $("#gameButtons").html(gotoJourneyButton)
+        $("#gameTableTitle").append(" - Three Blind Old Hags")
+
+        let money = 0
+
+        for (let i=6; i>0; i--) {
+          money += rollDie(6)
+        }
+        money = money * 2
+
+        $("#gameTableText").html(`The hags demand that you pay them ${money} silver!`)
+
+        let answer = window.confirm(`The hags demand that you pay them ${money} silver! Do you pay?`)
+
+        if (answer) {
+          $("#gameTableText").append(`The hags laugh at you as they take your money and disapear into the night!`)
+          // click to go to the Journey table
+          let gotoJourneyButton = `
+            <div class="mt-2">
+            <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Continue your Journey
+            </button>
+            </div>`
+          $("#gameButtons").html(gotoJourneyButton)
+        } else {
+          $("#gameTableText").append(`<br>A strange battle ensues with the hags mocking and belittling you and throwing things!  They are so annoying that you need to make three saves!`)
+          let saves = 0
+          for (let i=0; i<3; i++) {
+            let roll = rollDie(6)
+            let saved = false
+            saved = (roll >= 5) ? true : false
+            $("#gameTableText").append(`<br>Roll ${i} --> ${roll} Need: 5 --> ${saved}`)
+            if (saved) saves++
+          }
+          if (saved == 0) {
+            $("#gameTableText").append("You fly into a mad rage killing and destroying everything in sight... including the Eye of True Seeing!  To say the least, this is a very dishonorable act.")
+
+            playerCharacter.dishonor = true
+            updateNavbar()
+
+            // click to go to the Journey table
+            let gotoJourneyButton = `
+              <div class="mt-2">
+              <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Continue your Journey
+              </button>
+              </div>`
+            $("#gameButtons").html(gotoJourneyButton)
+
+
+          } else {
+
+            $("#gameTableText").append(`<br>In the chaos ${playerCharacter.name} manages to refrain from hacking the hags to bits, but also snatched the hag's Eye of True Seeing!`)
+            answer = window.confirm("Do you want to trade the Eye of True Seeing back to the hags in exchange for rumors?")
+            if (answer) {
+              let rumors = rollDie(6)
+              rumors ++
+              $("#gameTableText").append("You trade the Eye of True Seeing for " + rumors)
+              playerCharacter.rumors = playerCharacter.rumors + rumors
+              updateNavbar()
+            } else {
+              // add the eye to the player's inventory
+              $("#gameTableText").append("The hags hurl insults at you as you leave.")
+              let eyeOfTrueSeeing = {
+                id: 5,
+                name: "The Eye of True Seeing",
+                type: "Magic Item",
+                ranged: false,
+                readied: false,
+                cost: 0,
+                damage_bonus: 0
+              }
+              inventory.push(eyeOfTrueSeeing)
+
+            }
+
+            // click to go to the Journey table
+            let gotoJourneyButton = `
+              <div class="mt-2">
+              <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                <i class="mt-2"></i>
+                Continue your Journey
+              </button>
+              </div>`
+            $("#gameButtons").html(gotoJourneyButton)
+
+
+
+          }
+        }
+
+        //$("#gameTableText").html("The hags attack you by mocking you!")
+
+
       }
 
 
       if (sideQuests[dieRoll -1] == "Laamorz the Wizard") {
+        $("#gameTableTitle").append(" - Laamorz the Wizard")
+
+        $("#gameTableText").html("Click below to fight the evil wizard Laamorz!")
+
         // click to go to the Journey table
         let gotoJourneyButton = `
           <div class="mt-2">
