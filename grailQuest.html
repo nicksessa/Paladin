@@ -434,7 +434,7 @@
         "Laamorz the Wizard"
       ]
 
-
+    let hagMoney = 0
 
 
   // -----------------------------------------
@@ -469,7 +469,7 @@
       level: 3,
       max_hp: 40,
       cur_hp: 40,
-      armor: 2,
+      armor: 3,
       attack: 6,
       att_mod: 0,
       dmg_mod: 2,
@@ -500,7 +500,7 @@
       level: 3,
       max_hp: 40,
       cur_hp: 40,
-      armor: 2,
+      armor: 3,
       attack: 6,
       att_mod: 0,
       dmg_mod: 2,
@@ -1029,6 +1029,16 @@ let retainerNameFirst_A = [
       rebellionLevelIncreased = false
       retainers = []
 
+      sideQuests = 
+      [
+        "Taulurd the Giant",
+        "A Dragon",
+        "The Green Knight",
+        "The Questing Beast",
+        "Three Blind Old Hags",
+        "Laamorz the Wizard"
+      ]
+
       $('#npcCollapse').toggle(false)
       $("#gameTableTitle").empty()
       $("#gameTableTitle").html("Start New Game")
@@ -1039,7 +1049,7 @@ let retainerNameFirst_A = [
       playerCharacter.level = 3
       playerCharacter.max_hp = 40
       playerCharacter.cur_hp = 40
-      playerCharacter.armor = 2
+      playerCharacter.armor = 3
       playerCharacter.attack = 6
       playerCharacter.att_mod = 0
       playerCharacter.dmg_mod = 2
@@ -1248,6 +1258,7 @@ let retainerNameFirst_A = [
       $("#gameTableTitle").html("Inn Table")
       
       let rowString = ""
+      let num = 0
       // clear the story div
       $("#gameTableText").empty()
       playerCharacter.findRetainerModifier = 0
@@ -1322,17 +1333,17 @@ let retainerNameFirst_A = [
           }
         break;
         case 5:
-          $("#gameTableText").append("<p>Talkative innkeeper.  Add +1 to the Rumor Roll</p>")
+          $("#gameTableText").append("<p>Talkative innkeeper.  (+1 to the Rumor Roll)</p>")
           console.log("[5] Talkative innkeeper")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Talkative innkeeper.' });
           playerCharacter.rumorModifier = 1
           updateNavbar()
           break;
         case 6:
-          let num = rollDie(6)
+          num = rollDie(6)
           if (num < 6) {
             console.log("[6] Abundant Retainers looking for work")
-            $("#gameTableText").append("<p>Abundant Retainers looking for work.  +1 to the Find Retainer Roll</p>")
+            $("#gameTableText").append("<p>Abundant Retainers looking for work.  (+1 to the Find Retainer Roll)</p>")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Add +1 to the Find Retainer roll.' });
             playerCharacter.findRetainerModifier++
             updateNavbar()
@@ -1344,8 +1355,8 @@ let retainerNameFirst_A = [
           num = rollDie(6)
           if (num < 6) {
             console.log("[6] Free Food & Abundant Retainers looking for work!")
-            $("#gameTableText").append("<p>Abundant Retainers looking for work.  +1 to the Find Retainer Roll</p>")
-          adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Add +1 to the Find Retainer roll.' });
+            $("#gameTableText").append("<p>Abundant Retainers looking for work.  (+1 to the Find Retainer Roll)</p>")
+            adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Add +1 to the Find Retainer roll.' });
             playerCharacter.findRetainerModifier++
             updateNavbar()
           }
@@ -1678,7 +1689,7 @@ let retainerNameFirst_A = [
         $("#gameButtons").html(rowString)
       } else {
         // go to the crossroads
-        $("#gameTableText").append("But luckily your Merchant friend knew a way to get you to an inn.")
+        $("#gameTableText").append("But luckily your Merchant retainer knew a way to get you to an inn.")
         
         rowString += `
         <div class="d-flex mt-2">
@@ -2219,7 +2230,7 @@ let retainerNameFirst_A = [
       aKnight = new NPC(challengerName, 25, 25, 2, 6, 0, 2, "Longsword", "", "Chainmail", "male", "true");
       round = 1
       console.log("knight name: " + aKnight.name)
-      
+      round=1
       btnString = `
         <div class="mt-2">
         <button onclick="combat()" data-id="gotoCombatBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -2650,24 +2661,37 @@ let retainerNameFirst_A = [
     function runHeroicQuest() {
     
       // NOTE! Heroic Quest OR Visit a Shrine (Pilgrimage Table)
-      $("#gameTableText").append("You may embark on a Heroic Quest or undertake a perilous Pilgrimage to a Shrine!")
+
+      if (sideQuests.length < 1) {
+
+        $("#gameTableText").append("No side quests are available.  You may however choose to embark on a perilous Pilgrimage to a Shrine!")
       
-      let rowString = `
-        <div class="d-flex mt-2 justify-content-around">
-        <button onclick="rollHeroicQuestTable()" data-id="rollHeroicBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-            <i class="mt-2"></i>
-            Heroic Quest!
-        </button>
-        <button onclick="rollPilgrimageTable()" data-id="rollPilgrimageBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+        let rowString = `
+          <div class="d-flex mt-2 justify-content-around">
+          <button onclick="rollPilgrimageTable()" data-id="rollPilgrimageBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
             <i class="mt-2"></i>
             Go to a Shrine!
-        </button>
-        </div>
-        `
-      $("#gameButtons").empty()
-      $("#gameButtons").html(rowString) 
+          </button>
+          </div>`
+        $("#gameButtons").html(rowString) 
+
+      } else {
+
+        $("#gameTableText").append("You may embark on a Heroic Quest or undertake a perilous Pilgrimage to a Shrine!")
       
-        
+        let rowString = `
+          <div class="d-flex mt-2 justify-content-around">
+          <button onclick="rollHeroicQuestTable()" data-id="rollHeroicBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Heroic Quest!
+          </button>
+          <button onclick="rollPilgrimageTable()" data-id="rollPilgrimageBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Go to a Shrine!
+          </button>
+          </div>`
+        $("#gameButtons").html(rowString) 
+      }  
     }
     
     function runPovertyVillage() {
@@ -2990,6 +3014,7 @@ let retainerNameFirst_A = [
           challengerName = "Sir Mordred"
         break;
       }
+      round=1
       let rowString = `
         <div class="d-flex mt-2">
           <button onclick="knightChallenge()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -3188,7 +3213,7 @@ let retainerNameFirst_A = [
         $("#gameTableText").html("<p>The doctor heals you for " + total + " points.</p>")
         playerCharacter.money -= 5
         
-        $("#gameTableText").append(`<p>Healing Roll: ${roll1} + ${roll2} = ${total}</p>`)
+        $("#gameTableText").append(`<p>(Healing Roll: ${roll1} + ${roll2} = ${total})</p>`)
         
         
         if ((total + playerCharacter.cur_hp) >= playerCharacter.max_hp) {
@@ -3334,15 +3359,26 @@ let retainerNameFirst_A = [
       if (sideQuests[dieRoll -1] == "Taulurd the Giant") {
         $("#gameTableTitle").append(" - Taulurd the Giant")
         $("#gameTableText").html(sideQuests[dieRoll -1] + " is ravaging the lands. In other words, he's killing things and taking their stuff.  We can't have that, now can we?<br><br>Do you dare to put a stop to this menace... and take his stuff?")
+        round=1
 
-          let btnString = `
-            <div class="d-flex mt-2">
-            <button onclick="combat()" data-id="fightSideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-                <i class="mt-2"></i>
-                Fight The Giant!
-            </button>
-            </div>`
-          $("#gameButtons").html(btnString)
+        challengerName = "Taulurd the Giant"
+        aKnight = new NPC(challengerName, 0, 45, 45, 0, 7, 0, 5, "Large Iron Club", "", "Animal Skins", "male", true, 0, 4, true)
+        aKnight.level = 6
+        aKnight.cur_hp = 45
+        aKnight.max_hp = 45
+        aKnight.armor = 1
+        aKnight.att_mod = 0
+        aKnight.dmg_mod = 5
+        
+
+        let btnString = `
+          <div class="d-flex mt-2">
+          <button onclick="combat()" data-id="fightSideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Fight The Giant!
+          </button>
+          </div>`
+        $("#gameButtons").html(btnString)
 
       }
 
@@ -3350,16 +3386,26 @@ let retainerNameFirst_A = [
       if (sideQuests[dieRoll -1] == "A Dragon") {
         $("#gameTableTitle").append(" - A Dragon")
         $("#gameTableText").html("Frantic villagers come to you begging you to save them from a nasty dragon who has been buring homes and eating fair maidens.  <br><br>Will you follow in St George's footsteps and put a stop to this or will you become food for worms?")
+        round=1
 
-          let btnString = `
-            <div class="d-flex mt-2">
-            <button onclick="combat()" data-id="fightSideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-                <i class="mt-2"></i>
-                Fight The Dragon!
-            </button>
-            </div>`
-          $("#gameButtons").html(btnString)
+        challengerName = "A Dragon"
+        aKnight = new NPC(challengerName, 0, 30, 30, 0, 7, 0, 3, "Teeth and Claws", "", "Dragon Scale", "male", true, 0, 4, true)
+        aKnight.level = 6
+        aKnight.cur_hp = 30
+        aKnight.max_hp = 30
+        aKnight.armor = 3
+        aKnight.att_mod = 0
+        aKnight.dmg_mod = 3
 
+
+        let btnString = `
+          <div class="d-flex mt-2">
+          <button onclick="combat()" data-id="fightSideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Fight The Dragon!
+          </button>
+          </div>`
+        $("#gameButtons").html(btnString)
 
       }
 
@@ -3373,6 +3419,18 @@ let retainerNameFirst_A = [
         if (pietyRoll <= playerCharacter.piety) {
           $("#gameTableText").append("<br>Piety Roll: " + pietyRoll + " Needed: " + playerCharacter.piety + " or less --> Passed!<br>")
           $("#gameTableText").append("<br><br>You have passed the test, now it is time to see if you can defeat the Green Knight in combat!")
+          round=1
+
+
+        challengerName = "The Green Knight"
+        aKnight = new NPC(challengerName, 0, 30, 30, 0, 6, 0, 3, "Battle Ax", "", "Chainmail Hauberk", "male", true, -2, 1, true)
+        aKnight.level = 7
+        aKnight.cur_hp = 30
+        aKnight.max_hp = 30
+        aKnight.armor = 3
+        aKnight.att_mod = 1
+        aKnight.dmg_mod = 3
+
 
           let btnString = `
             <div class="d-flex mt-2">
@@ -3425,6 +3483,19 @@ let retainerNameFirst_A = [
               $("#gameButtons").html(gotoJourneyButton)
             } else {
               $("#gameTableText").append("<br>With the help of your woodsman, you have cornered the Questing Beast!")
+
+              round=1
+
+
+        challengerName = "The Questing Beast"
+        aKnight = new NPC(challengerName, 0, 30, 30, 0, 7, 0, 3, "Teeth and Claws", "", "Tough Hide", "male", true, -2, 2, true)
+        aKnight.level = 6
+        aKnight.cur_hp = 30
+        aKnight.max_hp = 30
+        aKnight.armor = 3
+        aKnight.att_mod = 1
+        aKnight.dmg_mod = 1
+
               let btnString = `
                 <div class="d-flex mt-2">
                 <button onclick="combat()" data-id="fightsideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -3436,7 +3507,7 @@ let retainerNameFirst_A = [
             }
           } else {
             // not found so journey on
-            $("#gameTableText").append("<br>Unfortunately, it got away.")
+            $("#gameTableText").append("<br>You give chase, but unfortunately it got away.")
             let gotoJourneyButton = `
               <div class="mt-2">
               <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -3449,6 +3520,19 @@ let retainerNameFirst_A = [
         } else {
           // found it!
           $("#gameTableText").append("<br>You have cornered the Questing Beast!")
+          round=1
+
+
+        challengerName = "The Questing Beast"
+        aKnight = new NPC(challengerName, 0, 30, 30, 0, 7, 0, 3, "Teeth and Claws", "", "Tough Hide", "male", true, -2, 2, true)
+        aKnight.level = 6
+        aKnight.cur_hp = 30
+        aKnight.max_hp = 30
+        aKnight.armor = 3
+        aKnight.att_mod = 1
+        aKnight.dmg_mod = 1
+
+
           let btnString = `
             <div class="d-flex mt-2">
             <button onclick="combat()" data-id="fightsideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -3460,21 +3544,23 @@ let retainerNameFirst_A = [
         }
       }
 
+// Three blind old hags
+
       if (sideQuests[dieRoll -1] == "Three Blind Old Hags") {
         $("#gameTableTitle").append(" - Three Blind Old Hags")
 
-        let money = 0
+        hagMoney = 0
 
         for (let i=6; i>0; i--) {
-          money += rollDie(6)
+          hagMoney += rollDie(6)
         }
-        money = money * 2
+        hagMoney = hagMoney * 2
 
-        $("#gameTableText").html(`You encounter three blind old hags who demand that you pay them ${money} silver!`)
+        $("#gameTableText").html(`You encounter three blind old hags who demand that you pay them ${hagMoney} silver!`)
 
         let textString = `
           <div class="mt-2 justify-content-around">
-            <button onclick="payHags(money)" data-id="payHagsBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <button onclick="payHags()" data-id="payHagsBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
               <i class="mt-2"></i>
               Pay Hags
             </button>
@@ -3493,28 +3579,40 @@ let retainerNameFirst_A = [
 
         $("#gameTableText").html("Click below to fight the evil wizard Laamorz!")
 
-        // click to go to the Journey table
-        let gotoJourneyButton = `
-          <div class="mt-2">
-          <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-            <i class="mt-2"></i>
-            Continue your Journey
-          </button>
-          </div>`
-        $("#gameButtons").html(gotoJourneyButton)
+        round=1
+
+
+        challengerName = "Laamorz the Wizard"
+        aKnight = new NPC(challengerName, 0, 30, 30, 0, 7, 0, 3, "Staff of the Dark Arts", "", "Clothing", "male", true, -2, 3, true)
+        aKnight.level = 5
+        aKnight.cur_hp = 30
+        aKnight.max_hp = 30
+        aKnight.armor = 0
+        aKnight.att_mod = 0
+        aKnight.dmg_mod = 1
+
+
+              let btnString = `
+                <div class="d-flex mt-2">
+                <button onclick="combat()" data-id="fightsideQuestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                  <i class="mt-2"></i>
+                  Fight Laamorz!
+              </button>
+              </div>`
+              $("#gameButtons").html(btnString) 
       }
     }
     
 
-    function payHags(money) {
+    function payHags() {
 
-      if (money < playerCharacter.money) {
+      if (playerCharacter.money < hagMoney) {
         dontPayHags()
       } else {
-        playerCharacter.money -= money
+        playerCharacter.money -= hagMoney
         updateNavbar()
 
-        $("#gameTableText").append(`The hags laugh at you as they take your money and disapear into the night!`)
+        $("#gameTableText").append(`<br><br>The hags laugh at you as they take your money and disapear into the night!`)
 
         // click to go to the Journey table
         let gotoJourneyButton = `
@@ -3585,13 +3683,21 @@ let retainerNameFirst_A = [
         });
         playerCharacter.sideQuests++
         updateNavbar()
+
+        // gain exp
+        let levelUp = false
+        levelUp = xpRoll()
+
+        if (levelUp) {
+          $("gameTableText").append(`<br>${playerCharacter.name} has gained a level!`)
+        }
     }
 
 
     function tradeEyeForRumors() {
       let rumors = rollDie(6)
       rumors ++
-      $("#gameTableText").append("You trade the Eye of True Seeing for " + rumors)
+      $("#gameTableText").append("<br><br>You trade the Eye of True Seeing for " + rumors + " rumors")
       playerCharacter.rumors = playerCharacter.rumors + rumors
       updateNavbar()
 
@@ -3829,6 +3935,7 @@ let retainerNameFirst_A = [
   }
   
   function hireNew(button) {
+
     var id = $(button).attr('data-id');
     console.log("new retainer id: " + id)
     //alert("You clicked: " + id)
@@ -3847,6 +3954,13 @@ let retainerNameFirst_A = [
       $(statusId).text("Retained")
       // get a handle on the correct object
       var obj = $.grep(availableRetainers, function(obj){return obj.name === id;})[0];
+
+
+    if (playerCharacter.money < obj.cost) {
+      alert("You don't have enough money.")
+      console.log("player does not have enough money")
+      return
+    }
 
       console.log("obj name: " + obj.name)
       //console.log("obj is: " + obj)
@@ -4068,38 +4182,39 @@ let retainerNameFirst_A = [
     // Combat
     // -----------------------------------------------------
     
-    // Notes: 35 HP is probably a good amount for named/tough encounters
-    // 20-25 for things like bears, boars, etc
-    // 10-12 for minions
-    // add 2 HP per Rebellion Level
-    
-    
     
     // Constructor function for NPC objects
-    function NPC(name, cur_hp, max_hp, armor, attack, att_mod, dmg_mod, wpn1, wpn2, armorType, sex, isAlive) {
+    function NPC(name, level, cur_hp, max_hp, armor, attack, att_mod, dmg_mod, wpn1, wpn2, armorType, sex, isAlive, morale, treasureRolls, sideQuest) {
       this.name = name;
+      this.level = 4 + playerCharacter.rebellionLevel;
       this.cur_hp = cur_hp + (playerCharacter.rebellionLevel * 2);
       this.max_hp = max_hp + (playerCharacter.rebellionLevel * 2);
       this.armor = armor + (playerCharacter.rebellionLevelMod);
       this.attack = attack;
-      this.att_mod = att_mod + playerCharacter.rebellionLevelMod;
-      this.dmg_mod = dmg_mod + playerCharacter.rebellionLevelMod;
+      this.att_mod = att_mod
+      this.dmg_mod = dmg_mod
       this.wpn1 = wpn1;
       this.wpn2 = wpn2;
       this.armorType = armorType;
       this.sex = sex;
       this.isAlive = isAlive;
+      this.morale = morale;
+      this.treasureRolls = treasureRolls;
+      this.sideQuest = sideQuest;
     }
+
+    // more global variables:
     var round = 1
     var initiative = "pc"
     let aKnight
   
+
     function knightChallenge() {
       
       round = 1
       // Create a knight object
       //alert("a challenge from: " + name)
-      aKnight = new NPC(challengerName, 25, 25, 0, 6, 0, 2, "Longsword", "", "Padded Gambeson", "male", "true");
+      aKnight = new NPC(challengerName, 0, 25, 25, 0, 6, 1, 2, "Longsword", "", "Padded Gambeson", "male", "true", 0, 0, false);
       
       console.log("knight name: " + aKnight.name)
       combat()
@@ -4107,7 +4222,7 @@ let retainerNameFirst_A = [
     }
     
     function theWhiteKnight() {
-      aKnight = new NPC("The White Knight", 25, 25, 1, 6, 0, 2, "Longsword", "", "Chainmail", "male", "true");
+      aKnight = new NPC("The White Knight", 0, 25, 25, 1, 6, 1, 2, "Longsword", "", "Chainmail", "male", "true", 0, 0, false);
       round = 1
       console.log("knight name: " + aKnight.name)
       combat()
@@ -4125,7 +4240,8 @@ function createNPCSidebar() {
           <br>
           Attack: <span id="npcDivAttack">999</span>+<br>
           Damage Modifier: <span id="npcDivDmgMod">999</span><br>
-          Armor: <span id="npcDivArmor">999</span><br><br>
+          Armor: <span id="npcDivArmor">999</span><br>
+          Morale: <span id="npcDivMorale">999</span><br><br>
           <h4>Equipment</h4>
           <hr>
           <span id="npcDivWeapon1">Longsword</span><br>
@@ -4138,24 +4254,24 @@ function createNPCSidebar() {
     
     function updateNPC() {
       $("#npcDivName").html(aKnight.name)
-      $("#npcLevel").html("???")
+      $("#npcLevel").html(aKnight.level)
       $("#npcDivCurHP").html(aKnight.cur_hp)
       $("#npcDivMaxHP").html(aKnight.max_hp)
       $("#npcDivAttack").html(aKnight.attack)
       $("#npcDivDmgMod").html(aKnight.dmg_mod)
       $("#npcDivArmor").html(aKnight.armor)
+      $("#npcDivMorale").html(aKnight.morale)
       $("#npcDivWeapon1").html(aKnight.wpn1)
       $("#npcDivWeapon2").html(aKnight.wpn2)
       $("#npcDivArmorType").html(aKnight.armorType)
+
       // set color for HP
       // first unset all colors
       $("#npcDivCurHP").removeClass(["bg-success", "bg-warning", "bg-danger", "bg-secondary"]);
       let a = Math.floor(aKnight.max_hp / 3);
       let firstThird = (aKnight.max_hp - a)
       let secondThird = (aKnight.max_hp - (a * 2))
-      //console.log("a: " + a)
-      //console.log("firstThird: " + firstThird)
-      //console.log("secondThird: " + secondThird)
+
       if (aKnight.cur_hp >= firstThird) {
         $("#npcDivCurHP").addClass("bg-success")
       } else if (aKnight.cur_hp < firstThird && aKnight.cur_hp >= secondThird) {
@@ -4176,9 +4292,8 @@ function createNPCSidebar() {
       console.log("combat function round: " + round)
       console.log("Knight: " + aKnight.name)
       $("#gameTableText").empty()
-      //$("#attackBtn").html('Attack')
-      //let round = 1
-      //alert("A challenge from: " + aKnight.name)
+      $("#gameTableText").append("<p id='npcParagraph'>Your Opponent is: <strong>" + aKnight.name + "!!!</strong></p>")
+
       let initiativeTarget = 4
       if (aKnight.name == "The White Knight" || aKnight.name == "The Black Knight" || aKnight.name == "The Red Knight") {
         initiativeTarget = 3
@@ -4186,7 +4301,7 @@ function createNPCSidebar() {
         initiativeTarget = 4
       }
       if (round == 1) {
-        $("#gameTableText").append("<p id='npcParagraph'>Your Opponent is: <strong>" + aKnight.name + "!!!</strong></p>")
+        
         let roll_1d6 = rollDie(6);
         // if die roll > initiativeTarget (3 by default) the PC has the initiative
         if (roll_1d6 >= initiativeTarget) {
@@ -4201,7 +4316,7 @@ function createNPCSidebar() {
 
 
       let rowString = 
-        `<div id="combatCommandButtons" class="d-flex my-3 justify-content-between">
+        `<div id="combatCommandButtons" class="d-flex my-3 justify-content-around">
           <button onclick="fightKnight()" id="attackBtn2" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</button>
           <button onclick="flee(aKnight)" id="fleeBtn2"class="innBtn btn btn-dark px-4 rounded-pill">Flee!</button>
           <button onclick="parlay(aKnight)" id="parlayBtn2"class="innBtn btn btn-dark px-4 rounded-pill">Parlay!</button>
@@ -4291,7 +4406,7 @@ function createNPCSidebar() {
           aKnight.cur_hp = aKnight.cur_hp - dmg
           console.log("you hit for " + dmg + " points of damage")
           rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-          rowString += `<td class="border-0 defaultText">You hit ${knightName} for ${dmg} points of damage!`
+          rowString += `<td class="border-0 defaultText">You hit ${knightName} for <span class="rounded" style="padding: 2px; background-color: red">${dmg}</span> points of damage!`
           //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
           //$("#combatTableBody").append('<td class="border-0 text-center">You hit ' + npc_name + " for " + dmg + " points of damage!</td></tr>")
           $("#combatTableBody").append(rowString)
@@ -4301,23 +4416,49 @@ function createNPCSidebar() {
           
           if (aKnight.cur_hp < 1) {
             round = 0
-            // npc is dead - remove him from the list of available evil captains
+            // To do: npc is dead - remove him from the list of available evil captains
+
             aKnight.isAlive = false
             playerCharacter.captainsSlain++
             updateNavbar()
 
             $("#gameTableText").append("<p>You have slain " + knightName + "!</p>")
-            // get treasure
-            knightTreasure()
-            
-            // gain exp
-            let expRoll = rollDie(6)
-            if (expRoll > playerCharacter.level) {
-              playerCharacter.level++
+            // get treasure and remove unique opponents from their respective tables.
+
+            console.log("sideQuest: " + aKnight.sideQuest)
+
+            if (aKnight.sideQuest) {
+              console.log("get sideQuest treasure")
+              $("#gameTableText").append("<br>You find: <br>")
+              for (let i = 0; i < aKnight.treasureRolls; i++) {
+                let treasureText = rollTreasure(0)
+                $("#gameTableText").append(treasureText + "<br>")
+              }
+
+              // remove them from the sideQuest array
+              sideQuests = $.grep(sideQuests, function(value){ 
+                return value != aKnight.name; 
+              });
+              playerCharacter.sideQuests++
               updateNavbar()
-              $("gameTableText").append(`<br>${playerCharacter.name} has gained a level!`)
+
+
+            } else {
+              console.log("get knight treasure")
+              knightTreasure()
             }
             
+            // gain exp
+            let levelUp = false
+            levelUp = xpRoll()
+
+            if (levelUp) {
+              console.log("player leveled up")
+              $("gameTableText").append(`<br>${playerCharacter.name} has gained a level!`)
+            } else {
+              console.log("pc did not level up")
+            }
+
             rowString = `
               <div class="d-flex mt-2">
               <button onclick="rollJourneyTable()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -4366,36 +4507,54 @@ function createNPCSidebar() {
           playerCharacter.cur_hp = playerCharacter.cur_hp - dmg
           console.log("you were hit for " + dmg + " point(s) of damage")
           rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-          rowString += `<td class="border-0 defaultText">${knightName} hits you for ${dmg} points of damage!</td></tr>`
+          rowString += `<td class="border-0 defaultText">${knightName} hits you for <span class="rounded" style="padding: 2px; background-color: red">${dmg}</span> points of damage!</td></tr>`
           $("#combatTableBody").append(rowString)
-          //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
-          //$("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " hits you for " + dmg + " points of damage!</td></tr>")
           
           // check to see if the pc is alive, knocked out or dead
           if (playerCharacter.cur_hp < 6 && playerCharacter.cur_hp > 0) {
-        	// PC is knocked out
+            // PC is knocked out
             round = 0
             console.log("PC is alive but knocked out")
             $("#storyDivHead").empty()
             $("#npcParagraph").empty()
-            $("#storyDivHead").html('<p>' + playerCharacter.name + ' has been knocked out by ' + aKnight.name + '!  You had best start praying for mercy!</p>')
+            $("#gameTableText").append('<p>' + playerCharacter.name + ' has been knocked out by ' + aKnight.name + '!  You had best start praying for mercy!</p>')
             
-            // empty the combatCommandButtons and then replace them with a single button to go to the start
-            $("#gameButtons").empty()
-            
-            let rowString = `<div class="col text-center">
-                <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i class="mt-2 mr-2"></i>Click to Start Over</button>
+
+            let roll = rollDie(6)
+            if (roll > 3) {
+              $("#gameTableText").append(`${aKnight.name} leaves you for dead... but you survive!`)
+              $('#npcCollapse').toggle(false)
+
+              // PC lives to fight another day and wakes up at an inn
+              btnString = `
+                <div class="d-flex mt-2 justify-content-around">
+                <button onclick="rollInnTable()" data-id="rollInnBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                  <i class="mt-2"></i>
+                  Go to Inn
+                </button>
                 </div>`
-            $("#gameButtons").html(rowString)
+                $("#gameButtons").html(btnString)
+
+
+            } else {
+              $("#gameTableText").append(`${aKnight.name} wickedly delivers you a coup de grace.  May God have mercy on your soul.  <br><br>REQVIESCAT IN PACE`)
+              // empty the combatCommandButtons and then replace them with a single button to go to the start
+              $("#gameButtons").empty()
             
-            //$("#storyDiv").append(rowString)
-            $("#beginAdventure").off('click')
-            $("#beginAdventure").click(function () {
-              //$("#storyDiv").empty()
-              //$("#storyDiv").append("<p>Your Opponent is: </p>")
-              startNewGame()
-              //rollNPCTable()
-            })
+              let rowString = `
+                <div class="d-flex mt-2">
+                <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                  <i class="mt-2"></i>
+                  Start New Game
+                </button>
+                </div>`
+              $("#gameButtons").html(rowString)
+
+
+            }
+
+
+            
           }
           if (playerCharacter.cur_hp < 1) {
             round = 0
@@ -4403,14 +4562,8 @@ function createNPCSidebar() {
             console.log("PC has died")
             $("#storyDivHead").empty()
             $("#npcParagraph").empty()
-            $("#storyDivHead").html('<p>' + playerCharacter.name + ' has been slain by ' + aKnight.name + '!<br>  May God speed ' + playerCharacter.name + ' on his way to his eternal reward!</p>')
+            $("#storyDivHead").html('<p>' + playerCharacter.name + ' has been slain by ' + aKnight.name + '!<br>  May God have mercy on your soul!  <br><br>REQVIESCAT IN PACE</p>')
             
-            // empty the combatCommandButtons and then replace them with a single button to go to the start
-            //$("#gameButtons").empty()
-            
-            //let rowString = `<div class="col text-center">
-            //    <button id="beginAdventure" type="button" class="btn btn-dark px-4 rounded-pill"><i class="mt-2 mr-2"></i>Click to Start Over</button>
-            //    </div>`
             rowString = `
               <div class="d-flex mt-2">
               <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -4420,14 +4573,6 @@ function createNPCSidebar() {
               </div>`
             $("#gameButtons").html(rowString)
             
-            //$("#storyDiv").append(rowString)
-            //$("#beginAdventure").off('click')
-              //$("#beginAdventure").click(function () {
-              //$("#storyDiv").empty()
-              //$("#storyDiv").append("<p>Your Opponent is: </p>")
-              //startNewGame()
-              //rollNPCTable()
-            //})
           }
           updateNavbar()
         }
@@ -4469,30 +4614,17 @@ function createNPCSidebar() {
         
         $("#gameTableText").empty()
         $("#gameTableText").append("<p>" + aKnight.name + " is not interested in conversation. "+ pronoun + " attacks!</p>")
-        /*let rowString = `<div class="d-flex mt-2 justify-content-between">
-  <a href="#" id="attackBtn3" class="attackBtn btn btn-dark px-4 rounded-pill">Go To Combat!</a></div>`*/
-  
-        //var rowString = `<div class="col text-center">
-        //    <button id="attackBtn3" type="button" class="btn btn-dark px-4 rounded-pill"><i
-        //    class="mt-2 mr-2"></i>Go To Combat!</button>
-        //    </div>`
         
         rowString = `
-              <div class="d-flex mt-2">
-              <button onclick="combat()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-                <i class="mt-2"></i>
-                Back to Combat
-              </button>
-              </div>`
+          <div class="d-flex mt-2">
+          <button onclick="combat()" data-id="rollJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Back to Combat
+          </button>
+          </div>`
+           
+          $("#gameButtons").html(rowString)
             
-            $("#gameButtons").html(rowString)
-            
-        //$("#gameTableText").append(rowString)
-        //$(document).off('click')
-        //$(document).on('click', '#attackBtn3', function () {
-          //combat()
-          //console.log(this.value);
-        //});
       } else {
         peace = true
         round = 0
@@ -4549,7 +4681,7 @@ function createNPCSidebar() {
       } else {
         roll1 = rollDie(6)
         roll2 = rollDie(6)
-        money = (roll1 + roll2) * 6
+        money = (roll1 + roll2) * aKnight.level
         $("#gameTableText").append("You gain: " + money + " silver")
       }
       
@@ -4867,13 +4999,13 @@ function createNPCSidebar() {
       if (initiative == "npc" && round == 1) {
         minionsAttack(round)
       }
+
       // place the buttons
-      
+
       rowString = `
-        <div id="combatCommandButtons" class="d-flex my-3 justify-content-between">
+        <div id="combatCommandButtons" class="d-flex my-3 justify-content-around">
           <button onclick="attackMinions()" id="attackBtn3" class="attackBtn btn btn-dark px-4 rounded-pill">Attack!</button>
           <button onclick="flee()" id="fleeBtn3"class="innBtn btn btn-dark px-4 rounded-pill">Flee!</button>
-          <button onclick="parlay()" id="parlayBtn3"class="innBtn btn btn-dark px-4 rounded-pill">Parlay!</button>
         </div>`
       $("#gameButtons").html(rowString)
         
@@ -5247,7 +5379,7 @@ function createNPCSidebar() {
                   playerCharacter.alive = false
                   updateNavbar()
                   $("#npcParagraph").empty()
-                  $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God speed ' + playerCharacter.name + ' on his way to his eternal reward!</p>')
+                  $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God have mercy on your soul. <br><br>REQVIESCAT IN PACE</p>')
                   rowString = `
                     <div class="d-flex mt-2">
                     <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -5267,7 +5399,7 @@ function createNPCSidebar() {
               console.log("PC has died")
               $("#storyDivHead").empty()
               $("#npcParagraph").empty()
-              $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God speed ' + playerCharacter.name + ' on his way to his eternal reward!</p>')
+              $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God have mercy on your soul. <br><br>REQVIESCAT IN PACE</p>')
               rowString = `
                 <div class="d-flex mt-2">
                 <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
@@ -5532,6 +5664,33 @@ function createNPCSidebar() {
     // end treasure tables
     // -----------------------------------------------------
     
+
+    // -----------------------------------------------------
+    // XP Roll
+    // -----------------------------------------------------
+
+    function xpRoll() {
+      let roll = rollDie(6)
+      if (roll > playerCharacter.level) {
+        console.log("player gained a level")
+        playerCharacter.level++
+        let hpRoll1 = rollDie(6)
+        let hpRoll2 = rollDie(6)
+        playerCharacter.max_hp = playerCharacter.max_hp + hpRoll1 + hpRoll2
+        playerCharacter.cur_hp = playerCharacter.max_hp
+        updateNavbar()
+        return true
+      } else {
+        console.log("player did not gain a level")
+        return false
+      }
+    }
+
+    // -----------------------------------------------------
+    // End XP Roll
+    // -----------------------------------------------------
+
+
     
   </script>
 
