@@ -478,7 +478,7 @@
       species: "human",
       sex: "male",
       healingPotions: 3,
-      alive: true,
+      status: "alive",
       rumors: 0,
       rumorModifier: 0,
       rebellionLevel: 0,
@@ -509,7 +509,7 @@
       species: "human",
       sex: "male",
       healingPotions: 3,
-      alive: true,
+      status: "alive",
       rumors: 5,
       rumorModifier: 0,
       rebellionLevel: 0,
@@ -1058,7 +1058,7 @@ let retainerNameFirst_A = [
       playerCharacter.species = "human"
       playerCharacter.sex = "male"
       playerCharacter.healingPotions = 3
-      playerCharacter.alive = true
+      playerCharacter.status = "alive"
       playerCharacter.rumors = 0
       playerCharacter.rumorModifier = 0
       playerCharacter.rebellionLevel = 0
@@ -2981,6 +2981,7 @@ let retainerNameFirst_A = [
           modifier = 3
       }
       let roll = (rollDie(6) + modifier)
+      console.log("challenger roll: " + roll)
       
       switch (roll) {
         case 1:
@@ -3001,7 +3002,7 @@ let retainerNameFirst_A = [
         case 7:
           $("#gameTableText").append("Sir Garlon issues a challenge!")
           $("#gameTableTitle").append(" - Sir Garlon")
-          challengerName = "Sir Agravain"
+          challengerName = "Sir Garlon"
         break;
         case 8:
           $("#gameTableText").append("Sir Turquine issues a challenge!")
@@ -4214,7 +4215,7 @@ let retainerNameFirst_A = [
       round = 1
       // Create a knight object
       //alert("a challenge from: " + name)
-      aKnight = new NPC(challengerName, 0, 25, 25, 0, 6, 1, 2, "Longsword", "", "Padded Gambeson", "male", "true", 0, 0, false);
+      aKnight = new NPC(challengerName, 0, 25, 25, 0, 6, 0, 2, "Longsword", "", "Chainmail", "male", "true", 0, 0, false);
       
       console.log("knight name: " + aKnight.name)
       combat()
@@ -4222,7 +4223,7 @@ let retainerNameFirst_A = [
     }
     
     function theWhiteKnight() {
-      aKnight = new NPC("The White Knight", 0, 25, 25, 1, 6, 1, 2, "Longsword", "", "Chainmail", "male", "true", 0, 0, false);
+      aKnight = new NPC("The White Knight", 0, 25, 25, 1, 6, 0, 2, "Longsword", "", "Chainmail", "male", "true", 0, 0, false);
       round = 1
       console.log("knight name: " + aKnight.name)
       combat()
@@ -4398,7 +4399,7 @@ function createNPCSidebar() {
           rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
           rowString += `<td class="border-0 defaultText"> You hit ${knightName} for 0 damage!</td></tr>`
           //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
-          //$("#combatTableBody").append('<td class="border-0 text-center"> You hit ' + npc_name + " 0 damage!</td></tr>")
+          //$("#combatTableBody").append('<td class="border-0 text-left"> You hit ' + npc_name + " 0 damage!</td></tr>")
           $("#combatTableBody").append(rowString)
         } else {
           // npc takes damage
@@ -4408,7 +4409,7 @@ function createNPCSidebar() {
           rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
           rowString += `<td class="border-0 defaultText">You hit ${knightName} for <span class="rounded" style="padding: 2px; background-color: red">${dmg}</span> points of damage!`
           //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
-          //$("#combatTableBody").append('<td class="border-0 text-center">You hit ' + npc_name + " for " + dmg + " points of damage!</td></tr>")
+          //$("#combatTableBody").append('<td class="border-0 text-left">You hit ' + npc_name + " for " + dmg + " points of damage!</td></tr>")
           $("#combatTableBody").append(rowString)
           updateNPC()
           
@@ -4475,7 +4476,7 @@ function createNPCSidebar() {
         rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
         rowString += `<td class="border-0 defaultText">You attacked ${knightName} but missed!</td></tr>`
         //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
-        //$("#combatTableBody").append('<td class="border-0 text-center">You attacked ' + npc_name + " but missed!</td></tr>")
+        //$("#combatTableBody").append('<td class="border-0 text-left">You attacked ' + npc_name + " but missed!</td></tr>")
         $("#combatTableBody").append(rowString)
       }
     }
@@ -4485,29 +4486,29 @@ function createNPCSidebar() {
       let rowString = ""
       // npc attacks first
       // if the PC is not dead the the PC can act
-      let first_d6Roll = Math.floor(Math.random() * 6) + 1;
-      let second_d6Roll = Math.floor(Math.random() * 6) + 1;
+      let first_d6Roll = rollDie(6)
+      let second_d6Roll = rollDie(6)
       let twoD6 = first_d6Roll + second_d6Roll
-      if (twoD6 > 6) {
+
+      if (twoD6 => aKnight.attack) {
         // a hit!  now calc dmg
         console.log("npc rolled a hit")
-        let dmg = twoD6 - 6
+        let dmg = twoD6 - aKnight.attack
         dmg += aKnight.dmg_mod
         if (dmg <= playerCharacter.armor) {
           // saved by armor!
           console.log("hit but made armor save")
           rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-          rowString += `<td class="border-0 defaultText">${knightName} hits you for 0 damage!</td></tr>`
+          rowString += `<td class="border-0 text-left defaultText">${knightName} hits you for 0 damage!</td></tr>`
           $("#combatTableBody").append(rowString)
-          //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
-          //$("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " hits you for 0 damage!</td></tr>")
+
         } else {
           // pc takes damage
           dmg = dmg - playerCharacter.armor
           playerCharacter.cur_hp = playerCharacter.cur_hp - dmg
           console.log("you were hit for " + dmg + " point(s) of damage")
           rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-          rowString += `<td class="border-0 defaultText">${knightName} hits you for <span class="rounded" style="padding: 2px; background-color: red">${dmg}</span> points of damage!</td></tr>`
+          rowString += `<td class="border-0 text-left defaultText">${knightName} hits you for <span class="rounded" style="padding: 2px; background-color: red">${dmg}</span> points of damage!</td></tr>`
           $("#combatTableBody").append(rowString)
           
           // check to see if the pc is alive, knocked out or dead
@@ -4579,10 +4580,10 @@ function createNPCSidebar() {
       } else {
         console.log("your opponent missed!")
         let rowString = `<tr><td class="border-0 text-center defaultText">${round}</td>`
-        rowString += `<td class="border-0 defaultText">${knightName} attacked but missed!</td></tr>`
+        rowString += `<td class="border-0 text-left defaultText">${knightName} attacked but missed!</td></tr>`
         $("#combatTableBody").append(rowString)
         //$("#combatTableBody").append('<tr><td class="border-0 text-center">' + round + '</td>')
-        //$("#combatTableBody").append('<td class="border-0 text-center">' + npc_name + " attacked but missed!</td></tr>")
+        //$("#combatTableBody").append('<td class="border-0 text-left">' + npc_name + " attacked but missed!</td></tr>")
       }
     }
     
@@ -4694,7 +4695,7 @@ function createNPCSidebar() {
     
     
     // -----------------------------------------------------
-    // Combat
+    // End Combat
     // -----------------------------------------------------
     
     
@@ -5054,7 +5055,7 @@ function createNPCSidebar() {
       console.log("Player Attacks")
       console.log("player is alive: " + playerCharacter.alive)
       
-      if (playerCharacter.alive) {
+      if (playerCharacter.status == "alive") {
         let roll1 = rollDie(6)
         let roll2 = rollDie(6)
         let twoD6 = roll1 + roll2
@@ -5131,6 +5132,9 @@ function createNPCSidebar() {
         console.log("no more minions")
         $("#npcParagraph").html("You have defeated: <strong>" + minions.numStart + " " + minions.name + "!!!</strong>")
         console.log("PC get treasure")
+
+        playerCharacter.status = "alive"
+
         let treasureText = rollTreasure(0)
         $("#gameTableText").append("<br>You find: " + treasureText)
         let rowString = `
@@ -5232,6 +5236,9 @@ function createNPCSidebar() {
         if (minions.numCur < 1) {
           console.log("At the end of the retainer loop there are no more minions")
           $("#npcParagraph").html("You have defeated: <strong>" + minions.numStart + " " + minions.name + "!!!</strong>")
+
+          playerCharacter.status = "alive"
+
           if (minions.treasureRolls < 1) {
             $("#gameTableText").append("<br>Unfortunatly these minions have no treasure.")
           } else {
@@ -5300,119 +5307,121 @@ function createNPCSidebar() {
         numOfMinions--
         console.log("num of minions to attack is now: " + numOfMinions)
         
-        // The difference in level adjusts the "to hit" value.
-        let pcLevel = playerCharacter.level
-        let minionLevel = minions.level
-        console.log("player character level: " + playerCharacter.level)
-        console.log("minion level: " + minions.level)
-        let attackMod = minions.level - playerCharacter.level
-        console.log(minions.name + " attack mod is: " + attackMod)
+
+        //if (playerCharacter.status == "alive") {
+          // The difference in level adjusts the "to hit" value.
+          let pcLevel = playerCharacter.level
+          let minionLevel = minions.level
+          console.log("player character level: " + playerCharacter.level)
+          console.log("minion level: " + minions.level)
+          let attackMod = minions.level - playerCharacter.level
+          console.log(minions.name + " attack mod is: " + attackMod)
         
-        let roll1 = rollDie(6)
-        let roll2 = rollDie(6)
-        let twoD6 = roll1 + roll2
-        let damage = 0
-        console.log("Minion: " + counter + " attacks the player character --> roll 2d6: " + roll1 + " + " + roll2 + " = " + twoD6)
+          let roll1 = rollDie(6)
+          let roll2 = rollDie(6)
+          let twoD6 = roll1 + roll2
+          let damage = 0
+          console.log("Minion: " + counter + " attacks the player character --> roll 2d6: " + roll1 + " + " + roll2 + " = " + twoD6)
         
-        let total = (twoD6 + attackMod)
-        console.log("total (2d6 + attack modifier): " + total)
+          let total = (twoD6 + attackMod)
+          console.log("total (2d6 + attack modifier): " + total)
         
-        // "target" should default to: 7
-        let target = minions.attack
-        console.log("minion target number: " + target)
+          // "target" should default to: 7
+          let target = minions.attack
+          console.log("minion target number: " + target)
         
-        
-        
-        
-        
-        if (total < target) {
-          console.log("minion missed!")
-          rowString = `<tr><td class="border-0 defaultText text-left"> * ${minions.name} #${counter} attacked ${playerCharacter.name} but missed!</td></tr>`
-          $("#combatTableBody").append(rowString)
-        } else {
-          console.log("minion hit the PC")
-          console.log("minion damage mod: " + minions.dmg_mod)
-          let dmg = total - target
-          console.log("dmg = " + total + " - " + target + " = " + dmg)
-          dmg += minions.dmg_mod
-          console.log("dmg + minions.dmg_mod = " + dmg)
-          
-          // subtract PC's armor (if any)
-          console.log("PC armor: " + playerCharacter.armor)
-          dmg = dmg - playerCharacter.armor
-          console.log("dmg is now: " + dmg)
-          if (dmg < 1) {
-            rowString = `<tr><td class="border-0 defaultText text-left">* ${minions.name} #${counter} hits ${playerCharacter.name} for 0 damage!</td></tr>`
+          if (total < target) {
+            console.log("minion missed!")
+            rowString = `<tr><td class="border-0 defaultText text-left"> * ${minions.name} #${counter} attacked ${playerCharacter.name} but missed!</td></tr>`
             $("#combatTableBody").append(rowString)
           } else {
-            console.log("PC was hit for " + dmg)
-            playerCharacter.cur_hp = playerCharacter.cur_hp - dmg
-            updateNavbar()
+            console.log("minion hit the PC")
+            console.log("minion damage mod: " + minions.dmg_mod)
+            let dmg = total - target
+            console.log("dmg = " + total + " - " + target + " = " + dmg)
+            dmg += minions.dmg_mod
+            console.log("dmg + minions.dmg_mod = " + dmg)
+          
+            // subtract PC's armor (if any)
+            console.log("PC armor: " + playerCharacter.armor)
+            dmg = dmg - playerCharacter.armor
+            console.log("dmg is now: " + dmg)
+            if (dmg < 1) {
+              rowString = `<tr><td class="border-0 defaultText text-left">* ${minions.name} #${counter} hits ${playerCharacter.name} for 0 damage!</td></tr>`
+              $("#combatTableBody").append(rowString)
+            } else {
+              console.log("PC was hit for " + dmg)
+              playerCharacter.cur_hp = playerCharacter.cur_hp - dmg
+              updateNavbar()
 
-            rowString = `<tr><td class="border-0 defaultText text-left">* ${minions.name} #${counter} hits ${playerCharacter.name} for <span class="rounded" style="padding: 2px; background-color: red">${dmg}</span> damage!</td></tr>`
-            $("#combatTableBody").append(rowString)
+              rowString = `<tr><td class="border-0 defaultText text-left">* ${minions.name} #${counter} hits ${playerCharacter.name} for <span class="rounded" style="padding: 2px; background-color: red">${dmg}</span> damage!</td></tr>`
+              $("#combatTableBody").append(rowString)
             
-            // check to see if the pc is alive, knocked out or dead
-            if (playerCharacter.cur_hp < 6 && playerCharacter.cur_hp > 0) {
-              // PC is knocked out
-              round = 0
-              console.log("PC is alive but knocked out")
-              $("#npcParagraph").append('<p>' + playerCharacter.name + ' has been knocked out! You had best start praying!</p>')
-              // it is possible that the PCs minions can save the day
-              // but if there are no retainers, roll to see if the PC has to start over
-              if (retainers.length < 0) {
-                continueAttack = false
-                let roll = rollDie(6)
-                if (roll > 3) {
-                  // PC lives to fight another day and wakes up at an inn
-                  btnString = `
-                    <div class="d-flex mt-2 justify-content-around">
-                    <button onclick="rollInnTable()" data-id="rollInnBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-                      <i class="mt-2"></i>
-                      Go to Inn
-                    </button>
-                    </div>
-                  `
-                  $("#gameButtons").html(btnString)
-                } else {
-                  // The evil minions kill the helpless PC.  Game over man...
-                  playerCharacter.alive = false
-                  updateNavbar()
-                  $("#npcParagraph").empty()
-                  $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God have mercy on your soul. <br><br>REQVIESCAT IN PACE</p>')
-                  rowString = `
-                    <div class="d-flex mt-2">
-                    <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-                      <i class="mt-2"></i>
-                      Start New Game
-                    </button>
-                    </div>`
-                  $("#gameButtons").html(rowString)
-                }
+              // check to see if the pc is alive, knocked out or dead
+              if (playerCharacter.cur_hp < 6 && playerCharacter.cur_hp > 0) {
+                // PC is knocked out
+                round = 0
+                console.log("PC is alive but knocked out")
+                $("#npcParagraph").append('<p>' + playerCharacter.name + ' has been knocked out! You had best start praying!</p>')
+                // To do: it is possible that the PCs minions can save the day
+                // but if there are no retainers, roll to see if the PC has to start over
+                //if (retainers.length < 1) {
+
+                  continueAttack = false
+                  let roll = rollDie(6)
+                  if (roll > 3) {
+                    // PC lives to fight another day and wakes up at an inn
+                    $("#npcParagraph").append(`<br><br>${minions.name} leave ${playerCharacter.name} for dead... but he lives!<br>`)
+                    btnString = `
+                      <div class="d-flex mt-2 justify-content-around">
+                      <button onclick="rollInnTable()" data-id="rollInnBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                        <i class="mt-2"></i>
+                        Go to Inn
+                      </button>
+                      </div>`
+                    $("#gameButtons").html(btnString)
+                  } else {
+                    // The evil minions kill the helpless PC.  Game over man...
+                    playerCharacter.alive = false
+                    updateNavbar()
+                    $("#npcParagraph").empty()
+                    $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God have mercy on your soul. <br><br>REQVIESCAT IN PACE</p>')
+                    rowString = `
+                      <div class="d-flex mt-2">
+                      <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                        <i class="mt-2"></i>
+                        Start New Game
+                      </button>
+                      </div>`
+                    $("#gameButtons").html(rowString)
+                  }
+                //} else {
+                  // minions can save the day here?
+
+                //}
               }
-            }
-            if (playerCharacter.cur_hp < 1) {
-              continueAttack = false
-              round = 0
-              // pc is dead!
-              playerCharacter.alive = false
-              console.log("PC has died")
-              $("#storyDivHead").empty()
-              $("#npcParagraph").empty()
-              $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God have mercy on your soul. <br><br>REQVIESCAT IN PACE</p>')
-              rowString = `
-                <div class="d-flex mt-2">
-                <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-                  <i class="mt-2"></i>
-                  Start New Game
-                </button>
-                </div>`
-              $("#gameButtons").html(rowString)
-            }
-            updateNavbar()
-          } 
-        }
-        
+              if (playerCharacter.cur_hp < 1) {
+                continueAttack = false
+                round = 0
+                // pc is dead!
+                playerCharacter.status = "dead"
+                console.log("PC has died")
+                $("#storyDivHead").empty()
+                $("#npcParagraph").empty()
+                $("#npcParagraph").html('<p>' + playerCharacter.name + ' has been slain by ' + minions.name + '!<br>  May God have mercy on your soul. <br><br>REQVIESCAT IN PACE</p>')
+                rowString = `
+                  <div class="d-flex mt-2">
+                  <button onclick="startNewGame()" data-id="startNewGameBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+                    <i class="mt-2"></i>
+                    Start New Game
+                  </button>
+                  </div>`
+                $("#gameButtons").html(rowString)
+              }
+              updateNavbar()
+            } 
+          }
+        //}
         
         
         if (!continueAttack) return
