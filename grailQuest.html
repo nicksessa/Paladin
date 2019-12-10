@@ -418,10 +418,26 @@
   <script>
   // -----------------------------------------
   // Global variables
-  //let initiativeTarget = 3
+  // -----------------------------------------
 
     let rebellionLevelIncreased = false
 
+
+
+    let sideQuests = 
+      [
+        "Taulurd the Giant",
+        "A Dragon",
+        "The Green Knight",
+        "The Questing Beast",
+        "Three Blind Old Hags",
+        "Laamorz the Wizard"
+      ]
+
+
+
+
+  // -----------------------------------------
   // End Global variables
   // -----------------------------------------
   
@@ -549,42 +565,12 @@
 
       setupLocalStorage("theGrailQuest_ryu2012_character", "character")
       setupLocalStorage("theGrailQuest_ryu2012_retainer", "retainer")
+      setupLocalStorage("theGrailQuest_ryu2012_sideQuests", "sideQuests")
+
       //setupLocalStorage("theGrailQuest_ryu2012_equipment", "equipment")
       //setupLocalStorage("", "log")
 
 
-
-      // check to see if the variable exists
-      //if (localStorage.getItem("theGrailQuest_ryu2012_character")) {
-        //alert("local storage item exists")
-        // next check to see if the variable is null
-      //  pcLocalStorage = JSON.parse(localStorage.getItem("theGrailQuest_ryu2012_character"))
-      //  if (isEmpty(pcLocalStorage)) {
-          //alert("local storage variable is empty.  Creating a new Character")
-      //    console.log("local storage character variable is empty.  Creating a new Character")
-          // create a new local storage object using the default character
-      //    localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(defaultPlayerCharacter))
-          
-      //  } else {
-          // the local storage variable exists and is not null
-          // set it to the playerCharacter object
-          // To do: we need to test the format of the object before setting it.
-          
-          //alert("local storage variable exists and is not null.  Set playerCharacter obj")
-      //    console.log("Local storage variable for the character exists and is not null.  Set the playerCharacter object.")
-      //    let objString = JSON.stringify(pcLocalStorage)
-          //console.log("obj: " + objString)
-      //    playerCharacter = pcLocalStorage
-          //console.log("playerCharacter object is: " + objString)
-      //  }
-      //} else {
-        // playerCharacterStats local variable is null - does not exist
-        // alert("local storage variable does not exist so set the default")
-      //  console.log("local storage variable for character does not exist so set the default")
-        // so create a new local storage variable using the default PC
-        // create a new local storage object using the default character
-      //  localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(defaultPlayerCharacter))
-      //}
     } else {
       //alert("This browser does not support Local Storage")
       console.log("This browser does not support Local Storage")
@@ -606,6 +592,9 @@
           }
           if (objType == "retainer") {
             localStorage.setItem(varName, JSON.stringify(retainers))
+          }
+          if (objType == "sideQuests") {
+            localStorage.setItem(varName, JSON.stringify(sideQuests))
           }
           if (objType == "equipment") {
             localStorage.setItem(varName, equipment)
@@ -632,6 +621,13 @@
             //console.log("playerCharacter object is: " + objString)
           }
 
+          if (objType == "sideQuests") {
+            let objString = JSON.stringify(pcLocalStorage)
+            //console.log("obj: " + objString)
+            sideQuests = pcLocalStorage
+            //console.log("sideQuests array is: " + objString)
+          }
+
         }
       } else {
         // playerCharacterStats local variable is null - does not exist
@@ -648,19 +644,15 @@
           localStorage.setItem(varName, JSON.stringify(retainers))
         }
 
+        if (objType == "sideQuests") {
+          // Create a new local storage variable
+
+          localStorage.setItem(varName, JSON.stringify(sideQuests))
+        }
+
       }
     }
 
-
-    let playerCharacterEquipment = localStorage.getItem("theGrailQuest_ryu2012_equipment")
-    if (playerCharacterEquipment !== null && localStorage.playerCharacterEquipment !== '') {
-    
-    }
-    
-    let playerCharacterLog = localStorage.getItem("theGrailQuest_ryu2012_log")
-    if (playerCharacterLog !== null && localStorage.playerCharacterLog !== '') {
-    
-    }
     
     // Go here for more examples: https://www.w3schools.com/jsref/obj_storage.asp
     
@@ -897,6 +889,7 @@ let retainerNameFirst_A = [
       if (canUseLocalStorage) {
         localStorage.setItem('theGrailQuest_ryu2012_character', JSON.stringify(playerCharacter))
         localStorage.setItem('theGrailQuest_ryu2012_retainer', JSON.stringify(retainers))
+        localStorage.setItem('theGrailQuest_ryu2012_sideQuests', JSON.stringify(sideQuests))
       }
       
 
@@ -3242,15 +3235,7 @@ let retainerNameFirst_A = [
     // Heroic Quest Table
     // -----------------------------------------------------
     
-    let sideQuests = 
-      [
-        "Taulurd the Giant",
-        "A Dragon",
-        "The Green Knight",
-        "The Questing Beast",
-        "Three Blind Old Hags",
-        "Laamorz the Wizard"
-      ]
+    // sideQuests is an array and is defined above
 
     let taulurdObj = {
       name: "Taulurd the Giant",
@@ -3556,7 +3541,7 @@ let retainerNameFirst_A = [
         if (saved == "Passed") saves++
       }
       if (saves == 0) {
-        $("#gameTableText").append("You fly into a mad rage killing and destroying everything in sight... including the Eye of True Seeing!  To say the least, this is a very dishonorable act.")
+        $("#gameTableText").append("<br><br><strong>You fly into a mad rage killing and destroying everything in sight... including the Eye of True Seeing!</strong>  To say the least, this is a very dishonorable act.")
 
         playerCharacter.dishonor = true
         updateNavbar()
@@ -3595,10 +3580,11 @@ let retainerNameFirst_A = [
       }
 
         // remove them from the sideQuest array
-        sideQuests = $.grep(sideQuests, function(e){ 
-          return e.name != "Three Blind Old Hags"; 
+        sideQuests = $.grep(sideQuests, function(value){ 
+          return value != "Three Blind Old Hags"; 
         });
-
+        playerCharacter.sideQuests++
+        updateNavbar()
     }
 
 
