@@ -32,9 +32,7 @@ app.get("/grailQuest", function (req, res) {
   
 app.use(function(req, res) {
     res.sendFile(path.join(__dirname, "./landingPage.html"));
-  });
-}
-
+});
 
 // =============================================================================
 // LISTENER
