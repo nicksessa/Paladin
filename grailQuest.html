@@ -399,12 +399,14 @@
       <!-- footer row-->
 
       <div class="footer textBlock-bg pl-3 pt-2  border-bottom-0 border-right-0 bg-dark d-flex flex-wrap d-flex justify-content-end ">
-        <button type="button" class="btn btn-dark" data-toggle="collapse" data-target="#npcCollapse"
-          aria-expanded="false" aria-controls="npcCollapse">NPC</button>
+
+        <!-- <button type="button" class="btn btn-dark" data-toggle="collapse" data-target="#npcCollapse"
+          aria-expanded="false" aria-controls="npcCollapse">NPC</button> -->
+
         <button onclick="showInventory()" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Inventory</button>
         <button onclick="setCharacterModal()" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Character</button>
         <button onclick="showRetainersModal()" id="openRetainerModal" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Retainers</button>
-        <button type="button" class="btn btn-dark text-left">View Log</button>
+        <!-- <button type="button" class="btn btn-dark text-left">View Log</button> -->
       </div>
 
 
@@ -435,6 +437,19 @@
       ]
 
     let hagMoney = 0
+
+
+    let freeLodging = false
+
+
+    let testOfPiety = [
+      "Lancelot",
+      "Sword of the Red Hilt",
+      "Succubus",
+      "Griffins",
+      "Sword of the Strange Belt",
+      "Nimue"
+    ]
 
 
   // -----------------------------------------
@@ -474,7 +489,7 @@
       att_mod: 0,
       dmg_mod: 2,
       exp: 0,
-      money: 20,
+      money: 40,
       species: "human",
       sex: "male",
       healingPotions: 3,
@@ -491,7 +506,9 @@
       captainsSlain: 0,
       onPilgrimage: false,
       pilgrimageModifier: 0,
-      dishonor: false
+      dishonor: false,
+      foundLancelot: false,
+      foundGrail: false
     }
     
     // This is the PC object we update throughout the game
@@ -505,7 +522,7 @@
       att_mod: 0,
       dmg_mod: 2,
       exp: 0,
-      money: 20,
+      money: 40,
       species: "human",
       sex: "male",
       healingPotions: 3,
@@ -522,7 +539,9 @@
       captainsSlain: 0,
       onPilgrimage: false,
       pilgrimageModifier: 0,
-      dishonor: false
+      dishonor: false,
+      foundLancelot: false,
+      foundGrail: false,
     }
     
     let retainers = []
@@ -1072,6 +1091,8 @@ let retainerNameFirst_A = [
       playerCharacter.onPilgrimage = false
       playerCharacter.pilgrimageModifier = 0
       playerCharacter.dishonor = false
+      playerCharacter.foundLancelot = false
+      playerCharacter.foundGrail = false
       updateNavbar()
       
       let runJourneyButton = `
@@ -1093,7 +1114,7 @@ let retainerNameFirst_A = [
             <i class="mt-2"></i>
             Journey On
           </button>
-        `
+          </div>`
       $("#gameButtons").html(runJourneyButton)
     }
     
@@ -1103,6 +1124,25 @@ let retainerNameFirst_A = [
       $("#gameTableTitle").html("Journey on... ")
       $("#gameTableText").empty()
       //$("#gameTableText").html(`${playerCharacter.name} sets off on a journey and ...`)
+
+      // check to see if the Grail has been found
+
+      if (playerCharacter.foundGrail) {
+
+        $("#gameTableText").html(`Click below to return the Grail to King Arthur in Camelot.`)
+
+        let btnString = `
+          <div class="mt-2">
+          <button onclick="returnToCamelot()" data-id="gotoCamelotBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+            <i class="mt-2"></i>
+            Return to Camelot
+          </button>
+        </div>
+        `
+        $("#gameButtons").html(btnString)
+        return
+      } //else {
+
       console.log("roll on the journey table")
       playerCharacter.turn++
       updateNavbar()
@@ -1178,6 +1218,8 @@ let retainerNameFirst_A = [
             rollTraitorsTable()
           }
           break;
+      //}
+
       }
     };
     
@@ -1257,6 +1299,8 @@ let retainerNameFirst_A = [
       
       $("#gameTableTitle").html("Inn Table")
       
+      freeLodging = false
+
       let rowString = ""
       let num = 0
       // clear the story div
@@ -1293,6 +1337,8 @@ let retainerNameFirst_A = [
               // random retainer has been killed
               rowString += "<br>If that wasn't bad enough, one of your retainers has been killed in an ambush!"
               adventureLog.push({ 'turn': playerCharacter.turn, 'roll': twoD6, 'result': 'One of your retainers has been killed!' });
+              console.log("a retainer has been killed in an ambush")
+              // To do: randomize which retainer has been killed
             }
           }
           $("#gameTableText").append(rowString)
@@ -1344,7 +1390,7 @@ let retainerNameFirst_A = [
           if (num < 6) {
             console.log("[6] Abundant Retainers looking for work")
             $("#gameTableText").append("<p>Abundant Retainers looking for work.  (+1 to the Find Retainer Roll)</p>")
-          adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Add +1 to the Find Retainer roll.' });
+            adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Add +1 to the Find Retainer roll.' });
             playerCharacter.findRetainerModifier++
             updateNavbar()
           } else {
@@ -1361,6 +1407,7 @@ let retainerNameFirst_A = [
             updateNavbar()
           }
           $("#gameTableText").append("<br>Free food and lodging!<br>")
+          freeLodging = true
           console.log("[7] Free food and lodging!")
           adventureLog.push({ 'turn': playerCharacter.turn, 'roll': roll_1d6, 'result': 'Free food and lodging!' });
         break;
@@ -1401,7 +1448,7 @@ let retainerNameFirst_A = [
   function stayAtInn() {
     let rowString = ""
     availableRetainers = []
-    if (playerCharacter.money < 10) {
+    if (playerCharacter.money < 10 && !freeLodging) {
       // charity
       $("#gameTableText").append(`<p>Since you don't have enough money, the local church, having heard of your daring exploits, puts you up for the night for free. </p>`)
       healUp()
@@ -1417,9 +1464,12 @@ let retainerNameFirst_A = [
       $("#gameButtons").empty()
       $("#gameButtons").html(rowString)
     } else {
-      playerCharacter.money -= 10
-      updateNavbar()
-      $("#gameTableText").append(`<p>You pay the innkeeper 10 silver pieces for food and lodging for the night. </p>`)
+      if (!freeLodging) {
+        playerCharacter.money -= 10
+        updateNavbar()
+        $("#gameTableText").append(`<p>You pay the innkeeper 10 silver pieces for food and lodging for the night. </p>`)
+      }
+
       healUp()
       rollForRumors()
       // retain/fire retainers
@@ -2450,8 +2500,13 @@ let retainerNameFirst_A = [
 
       let roll1 = rollDie(6)
 
+      if (playerCharacter.foundLancelot) roll1 = roll1 +2
+
+      console.log("die roll: " + roll1)
+
       if (roll1 < 4) {
-        $("gameTableText").html(`Word spreads that you have found the Holy Grail!  However, on the road to Camelot ${playerCharacter.name} is intercepted by a knight!`)
+        console.log("intercepted by an opposing knight")
+        $("#gameTableText").html(`Word spreads that you have found the Holy Grail!  However, on the road to Camelot ${playerCharacter.name} is intercepted by a knight!`)
 
         let btnString = `
           <div class="mt-2">
@@ -2466,8 +2521,9 @@ let retainerNameFirst_A = [
 
 
       } else {
-        $("gameTableText").html(`As ${playerCharacter.name} returns to Camelot, he finds King Arthur drained of all energy and near death. But when he drinks from the Holy Grail, life flows back! <br>He stands, unsheathes Excalibur and declares ${playerCharacter.name} to be the greatest of his paladins!<br><br>King Arthur now raises his war standard, summons the rest of his remaining nobels and engages Morgana and her brood on the field of battle... and he wins! <br><br> Peace reigns... for a time.`)
-        $("gameTableText").append("<br><br>Would you like to play again?")
+        console.log("Victory!")
+        $("#gameTableText").html(`As ${playerCharacter.name} returns to Camelot, he finds King Arthur drained of all energy and near death. But when he drinks from the Holy Grail, life flows back! <br>He stands, unsheathes Excalibur and declares ${playerCharacter.name} to be the greatest of his paladins!<br><br>King Arthur now raises his war standard, summons the rest of his remaining nobels and engages Morgana and her brood on the field of battle... and he wins! <br><br> Peace reigns... for a time.`)
+        $("#gameTableText").append("<br><br>Would you like to play again?")
 
         btnString = `
           <div class="d-flex mt-2">
