@@ -1101,7 +1101,7 @@ let retainerNameFirst_A = [
             <i class="mt-2"></i>
             Journey On
           </button>
-        `
+          </div>`
       $("#gameButtons").html(runJourneyButton)
     }
     
@@ -1820,12 +1820,14 @@ let retainerNameFirst_A = [
       let secondRoll = rollDie(6)
       let totalRoll = firstRoll + secondRoll
       
-      totalRoll = 9
+      //totalRoll = 11
       
       altEncounter = false
       //alert("Roll: (" + firstRoll + " + " + secondRoll + ") = " + totalRoll)
+
       theEncounter = encounterTable[totalRoll]
       console.log("The encounter rolled: "+ theEncounter)
+
       //alert("You encounter: " + theEncounter)
       // create an encounter list in anticipation of the player spending rumor points to modify the results
       let encounterChoices = []
@@ -1904,11 +1906,9 @@ let retainerNameFirst_A = [
             <i class="mt-2"></i>
             Go To Encounter
           </button>
-        `
+        </div>`
         $("#gameButtons").append(gotoEncounterButton)
       } else {
-        //$("#gameTableInfo").parent().empty()
-        //$("#gameTableText").html(theEncounter)
         $("#gameTableText").append("You have rolled a " + totalRoll + " (" + theEncounter + ") on the Encounter table.  Go to that encounter OR you may spend 3 rumors to select an encounter from the list below.")
         // show radio
         let formDiv = `
@@ -1921,8 +1921,7 @@ let retainerNameFirst_A = [
             <div class="mt-2 custom-control custom-radio">
               <input id="myRadio${index}" class="custom-control-input" type="radio" name="customRadio" disabled> 
               <label class="custom-control-label" for="myRadio${index}">${value}</label>
-            </div>
-      `
+            </div>`
           $("#altEncountersForm").append(myRadio)
         });
         // Spend rumors Y/N  (button)
@@ -1933,7 +1932,7 @@ let retainerNameFirst_A = [
             <i class="mt-2"></i>
             Click here to Spend 3 Rumors
           </button>
-        `
+          </div>`
         // Show radio options but make them all inactive
         $("#gameButtons").html(rumorButton)
         let gotoEncounterButton = `
@@ -1942,7 +1941,7 @@ let retainerNameFirst_A = [
             <i class="mt-2"></i>
             Go To Encounter
           </button>
-        `
+          </div>`
         $("#gameButtons").append(gotoEncounterButton)
       }
     }
@@ -1964,7 +1963,7 @@ let retainerNameFirst_A = [
           <i class="mt-2"></i>
           Go To Encounter
         </button>
-      `
+        </div>`
       $("#gameButtons").append(gotoEncounterButton)
       $("#gameTableText").append("Select one of the following encounters.")
       altEncounter = true
@@ -1974,8 +1973,6 @@ let retainerNameFirst_A = [
       // check to see if the user went for the alternative encounters
       console.log("Alternative Encounter selected? " + altEncounter)
       if (altEncounter) {
-        //theEncounter = $("#altEncountersForm input[type='radio']:checked").val()
-        //theEncounter = $("input[name='customRadio']:checked").val()
         
         $("input[type='radio']:checked").each(function() {
           var idVal = $(this).attr("id");
@@ -2841,66 +2838,305 @@ let retainerNameFirst_A = [
 
     }
  
+    // a global:
+    let thePietyTest = ""
     
     function runTestOfPiety() {
-      $("#gameTableText").empty()
-      $("#gameButtons").empty()
-      
-      // Test of piety: 
-      let roll = rollDie(6)
-      if (roll <= playerCharacter.piety) {
-        // test passed
+      console.log("piety table contains: " + testOfPiety.length + " elements")
+
+      let roll1 = rollDie(testOfPiety.length)
+      console.log("piety table roll: " + roll1)
+
+      let pietyQuest = testOfPiety[roll1 -1]
+      console.log("piety quest: " + pietyQuest)
+      let pietyRoll = 0
+      let rowString = ""
+
+      switch(pietyQuest) {
+        case "Lancelot":
+          runLancelot()
+        break;
+
+        case "Sword of the Red Hilt":
+          runSwordOfTheRedHilt()
+        break
+
+        case "Succubus":
+          runSuccubus()
+        break
+
+        case "Griffins":
+          runGriffins()
+        break
+
+        case "Sword of the Strange Belt":
+          runSwordOfTheStrangeBelt()
+        break
+
+        case "Nimue":
+          runNimue()
+        break
+
       }
-      
-      // to gain a piety point:
-      roll = rollDie(6)
-      if (roll > playerCharacter.piety) {
-        // playerCharacter.piety ++
-      }
-      
-      
-      roll = rollDie(6)
-      switch (roll) {
-        case 1: 
-          // hermit (Lancelot!)
-        break;
-        case 2:
-          // Sword of the Red Hilt
-        break;
-        case 3: 
-          // Attacked by a Succubus
-        break;
-        
-        case 4:
-          // griffins
-          // if pass, then roll on the Encounter Table 4 times and choose one
-        break;
-        
-        case 5:
-          // Ship made from the wood from the Tree of Life (treasure: Sword of the Strange Belt)
-        break;
-        
-        case 6:
-          // Nimue (Lady of the Lake) appears!
-          // select any option from this list.
-        break;
-      }
-      
-      
-      
-      
-      // click to go to the Journey table
-      let gotoJourneyButton = `
-        <div class="mt-2">
-        <button onclick="rollJourneyTable()" data-id="gotoJourneyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
-        <i class="mt-2"></i>
-        Continue your Journey
-            </button>
-      `
-      $("#gameButtons").html(gotoJourneyButton)
-        
     }
     
+
+    function goToTest() {
+      $("input[type='radio']:checked").each(function() {
+        var idVal = $(this).attr("id");
+        console.log($("label[for='"+idVal+"']").text());
+        thePietyTest = ($("label[for='"+idVal+"']").text());
+      });
+
+      if (thePietyTest == "") {
+        runNimue()
+      } else {
+        switch(thePietyTest) {
+          case "Lancelot":
+            runLancelot()
+          break;
+
+          case "Sword of the Red Hilt":
+            runSwordOfTheRedHilt()
+          break
+
+          case "Succubus":
+            runSuccubus()
+          break
+
+          case "Griffins":
+            runGriffins()
+          break
+
+          case "Sword of the Strange Belt":
+            runSwordOfTheStrangeBelt()
+          break
+
+          case "Nimue":
+            runNimue()
+          break
+
+        }
+      }
+    }
+
+    function runLancelot() {
+      let rowString = ""
+      $("#gameTableTitle").html("A Test of Piety! - Lancelot")
+          $("#gameTableText").html("You meet a hermet, who you recognize as Sir Lancelot! If you pass a Piety Test, Lancelot will be persuaded to return to Camelot.<br>")
+
+          let pietyRoll = rollDie(6)
+          console.log("piety roll: " + pietyRoll)
+          if (pietyRoll <= playerCharacter.piety) {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Passed!<br>`)
+            $("#gameTableText").append("<br>Lancelot is moved by your humble appeal and returns to Camelot at your behest!<br><br>Thanks be to God!")
+            playerCharacter.foundLancelot = true
+
+
+            // remove this option from the testOfPiety array
+            testOfPiety = $.grep(testOfPiety, function(value){ 
+              return value != "Lancelot"; 
+            });
+            console.log("num of piety quests is now: " + testOfPiety.length)
+            updateNavbar()
+          } else {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Failed!<br>`)
+            $("#gameTableText").append("<br>Unfortunately Lancelot is not persuaded and goes back to eating locusts, wild honey and generally being a voice crying out in the wilderness.")
+          }
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="journeyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+    }
+
+    function runSwordOfTheRedHilt() {
+      let rowString = ""
+      $("#gameTableTitle").html("A Test of Piety! - Sword of the Red Hilt")
+
+          $("#gameTableText").html("Stuck in a block of red marble is the bejeweled Sword of the Red Hilt.  This magic two handed sword allows the wielder to roll twice on attack rolls, taking the higher of the two as the result.")
+
+
+          let pietyRoll = rollDie(6)
+          console.log("piety roll: " + pietyRoll)
+          if (pietyRoll <= playerCharacter.piety) {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Passed!<br>`)
+            $("#gameTableText").append("<br>You are able to claim the sword!")
+
+            // To do: add it to equipment and combat functions
+
+
+            // remove this option from the testOfPiety array
+            testOfPiety = $.grep(testOfPiety, function(value){ 
+              return value != "Sword of the Red Hilt"; 
+            });
+            console.log("num of piety quests is now: " + testOfPiety.length)
+            updateNavbar()
+          } else {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Failed!<br>`)
+            $("#gameTableText").append("<br>Unfortunately you are unable to pull the sword from the block of marble.")
+          }
+
+
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="journeyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+    }
+
+    function runSuccubus() {
+      let rowString = ""
+      $("#gameTableTitle").html("A Test of Piety! - Succubus")
+          $("#gameTableText").html("You are attacked by a Succubus in your sleep.<br>")
+
+          let pietyRoll = rollDie(6)
+          console.log("piety roll: " + pietyRoll)
+          if (pietyRoll <= playerCharacter.piety) {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Passed!<br>`)
+            $("#gameTableText").append("<br>You resist the lies of the demon and wake up completely refreshed!<br><br>(You are fully healed)")
+
+            playerCharacter.cur_hp = playerCharacter.max_hp
+
+            // remove this option from the testOfPiety array
+            testOfPiety = $.grep(testOfPiety, function(value){ 
+              return value != "Succubus"; 
+            });
+            console.log("num of piety quests is now: " + testOfPiety.length)
+          } else {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Failed!<br>`)
+            $("#gameTableText").append("<br>Unfortunately you have fallen for the lies of the demon.<br><br>This is an act of dishonor. <br><br>(You will not be able to gain any more piety points until you complete a Pilgrimage to a Shrine.)")
+            playerCharacter.dishonor = true
+            
+          }
+          updateNavbar()
+
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="journeyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+    }
+
+    function runGriffins() {
+      let rowString = ""
+      $("#gameTableTitle").html("A Test of Piety! - Griffin")
+          $("#gameTableText").html("You see griffins! On passing a Piety Test, yo can fly one.<br>")
+
+          let pietyRoll = rollDie(6)
+          console.log("piety roll: " + pietyRoll)
+          if (pietyRoll <= playerCharacter.piety) {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Passed!<br>`)
+            $("#gameTableText").append("You can fly the griffins to one of the following encounters:")
+
+          } else {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Failed!<br>`)
+            $("#gameTableText").append("<br>The griffins fly away as you attempt to approach them.")
+          }
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="journeyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+
+    }
+
+    function runSwordOfTheStrangeBelt() {
+      let rowString = ""
+      $("#gameTableTitle").html("A Test of Piety! - Sword of the Strange Belt")
+          $("#gameTableText").html("On the shore is a boat made from the wood of the Tree of Life.  If you pass a Piety Test, you may board it.<br>")
+
+          let pietyRoll = rollDie(6)
+          console.log("piety roll: " + pietyRoll)
+          if (pietyRoll <= playerCharacter.piety) {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Passed!<br>`)
+            $("#gameTableText").append("You enter the boat and find The Sword of the Strange Belt! <br><br>This magic sword has prophecies inscribed on its scabbard. It tells you of your next four Encounters in exact order.")
+            // To do: figure out how to get this sword to work.
+            //   Create an array of the encounters. Display them to the player somehow. Then remove them as they are activated.
+
+            // remove this option from the testOfPiety array
+            testOfPiety = $.grep(testOfPiety, function(value){ 
+              return value != "Sword of the Strange Belt"; 
+            });
+            console.log("num of piety quests is now: " + testOfPiety.length)
+
+          } else {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Failed!<br>`)
+            $("#gameTableText").append("<br>You are unable to board the boat.")
+          }
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="journeyBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+
+    }
+
+    function runNimue() {
+      let rowString = ""
+      $("#gameTableTitle").html("A Test of Piety! - Notre Dame du Lac")
+
+          $("#gameTableText").html("Nimue, the Lady of the Lake (Notre Dame du Lac) appears.<br>")
+          $("#gameTableText").append("<br>You can select any of the following Tests of Piety:")
+
+          // create a custom radio input form
+          let formDiv = `<form id="testOfPietyTableForm"></form>`
+
+          // append the form ID to the div so that we have an anchor point
+          $("#gameTableText").append(formDiv)
+
+          // loop through the array and build the radio buttons
+          $.each(testOfPiety, function( index, value ) {
+            console.log( index + ": " + value );
+            let myRadio = `
+              <div class="mt-2 custom-control custom-radio">
+                <input id="myRadio${index}" class="custom-control-input" type="radio" name="customRadio"> 
+                <label class="custom-control-label" for="myRadio${index}">${value}</label>
+              </div>`
+            $("#testOfPietyTableForm").append(myRadio)
+          });
+
+
+
+          // To do: if you posess the Gem of Giramphiel, you can give it to her for a Piety Point and gain a rumor.
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="goToTest()" data-id="goToTestBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Go to Test
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+
+    }
+
     function runMerlin() {
       $("#gameTableText").empty()
       $("#gameButtons").empty()
@@ -5754,6 +5990,227 @@ function createNPCSidebar() {
     // -----------------------------------------------------
     // End XP Roll
     // -----------------------------------------------------
+
+
+
+    // -----------------------------------------------------
+    // Test of Piety
+    // -----------------------------------------------------
+
+    function testOfPietyTable() {
+      // get random item from the test of piety table
+
+      console.log("piety table contains: " + testOfPiety.length + " elements")
+
+      let roll1 = rollDie(testOfPiety.length)
+      console.log("piety table roll: " + roll1)
+
+      let pietyQuest = testOfPiety[roll1 -1]
+      console.log("piety quest: " + pietyQuest)
+      let pietyRoll = 0
+
+      switch(pietyQuest) {
+        case "Lancelot":
+          // Lancelot
+          $("#gameTableText").html("You meet a hermet, who you recognize as Sir Lancelot! If you pass a Piety Test, Lancelot will be persuaded to return to Camelot.<br>")
+
+          pietyRoll = rollDie(6)
+          console.log("piety roll: " + pietyRoll)
+          if (pietyRoll <= playerCharacter.piety) {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Passed!<br>`)
+            $("#gameTableText").append("<br>Lancelot is moved by your humble appeal and returns to Camelot at your behest!<br><br>Thanks be to God!")
+            playerCharacter.foundLancelot = true
+
+
+            // remove this option from the testOfPiety array
+            testOfPiety = $.grep(testOfPiety, function(value){ 
+              return value != "Lancelot"; 
+            });
+            console.log("num of piety quests is now: " + testOfPiety.length)
+            updateNavbar()
+          } else {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Failed!<br>`)
+            $("#gameTableText").append("<br>Unfortunately Lancelot is not persuaded and returns to eating locusts and wild honey.")
+          }
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+
+        break;
+        case "Sword of the Red Hilt":
+          $("#gameTableText").html("Stuck in a block of red marble is the bejeweled Sword of the Red Hilt.  This magic two handed sword allows the wielder to roll twice on attack rolls, taking the higher of the two as the result.")
+
+
+          pietyRoll = rollDie(6)
+          console.log("piety roll: " + pietyRoll)
+          if (pietyRoll <= playerCharacter.piety) {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Passed!<br>`)
+            $("#gameTableText").append("<br>You are able to claim the sword!")
+
+            // To do: add it to equipment and combat functions
+
+
+            // remove this option from the testOfPiety array
+            testOfPiety = $.grep(testOfPiety, function(value){ 
+              return value != "Sword of the Red Hilt"; 
+            });
+            console.log("num of piety quests is now: " + testOfPiety.length)
+            updateNavbar()
+          } else {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Failed!<br>`)
+            $("#gameTableText").append("<br>Unfortunately you are unable to pull the sword from the block of marble.")
+          }
+
+
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+
+        break
+
+        case "Succubus":
+          
+          $("#gameTableText").html("You are attacked by a Succubus in your sleep.<br>")
+
+          pietyRoll = rollDie(6)
+          console.log("piety roll: " + pietyRoll)
+          if (pietyRoll <= playerCharacter.piety) {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Passed!<br>`)
+            $("#gameTableText").append("<br>You resist the lies of the demon and wake up completely refreshed!<br><br>(You are fully healed)")
+
+            playerCharacter.cur_hp = playerCharacter.max_hp
+
+            // remove this option from the testOfPiety array
+            testOfPiety = $.grep(testOfPiety, function(value){ 
+              return value != "Succubus"; 
+            });
+            console.log("num of piety quests is now: " + testOfPiety.length)
+          } else {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Failed!<br>`)
+            $("#gameTableText").append("<br>Unfortunately you fallen for the wiles of the demon.<br><br>This is an act of dishonor. <br><br>(You will not be able to gain any more piety points until you complete a Pilgrimage to a Shrine.)")
+            playerCharacter.dishonor = true
+            
+          }
+          updateNavbar()
+
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+
+        break
+
+        case "Griffins":
+          
+          $("#gameTableText").html("You see griffins! On passing a Piety Test, yo can fly one.<br>")
+
+          pietyRoll = rollDie(6)
+          console.log("piety roll: " + pietyRoll)
+          if (pietyRoll <= playerCharacter.piety) {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Passed!<br>`)
+            $("#gameTableText").append("You can fly the griffins to one of the following encounters:")
+
+          } else {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Failed!<br>`)
+            $("#gameTableText").append("<br>The griffins fly away as you attempt to approach them.")
+          }
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+
+        break
+
+
+        case "Sword of the Strange Belt":
+          
+          $("#gameTableText").html("On the shore is a boat made from the wood of the Tree of Life.  If you pass a Piety Test, you may board it.<br>")
+
+          pietyRoll = rollDie(6)
+          console.log("piety roll: " + pietyRoll)
+          if (pietyRoll <= playerCharacter.piety) {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Passed!<br>`)
+            $("#gameTableText").append("You enter the boat and find The Sword of the Strange Belt! <br><br>This magic sword has prophecies inscribed on its scabbard. It tells you of your next four Encounters in exact order.")
+            // To do: figure out how to get this sword to work.
+            //   Create an array of the encounters. Display them to the player somehow. Then remove them as they are activated.
+
+            // remove this option from the testOfPiety array
+            testOfPiety = $.grep(testOfPiety, function(value){ 
+              return value != "Sword of the Strange Belt"; 
+            });
+            console.log("num of piety quests is now: " + testOfPiety.length)
+
+          } else {
+            $("#gameTableText").append(`<br>Piety Roll: ${pietyRoll} - Needed: ${playerCharacter.piety} or less. ---> Failed!<br>`)
+            $("#gameTableText").append("<br>The griffins fly away as you attempt to approach them.")
+          }
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+
+        break
+
+        case "Nimue":
+          $("#gameTableText").html("Nimue, the Lady of the Lake (Notre Dame du Lac) appears.<br>")
+          $("#gameTableText").append("<br>You can select any of the other results on this table:")
+
+          // To do: if you posess the Gem of Giramphiel, you can give it to her for a Piety Point and gain a rumor.
+
+          rowString += `
+          <div class="d-flex mt-2">
+          <button onclick="rollJourneyTable()" data-id="rollLostBtn" type="button" class="btn btn-dark rounded-pill mx-2 btn-sm">
+              <i class="mt-2"></i>
+              Journey On
+          </button>
+          </div>`
+
+          $("#gameButtons").html(rowString)
+
+        break
+
+      }
+
+    }
+
+    // -----------------------------------------------------
+    // End Test of Piety
+    // -----------------------------------------------------
+
+
+
 
 
     
