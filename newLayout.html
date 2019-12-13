@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+body {
+  padding: 0px;
+  margin: 0px;
+}
+
+.header {
+  position: fixed;
+  position: relative;
+  padding: 0px;
+  
+  top: 0px;
+  left: 0px;
+  
+  height: 10%;
+  min-height: 30px;
+  height: 50px;
+  
+  width: 100%;
+  text-align: center;
+  background-color: blue;
+  color: white;
+  overflow-y: auto;
+  
+}
+
+
+.leftSide {
+  left: 1px;
+  position: fixed;
+  position: absolute;
+  border-style: solid;
+  border-color: purple;
+  padding: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  margin-top: 15px;
+
+  margin-bottom: auto;
+
+  
+  height: 80%;
+  
+  
+  width: 20%;
+  text-align: center;
+
+  overflow-y: auto;
+}
+
+.rightSide {
+  position: fixed;
+  position: absolute;
+
+  border-style: solid;
+  border-color: orange;
+  padding: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  margin-top: 5%;
+  margin-top: 15px;
+
+  height: 80%;
+  width: 20%;
+  text-align: center;
+
+  right: 0px;
+  overflow-y: auto;
+}
+
+#mainBody {
+  position: absolute;
+  border-style: solid;
+  border-color: blue;
+  
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  margin-top: 5%;
+  margin-top: 15px;
+
+  margin-left: 10px;
+  margin-right: 10px;
+
+  height: 80%;
+    
+  width: auto;
+  left: 22%;
+  right: 22%;
+
+  overflow-y: auto;
+
+}
+
+.footer {
+   position: fixed;
+   position: absolute;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   height: 50px;
+   background-color: red;
+   color: white;
+   text-align: center;
+}
+
+@media screen and (max-height: 550px) {
+  .leftSide {
+    height: 75%;
+  }
+  .rightSide {
+    height: 75%;
+  }
+  #mainBody {
+    height: 75%;
+  }
+}
+
+@media screen and (max-height: 450px) {
+  .leftSide {
+    height: 70%;
+  }
+  .rightSide {
+    height: 70%;
+  }
+  #mainBody {
+    height: 70%;
+  }
+}
+
+
+@media screen and (max-height: 350px) {
+  .leftSide {
+    height: 55%;
+  }
+  .rightSide {
+    height: 55%;
+  }
+  #mainBody {
+    height: 55%;
+  }
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <p>This is the header block</p>
+</div>
+
+
+
+<div class="leftSide">
+  <p>This is the left side menu area.  Text should wrap by default.</p>
+  
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  
+</div>
+
+<div id="mainBody">
+<h2>Fixed/Sticky Footer Example</h2>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+<p>The footer is placed at the bottom of the page.</p>
+
+</div>
+
+
+<div class="rightSide">
+  <p>This is the right side menu area</p>
+</div>
+
+
+<div class="footer">
+  <p>Footer</p>
+</div>
+
+</body>
+</html> 
