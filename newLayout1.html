@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The Grail Quest</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <!-- Import Custom Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IM Fell English SC">
+
+<style>
+
+body {
+  padding: 0px;
+  margin: 0px;
+
+      font-family: 'IM Fell English SC', serif;
+      color: blanchedalmond;
+      /* Location of the image */
+      background-image: url("https://cdna.artstation.com/p/assets/images/images/001/796/342/large/andreas-rocha-oldforestb02.jpg?1452860763");
+      
+      /* this is the google drive version: */
+      background-image: url("http://drive.google.com/uc?export=view&id=14muus5B7-Qj1L57aNh2vAeERkGQq9eTU");
+      
+      background-image: url("./images/andreas-rocha-deepintheforest08.jpg");
+      /* Background image is centered vertically and horizontally at all times */
+      background-position: center center;
+      /* Background image doesn't tile */
+      background-repeat: no-repeat;
+      /* Background image is fixed in the viewport so that it doesn't move when 
+       the content's height is greater than the image's height */
+      background-attachment: fixed;
+      /* This is what makes the background image rescale based
+       on the container's size */
+      background-size: cover;
+      /* Set a background color that will be displayed
+       while the background image is loading */
+      background-color: #464646;
+
+
+}
+
+.header {
+  position: fixed;
+  position: relative;
+  padding: 0px;
+  
+  top: 0px;
+  left: 0px;
+  
+  min-height: 30px;
+  height: 95px;
+  
+  width: 100%;
+  text-align: center;
+  background-color: blue;
+  color: white;
+  overflow-y: auto;
+  
+
+      border-bottom-right-radius: 30px;
+      border-top-right-radius: 30px;
+      opacity: 0.9;
+      border: 2px solid blanchedalmond;
+      color: blanchedalmond;
+background-color: #ff5500;
+background-color: #464646;
+
+}
+
+
+.leftSide {
+  left: 1px;
+  position: fixed;
+  position: absolute;
+  border-style: solid;
+  border-color: purple;
+  padding: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  margin-top: 15px;
+  margin-bottom: auto;
+
+  height: 80%;
+  width: 20%;
+  text-align: center;
+
+  overflow-y: auto;
+
+  color: black;
+}
+
+.sideMenuBtn {
+  color: black;
+}
+
+.sideMenuBtn:hover {
+  color: blue;
+  text-shadow: 1px 1px 2px black, 0 0 25px yellow, 0 0 5px red;
+  color: black;
+  text-shadow: 1px 1px 2px black, 0 0 25px yellow, 0 0 5px red;
+  font-size: x-large;
+}
+
+
+.rightSide {
+  position: fixed;
+  position: absolute;
+
+  border-style: solid;
+  border-color: orange;
+  padding: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  margin-top: 5%;
+  margin-top: 15px;
+
+  height: 80%;
+  width: 20%;
+  text-align: center;
+
+  right: 0px;
+  overflow-y: auto;
+
+  color: black;
+
+  /*opacity: 0.6;*/
+}
+
+#mainBody {
+  color: blanchedalmond;
+
+  position: absolute;
+  border-style: solid;
+  border-color: blue;
+  
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  margin-top: 5%;
+  margin-top: 15px;
+
+  margin-left: 10px;
+  margin-right: 10px;
+
+  height: 80%;
+    
+  width: auto;
+  left: 22%;
+  right: 22%;
+
+  overflow-y: auto;
+
+}
+
+.footer {
+   position: fixed;
+   position: absolute;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   height: 50px;
+   background-color: red;
+   color: white;
+   text-align: center;
+
+   border: 2px solid blanchedalmond;
+   border-top-left-radius: 30px;
+   border-bottom-left-radius: 30px;
+   /*position: fixed;*/
+   /*right: 0;*/
+   bottom: 0;
+   /*width: 50%;*/
+   background: rgba(41, 43, 44, 0.8);
+   text-align: center;
+
+}
+
+@media screen and (max-height: 550px) {
+  .leftSide {
+    height: 75%;
+  }
+  .rightSide {
+    height: 75%;
+  }
+  #mainBody {
+    height: 75%;
+  }
+}
+
+@media screen and (max-height: 450px) {
+  .leftSide {
+    height: 70%;
+  }
+  .rightSide {
+    height: 70%;
+  }
+  #mainBody {
+    height: 70%;
+  }
+}
+
+
+@media screen and (max-height: 350px) {
+  .leftSide {
+    height: 55%;
+  }
+  .rightSide {
+    height: 55%;
+  }
+  #mainBody {
+    height: 55%;
+  }
+}
+
+.parchment {
+  background-image: url("http://drive.google.com/uc?export=view&id=1ekfXcSNZ2xz4JmwGsq1xjx1ywGM5J7Sw");
+  background-image: url("./images/Parchment.jpg");
+  /* Background image is centered vertically and horizontally at all times */
+  background-position: center center;
+  /* Background image doesn'=t tile */
+  background-repeat: no-repeat;
+  /* Background image is fixed in the viewport so that it doesn't move when 
+  the content's height is greater than the image's height */
+  background-attachment: fixed;
+  /* This is what makes the background image rescale based
+  on the container's size */
+  background-size: cover;
+  /* Set a background color that will be displayed
+  while the background image is loading */
+  background-color: #464646;
+  background-size: 100% 100%;
+  box-shadow: 7px 7px 8px black, -4px -1px 8px black;
+  box-shadow: 7px 7px 8px #1c1d1f, -4px -1px 8px #1c1d1f;
+      
+}
+
+.btn {
+  color: blanchedalmond;
+}
+
+
+.textBlock-bg {
+  background: rgba(41, 43, 44, 0.8);
+  background: rgba(27, 38, 49, 0.8);
+}
+
+.parchment:after {
+  position: absolute;
+  background-image: url("./images/Parchment.jpg");
+  z-index:-1;
+  opacity: 0.2; /* Here is your opacity */
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="header">
+      <div class="pt-0 bg-dark d-flex flex-wrap topBar p-1 border-left-0 border-top-0">
+        <button type="button" class="btn btn-dark" data-toggle="collapse" data-target="#collapseExample"
+          aria-expanded="false" aria-controls="collapseExample">Menu</button>
+
+
+        <button type="button" class="btn btn-dark text-left"><strong>The Grail Quest</strong></button>
+        
+        
+        <!-- top div table -->
+        <div>
+          <table class="table-condensed">
+          <thead>
+          <tr>
+            <th class="m-0 p-0">
+              <button onclick="setCharacterModal()" data-toggle="modal" href="#myModal" type="button" class="btn btn-dark">
+          <span id="topDivCharName" class="text-left"><strong>Sir Percival</strong></span>
+          
+        </button>
+            </th>
+            <th class="align-bottom">Level</th>
+            <th class="align-bottom">Piety</th>
+            <th class="align-bottom"><button onclick="useHealingPotion()" type="button" class="btn btn-dark text-center align-bottom py-0"><strong>Healing <br> Potions</strong>
+        </button></th>
+            <th class="align-bottom">Money</th>
+            <th class="align-bottom">Rumors</th>
+            <th class="align-bottom">Rebellion<br> Level</th>
+            <th class="align-bottom">Turn</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span>HP: </span>
+              <span id="topDivCurHP" class="bg-success rounded px-1 pb-1 mr-1">999 </span>
+              <span> of </span>
+              <span id="topDivMaxHP">999</span>
+            </td>
+            <td class="text-center"><span id="topDivLevel">999</span></td>
+            <td class="text-center"><span id="topDivPiety">999</span></td>
+            <td class="text-center"><span id="topDivPotions">999</span></td>
+            <td class="text-center"><span id="topDivMoney">999</span></td>
+            <td class="text-center"><span id="topDivRumors">999</span></td>
+            <td class="text-center"><span id="topDivRebellionLevel" class="bg-success rounded px-1 pb-1 mr-1">999</span></td>
+            <td class="text-center"><span id="topDivTurnCounter">999</span></td>
+          </tr>
+
+        </tbody>
+        </table>
+        
+        </div>
+      </div>
+</div>
+
+
+
+<div class="leftSide parchment">
+  <p>This is the left side menu area.  Text should wrap by default.</p>
+  
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  
+</div>
+
+<div id="mainBody">
+<h2 class="px-4 py-2 mb-2 rounded shadow-sm textBlock-bg">Fixed/Sticky Footer Example</h2>
+
+
+  <div class="d-flex flex-wrap">
+    <div id="gameTableTitle" class="px-4 py-2 mb-2 rounded shadow-sm textBlock-bg">
+      GAME TABLE TITLE
+    </div>
+  </div>
+        
+  <div class="d-flex flex-wrap">
+    <div id="gameTableText" class="px-4 py-2 rounded shadow-sm textBlock-bg">
+      --- GAME TABLE TEXT --- 
+    </div>
+  </div>
+
+<div class="d-flex flex-wrap">
+  <div class="px-4 py-2 my-2 rounded shadow-sm textBlock-bg">
+    1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  </div>
+</div>
+
+<div class="d-flex flex-wrap">
+  <div class="px-4 py-2 my-2 bg-dark rounded shadow-sm textBlock-bg">
+    2. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  </div>
+</div>
+<div class="d-flex flex-wrap">
+  <div class="px-4 py-2 my-2 bg-dark rounded shadow-sm textBlock-bg">
+    3. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  </div>
+</div>
+        <div id="gameButtons"></div>
+
+
+<p>The footer is placed at the bottom of the page.</p>
+
+</div>
+
+
+<div class="rightSide parchment">
+  <p>This is the right side menu area</p>
+</div>
+
+
+<div class="footer">
+      <div class="footer textBlock-bg pl-3 pt-2  border-bottom-0 border-right-0 bg-dark d-flex flex-wrap d-flex justify-content-end ">
+
+        <!-- <button type="button" class="btn btn-dark" data-toggle="collapse" data-target="#npcCollapse"
+          aria-expanded="false" aria-controls="npcCollapse">NPC</button> -->
+
+        <button onclick="showInventory()" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Inventory</button>
+        <button onclick="setCharacterModal()" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Character</button>
+        <button onclick="showRetainersModal()" id="openRetainerModal" type="button" class="btn btn-dark text-left" data-toggle="modal" href="#myModal">Retainers</button>
+        <!-- <button type="button" class="btn btn-dark text-left">View Log</button> -->
+      </div>
+
+</div>
+
+</body>
+</html> 
