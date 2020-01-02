@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The Grail Quest</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <!-- Import Custom Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IM Fell English SC">
+
+<style>
+body {
+  background-color: black;
+  text-align: center;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#topBox {
+  position: fixed;
+  
+  top: 0px;
+  
+  border-style: solid;
+  border-color: purple;
+  
+  width: 100%;
+  height: 15%;
+}
+
+#middleBox {
+  position: absolute;
+
+
+  border-style: solid;
+  border-color: red;
+  
+  top: 15%;
+  
+  width: 100%;
+  height: 70%;
+}
+
+#bottomBox {
+  position: fixed;
+
+  border-style: solid;
+  border-color:green;
+  
+  width: 100%;
+  height: 15%;
+  
+  bottom: 0;
+}
+
+#middleLeft {
+  position: absolute;
+  width: 20%;
+  height: 100%;
+  
+  left: 0;
+  
+  padding-right: 20px;
+  
+  border-style: dotted;
+  border-color:green;
+  
+  overflow-y: hidden;
+}
+
+#middleLeft:hover {
+  overflow-y: auto;
+  padding-right: 3px;
+}
+
+#middleCenter {
+  position: absolute;
+  height: 100%;
+  width: 60%;
+  left: 20%;
+  
+  border-style: dotted;
+  border-color:blue;
+  
+  overflow-y: hidden;
+}
+
+#middleRight {
+  position: absolute;
+  height: 100%;
+  width: 20%;
+  left: 80%;
+  
+  border-style: dotted;
+  border-color:yellow;
+  
+  overflow-y: hidden;
+}
+
+</style>
+</head>
+<body>
+
+<div id="topBox">top box</div>
+<div id="middleBox">
+  <div id="middleLeft">Middle Left
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  
+  </div>
+  <div id="middleCenter">Middle Center</div>
+  <div id="middleRight">Middle Right</div>
+</div>
+<div id="bottomBox">bottom box</div>
+
+
+</body>
+</html>
